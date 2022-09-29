@@ -3,13 +3,14 @@ import web3 from '../web3';
 import { abi } from '../abi';
 import Member from '../components/members';
 import Layout from '../components/Layout';
-import React, { Component } from 'react';
+// import React, { Component } from 'react';
 import { Card, Embed } from 'semantic-ui-react';
 import Link from 'next/link';
 
 export async function getServerSideProps(props) {
   const address = props.resolvedUrl.replace('/', '');
   console.log(address);
+  console.log(props.contracts);
 
   const res = await fetch('https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/8398');
   const data = await res.json();

@@ -10,21 +10,38 @@ import { factoryAbi } from '../abi'
 import Member from '../components/members';
 
 export async function getServerSideProps() {
-  const address = '0x3d040f0899Caae09062160d00Fe6D818f664Ff23'; // goerli
+  const address = '0x1fBd9B1b68C22f41950298Fe0F7F297A14ca72ca'; // goerli
   // const address = '0x6996fe8fd3a5ddd9abe0e500c9b064c4e4e5b396'; // mainnet
   const factoryContract = new web3.eth.Contract(factoryAbi, address);
   const contracts = await factoryContract.methods.getDeployedContracts().call();
+  const names = await factoryContract.methods.getNames().call();
 
   return {
     props: {
-      contracts
+      contracts,
+      names
     }
   }
 }
 
-export default function Home({ contracts, image }) {
-  const items = contracts.map(item => {
-    return <Link href="/page-one">{Member(item)}</Link>;
+export async function getServerSidePaths({ names }) {
+  const paths = names.map(name => {
+    return {
+      params: {
+	id: name
+      }
+    };
+  });
+  
+  return {
+    paths,
+    fallback: false
+  };
+}
+
+export default function Home({ contracts, names }) {
+  const items = names.map(item => {
+    return <Link href={`/${item}`}>{Member(item)}</Link>;
   });
   return (
     <Layout>
