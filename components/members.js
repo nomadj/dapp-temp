@@ -6,7 +6,7 @@ import { Card, Image, Embed } from 'semantic-ui-react'
 
 // <Image src={image} wrapped ui={false} />
 
-export default function Member(name, image) {
+export default function Member(name) {
   return (
     <Card fluid color='pink'>
       <Embed url='https://fastload.infura-ipfs.io/ipfs/QmbNWEoXzrTPSEBfHusErD9jxmtwSvgAFivK5zgMoM6smM' active={true} />      

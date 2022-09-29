@@ -24,9 +24,9 @@ export async function getServerSideProps(props) {
   };
 }
 
-export default function Home({ image, ints }) {
+export default function MyContract({ image, ints }) {
   const items = ints.map((num, index) => {
-    return <Link href="/">{Member(index, image)}</Link>;
+    return <Link href="/">{Member(index)}</Link>;
   });
   return <Layout>
 	   <Card.Group itemsPerRow={1}>
