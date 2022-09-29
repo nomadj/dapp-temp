@@ -16,10 +16,15 @@ export async function getServerSideProps() {
   const contracts = await factoryContract.methods.getDeployedContracts().call();
   const names = await factoryContract.methods.getNames().call();
 
+  const conObj = contracts.map((x, i) => {
+    return {"name": names[i], "address": x};
+  });
+
   return {
     props: {
       contracts,
-      names
+      names,
+      conObj
     }
   }
 }
@@ -39,9 +44,9 @@ export async function getServerSidePaths({ names }) {
   };
 }
 
-export default function Home({ contracts, names }) {
-  const items = names.map(item => {
-    return <Link href={`/${item}`}>{Member(item)}</Link>;
+export default function Home({ contracts, names, conObj }) {
+  const items = conObj.map(obj => {
+    return <Link href={{ pathname: `/${obj.name}`, query: obj.address }}>{Member(obj.name)}</Link>;
   });
   return (
     <Layout>
