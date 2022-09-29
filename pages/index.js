@@ -46,7 +46,7 @@ export async function getServerSidePaths({ names }) {
 
 export default function Home({ contracts, names, conObj }) {
   const items = conObj.map(obj => {
-    return <Link href={{ pathname: `/${obj.name}`, query: obj.address }}>{Member(obj.name)}</Link>;
+    return <Link href={{ pathname: `/${obj.name}`, query: [obj.address] }}>{Member(obj.name)}</Link>;
   });
   return (
     <Layout>
