@@ -4,8 +4,10 @@ pragma solidity ^0.8.7;
 import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
 
 contract TamboraFactory {
+	event Deployed(Tambora indexed contractAddr);
 	address payable private _owner;
 	Tambora[] private _contracts;
+	string[] public names;
 	mapping (address => Tambora[]) private _ownedContracts;
 
 	constructor() {
@@ -13,13 +15,17 @@ contract TamboraFactory {
 	}
 
 	function deployTambora(string memory name, string memory symbol, uint256 price_) public payable {
-		require(_msgValue() >= 0.033 ether);
+		// require(_msgValue() >= 0.033 ether);
 		Tambora newContract = new Tambora(_msgSender(), name, symbol, price_);
 		_contracts.push(newContract);
+		names.push(name);
+		emit Deployed(newContract);
 		_ownedContracts[_msgSender()].push(newContract);
 		_owner.transfer(_msgValue());
 	}
-
+	function getNames() public view returns (string[] memory) {
+		return names;
+	}
 	function getDeployedContracts() public view returns (Tambora[] memory) {
 		return _contracts;
 	}
@@ -44,7 +50,7 @@ contract Tambora is ERC721 {
 		_checkOwner();
 		_;
 	}
-    
+
 	address payable private _owner;
 	uint256 private _tokenId;
 	string private _baseURIextended;
@@ -94,7 +100,7 @@ contract Tambora is ERC721 {
 	}
 
 	function mint(string memory uri) public payable {
-		require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
+		// require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
 		require(_tokenId < 500, "Mint failed: Tokens are sold out.");
 		_mint(_msgSender(), _tokenId);
 		_setTokenURI(_tokenId, uri);
