@@ -8,7 +8,6 @@ import Layout from '../components/Layout'
 import web3 from '../web3'
 import { factoryAbi } from '../abi'
 import Member from '../components/members';
-import Messenger from '../alert';
 
 export async function getServerSideProps() {
   const address = '0x7B516015eA579dFa978Db3C3B75e677165a6E8C6'; // goerli

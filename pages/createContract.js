@@ -25,8 +25,9 @@ class CreateContract extends Component {
       this.setState({ success: true });
       async function pusher() {
 	const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
-	
-	Router.push({pathname: '/', query: [receipt.transactionHash]});
+	const eventLog = tx.events['Deployed'].returnValues.contractAddr;
+	console.log(eventLog);
+	Router.push({pathname: '/', query: [eventLog]});
       }
       setTimeout(pusher, 3000);
     } catch (err) {
