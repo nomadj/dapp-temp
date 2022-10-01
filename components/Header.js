@@ -9,9 +9,11 @@ export default () => {
       <Link href="/" className="item">
 	<Button color='blue'>Home</Button>
       </Link>
-      <Menu.Menu position="right">
-	<Link href="/" className="item">Home</Link>
-      </Menu.Menu>
+      <Link href="/createContract" className="item">
+	<Menu.Menu position='right'>
+	  <Button color='blue'>+</Button>
+	</Menu.Menu>
+      </Link>
     </Menu>
   );
 }

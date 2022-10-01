@@ -1,7 +1,5 @@
 const localEnv = require('./.env');
 
-console.log(localEnv.infuraNode, localEnv.infuraNodeGoerli);
-
 module.exports = {
   reactStrictMode: true,
   env: {
