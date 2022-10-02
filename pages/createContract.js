@@ -13,7 +13,8 @@ class CreateContract extends Component {
     price: '',
     errorMessage: '',
     loading: false,
-    success: false
+    success: false,
+    image: ''
   };
 
   onSubmit = async (event) => {
@@ -66,7 +67,7 @@ class CreateContract extends Component {
               onChange={event => this.setState({ price: event.target.value })}
 	      placeholder="0.08"
             />
-          </Form.Field>	  
+          </Form.Field>
           <Message error header="Oops!" content={this.state.errorMessage} />
 	  <Message
 	    success
@@ -75,6 +76,7 @@ class CreateContract extends Component {
 	  />	  
           <Button type='submit' primary loading={this.state.loading}>Create</Button>
         </Form>
+	<button class="ui teal icon right labeled button" action={console.log(this.state.image)}>GO</button>
       </Layout>
     );
   };
