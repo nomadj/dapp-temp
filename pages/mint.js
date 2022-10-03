@@ -1,15 +1,12 @@
 import { create } from 'ipfs-http-client'
-import React from 'react'
+import React, { setState } from 'react'
 
 export default function Mint() {
   const state = {
     image: null
   }
 
-  async function ipfsAdd(event) {
-    //    event.preventDefault();
-    console.log("ipfsAdd is triggered");
-    console.log(event);
+  async function ipfsAdd(file) {
     const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
 
     const client = create({
@@ -21,7 +18,7 @@ export default function Mint() {
       }
     })
     try {
-      const added = await client.add(event, { progress: prog  => console.log(`Received: ${prog}`)});
+      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
 	// if (err) {
 	// 	console.log(err)
 	// }
@@ -35,15 +32,25 @@ export default function Mint() {
     }
   }
   
+  // return (
+  //   <div>
+  //     <label>Video To Upload</label>
+  //     <input
+  // 	id="imageName"
+  // 	type="file"
+  // 	onChange={event => ipfsAdd(event.target.files[0])}
+  //     />
+  //     <button onClick={event => ipfsAdd(state.image)}>GO</button>
+  //   </div>
+  // );
   return (
     <div>
       <label>Video To Upload</label>
       <input
 	id="imageName"
 	type="file"
-	onChange={event => ipfsAdd(event.target.files[0])}
       />
-      <button onClick={event => ipfsAdd(state.image)}>GO</button>
+      <button onClick={ event => ipfsAdd(document.getElementById("imageName").files[0])}>GO</button>
     </div>
-  );
+  );  
 }
