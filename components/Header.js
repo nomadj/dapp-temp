@@ -7,11 +7,11 @@ export default () => {
   return (
     <Menu style={{ marginTop: '10px' }}>
       <Link href="/" className="item">
-	<Button color='blue'>Home</Button>
+	<Button attached='left' color='blue'>Home</Button>
       </Link>
       <Link href="/createContract" className="item">
 	<Menu.Menu position='right'>
-	  <Button color='blue'>+</Button>
+	  <Button attached='right' color='blue'>+</Button>
 	</Menu.Menu>
       </Link>
     </Menu>

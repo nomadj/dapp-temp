@@ -1,12 +1,13 @@
 import { create } from 'ipfs-http-client'
-import React, { setState } from 'react'
+import { useState } from 'react'
+import Layout from '../components/Layout'
+import { Input, Form, Button } from 'semantic-ui-react'
 
 export default function Mint() {
-  const state = {
-    image: null
-  }
-
+  const [state, setState] = useState({ isLoading: false });
+  
   async function ipfsAdd(file) {
+    setState({ isLoading: true });
     const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
 
     const client = create({
@@ -30,6 +31,7 @@ export default function Mint() {
     } catch (event) {
       console.log(event);
     }
+    setState({ isLoading: false });
   }
   
   // return (
@@ -44,13 +46,17 @@ export default function Mint() {
   //   </div>
   // );
   return (
-    <div>
-      <label>Video To Upload</label>
-      <input
-	id="imageName"
-	type="file"
-      />
-      <button onClick={ event => ipfsAdd(document.getElementById("imageName").files[0])}>GO</button>
-    </div>
+    <Layout>
+      <Form>
+	<Form.Field>
+	  <label>Video To Upload</label>
+	  <Input
+	    id="imageName"
+	    type="file"
+	  />
+	  <Button loading={state.isLoading} color='pink' attached='bottom' onClick={ event => ipfsAdd(document.getElementById("imageName").files[0])}>Mint</Button>
+	</Form.Field>
+      </Form>
+    </Layout>
   );  
 }
