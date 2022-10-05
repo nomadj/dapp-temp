@@ -76,7 +76,6 @@ class CreateContract extends Component {
 	  />	  
           <Button type='submit' primary loading={this.state.loading}>Create</Button>
         </Form>
-	<button class="ui teal icon right labeled button" action={console.log(this.state.image)}>GO</button>
       </Layout>
     );
   };
