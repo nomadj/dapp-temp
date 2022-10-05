@@ -1,6 +1,5 @@
 import Head from 'next/head'
 import Link from 'next/link'
-// import 'semantic-ui-css/semantic.min.css'
 import React from 'react'
 import { Card, Image, Embed } from 'semantic-ui-react'
 
@@ -13,7 +12,9 @@ class NFT extends React.Component {
 	<Embed url={this.props.url} active={true} />    
 	<Card.Content>
 	  <Card.Header>
-	    {this.props.name}
+	    <Link href="/">
+	      <a>{this.props.name}</a>
+	    </Link>
 	  </Card.Header>
 	</Card.Content>
       </Card>

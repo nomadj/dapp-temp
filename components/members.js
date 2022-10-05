@@ -4,8 +4,6 @@ import Link from 'next/link'
 // import React from 'react'
 import { Card, Image, Embed } from 'semantic-ui-react'
 
-// <Image src={image} wrapped ui={false} />
-
 export default function Member(arg, key) {
   return (
     <Card fluid color='pink'>
