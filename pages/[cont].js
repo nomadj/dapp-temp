@@ -29,33 +29,19 @@ export async function getServerSideProps(props) {
   };
 }
 
-const GetClientSideProps = () => {
-  const [state, setState] = useState({ address: ''});
-  useEffect(() => {
-    async function account() {
-      let accts = await web3.eth.getAccounts()
-      let acct = accts[0];
-      return acct
-    }
-    account().then(acct => {
-      console.log('ACCOUNT: ', acct);
-      
-    });
-  }, [])
-  return null;
-}  
-
 class MyContract extends React.Component {
   state = { address: ''};
+  componentDidMount() {
+    web3.eth.getAccounts().then(accts => {
+      console.log(accts[0]);
+    });
+  }
   render() {
-    console.log(this.props);
-    const { ints, name, url } = this.props;
-    const items = ints.map((num, index) => {
-      return <NFT key={index} url={url} name={name} address={this.state.address} />
+    const items = this.props.ints.map((num, index) => {
+      return <NFT key={index} url={this.props.url} name={this.props.name} address={this.state.address} />
     });
     return (
       <Layout>
-	<GetClientSideProps />
 	<Card.Group itemsPerRow={3}>
 	  {items}
 	</Card.Group>

@@ -86,7 +86,6 @@ export default function CreateForm() {
 	  content={state.errorMessage}
 	/>	
       </Form.Group>
-    </Form>
-    
+    </Form>    
   );
 }
