@@ -47,27 +47,21 @@ export async function getServerSidePaths({ names }) {
   };
 }
 
-// export default function Home({ contracts, names, conObj }) {
-//   const items = conObj.map(obj => {
-//     return <Link href={{ pathname: `/${obj.name}`, query: [obj.address] }}>{Member(obj.name)}</Link>;
-//   });
-//   return (
-//     <Layout>
-//       <Card.Group>
-// 	{items}
-//       </Card.Group>
-//     </Layout>
-//   );
-// }
-
 class Index extends React.Component {
+  state = {
+    account: ''
+  }
+  async componentDidMount() {
+    const accounts = await web3.eth.getAccounts()
+    this.setState({ account: accounts[0]} )
+  }
   render() {
     const items = this.props.conObj.map((obj, index) => {
-      return <IndexRow key={index} name={obj.title} address={obj.address} />
+      return <IndexRow key={index} name={obj.title} address={obj.address} account={this.state.account} />
     });
     return (
       <Layout>
-	<Header source={this.props.conObj}/>
+	<Header source={this.props.conObj} account={this.state.account}/>
 	<Card.Group>
 	  {items}
 	</Card.Group>

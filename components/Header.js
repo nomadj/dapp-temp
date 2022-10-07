@@ -32,7 +32,7 @@ class Header extends React.Component {
 	    </Link>
 	  </Menu.Item>
 	  <Menu.Item>
-	    <SearchBar source={this.props.source}/>
+	    <SearchBar source={this.props.source} account={this.props.account}/>
 	  </Menu.Item>
 	  <Menu.Menu position='right'>
 	    <Menu.Item>

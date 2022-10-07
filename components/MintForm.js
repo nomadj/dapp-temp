@@ -3,6 +3,9 @@ import Layout from '../components/Layout'
 import { Transition, Message, Image, Card, Embed, Input, Form, Button } from 'semantic-ui-react'
 import { Component, useState } from 'react'
 import Header from '../components/Header'
+import web3 from '../web3'
+import copy from 'copy-to-clipboard'
+import { abi } from '../abi'
 
 // 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr'
 class MultiCard extends Component {
@@ -50,14 +53,28 @@ class MintForm extends Component {
     title: '',
     performer: '',
     errorMessage: '',
-    success: false
+    success: false,
+    address: '',
+    account: ''
   }
   componentDidMount() {
-    console.log("MintForm mounted")
+    // this.setState({ address: this.props.query['0'], account: this.props.query['1'] });
+  }
+
+  onSubmit = async (img) => {
+    this.setState({ isLoading: true, success: false, errorMessage: '' });
+    const imgCid = await this.ipfsAdd(img);
+    console.log("Image Added at ", imgCid);
+    const data = await this.createMeta(imgCid);
+    console.log("Metadata Created");
+    const metaCid = await this.ipfsAdd(data);
+    console.log("Metadata Added at ", metaCid);
+    const txHash = await this.mintNFT(metaCid);
+    copy(txHash);
+    console.log("Minting Complete ", txHash);
   }
   
   ipfsAdd = async (file) => {
-    this.setState({ isLoading: true, success: false, errorMessage: '' });
     const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
 
     const client = create({
@@ -70,16 +87,52 @@ class MintForm extends Component {
     })
     try {
       const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
-      console.log(added.path);
-      this.setState({ isLoading: false, success: true });
+      return added.path;
     } catch (event) {
       console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only .png and .mp4 available at this time.', isLoading: false });
+      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false });
     }
   }
 
-  mintNFT = async () => {
-    
+  mintNFT = async (cid) => {
+//     try {
+      const accounts = await web3.eth.getAccounts();
+      const contract = new web3.eth.Contract(abi, this.props.address);
+      const tx = await contract.methods.mint(`ipfs://${cid}`).send({from: accounts[0]});
+      this.setState({ success: true });
+      // const pusher = async () => {
+      // 	console.log('Minted successfully at: ', tx.transactionHash)
+      // 	Router.push({pathname: '/', query: [tx.transactionHash]});
+      // }
+      // setTimeout(pusher, 3000);
+      console.log('Minted successfully at: ', tx.transactionHash);
+      this.setState({ isLoading: false, success: true });
+      return tx.transactionHash;
+   //  } catch (err){
+      this.setState({ errorMessage: err})
+    // }
+  }
+
+  createMeta = async (cid) => {
+    const metadata = {
+      "image": `ipfs://${cid}`,
+      "attributes": [
+	{
+	  "trait_type": "title",
+	  "value": this.state.title
+	},
+	{
+	  "trait_type": "composer",
+	  "value": this.state.composer
+	},
+	{
+	  "trait_type": "performer",
+	  "value": this.state.performer
+	}
+      ]
+    };
+    const data = JSON.stringify(metadata);
+    return data;
   }
 
   fileHandler = (event) => {
@@ -100,7 +153,7 @@ class MintForm extends Component {
     return (
       <div>
 	<h3>Mint an NFT</h3>
-        <Form onSubmit={ event => {this.ipfsAdd(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
+        <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
           <Form.Field>
             <label>Title</label>
             <Input

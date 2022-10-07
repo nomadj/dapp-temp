@@ -78,8 +78,7 @@ function SearchBar(props) {
           placeholder='Search...'
           onResultSelect={(e, data) => {
             dispatch({ type: 'UPDATE_SELECTION', selection: data.result.title })
-	    console.log("Contract Name: ", data.result.title, typeof(data.result.title));
-	    Router.push(`/${data.result.title}?0=${data.result.address}`);
+	    Router.push(`/${data.result.title}?0=${data.result.address}&1=${props.account}`);
 	  }
           }
           onSearchChange={handleSearchChange}

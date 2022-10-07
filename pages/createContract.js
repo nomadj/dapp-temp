@@ -5,6 +5,7 @@ import web3 from '../web3';
 import factory from '../factory';
 import Router from 'next/router';
 import { factoryAbi } from '../abi';
+import Header from '../components/Header';
 
 class CreateContract extends Component {
   state = {
