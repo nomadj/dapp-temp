@@ -1,6 +1,7 @@
 import Layout from '../components/Layout'
 import MintForm from '../components/MintForm'
 import { Component } from 'react'
+import Header from '../components/Header'
 
 
 // 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr'
@@ -8,7 +9,10 @@ import { Component } from 'react'
 class Mint extends Component {
   render() {
     return (
-      <MintForm />
+      <Layout>
+	<Header />
+	<MintForm />
+      </Layout>
     );
   }
 }

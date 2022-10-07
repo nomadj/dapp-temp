@@ -9,6 +9,7 @@ import { factoryAbi } from '../abi'
 // import Member from '../components/members';
 import IndexRow from '../components/IndexRow';
 import React from 'react';
+import Header from '../components/Header';
 
 export async function getServerSideProps() {
   const address = '0x7B516015eA579dFa978Db3C3B75e677165a6E8C6'; // goerli
@@ -18,7 +19,7 @@ export async function getServerSideProps() {
   const names = await factoryContract.methods.getNames().call();
 
   const conObj = contracts.map((x, i) => {
-    return {"name": names[i], "address": x};
+    return {"title": names[i], "address": x, "image": 'favicon.png'};
   });
 
   return {
@@ -61,10 +62,11 @@ export async function getServerSidePaths({ names }) {
 class Index extends React.Component {
   render() {
     const items = this.props.conObj.map((obj, index) => {
-      return <IndexRow key={index} name={obj.name} address={obj.address} />
+      return <IndexRow key={index} name={obj.title} address={obj.address} />
     });
     return (
       <Layout>
+	<Header source={this.props.conObj}/>
 	<Card.Group>
 	  {items}
 	</Card.Group>

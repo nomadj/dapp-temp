@@ -1,7 +1,8 @@
 import { create } from 'ipfs-http-client'
 import Layout from '../components/Layout'
-import { Message, Image, Card, Embed, Input, Form, Button } from 'semantic-ui-react'
+import { Transition, Message, Image, Card, Embed, Input, Form, Button } from 'semantic-ui-react'
 import { Component, useState } from 'react'
+import Header from '../components/Header'
 
 // 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr'
 class MultiCard extends Component {
@@ -24,14 +25,14 @@ class MultiCard extends Component {
     } else if (this.props.isPng) {
       console.log("PNG")
       return (
-      <Card>
-	<Image src={this.props.url} wrapped ui={false} />
-	<Card.Content>
-	  <Card.Header>
-	    {this.props.name}
-	  </Card.Header>
-	</Card.Content>
-      </Card>
+	<Card>
+	  <Image src={this.props.url} wrapped ui={false} />
+	  <Card.Content>
+	    <Card.Header>
+	      {this.props.name}
+	    </Card.Header>
+	  </Card.Content>
+	</Card>
       )
     } else {
       return null
@@ -97,7 +98,7 @@ class MintForm extends Component {
 
   render() {
     return (
-      <Layout>
+      <div>
 	<h3>Mint an NFT</h3>
         <Form onSubmit={ event => {this.ipfsAdd(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
           <Form.Field>
@@ -141,7 +142,7 @@ class MintForm extends Component {
 	  />	  
           <Button type='submit' loading={this.state.isLoading} icon='gem' color='yellow' size='large'/>
         </Form>
-      </Layout>
+	</div>
     );
   }
 }

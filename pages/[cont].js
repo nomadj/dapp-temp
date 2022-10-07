@@ -7,6 +7,7 @@ import React, { useState, useEffect } from 'react';
 import { Card, Embed } from 'semantic-ui-react';
 import Link from 'next/link';
 import NFT from '../components/NFT';
+import Header from '../components/Header'
 
 export async function getServerSideProps(props) {
   const name = props.query['1'];
@@ -43,6 +44,7 @@ class MyContract extends React.Component {
     });
     return (
       <Layout>
+	<Header />
 	<Card.Group itemsPerRow={3}>
 	  {items}
 	</Card.Group>

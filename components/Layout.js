@@ -8,7 +8,7 @@ import 'semantic-ui-css/semantic.min.css';
 class Layout extends React.Component {
   constructor(props) {
     super(props);
-    this.myRef = React.createRef();
+    // this.myRef = React.createRef();
   }
   render() {
   return (
@@ -21,7 +21,6 @@ class Layout extends React.Component {
           content="Mint your own NFTs"
         />
       </Head>
-      <Header ref={this.myRef} />
       {this.props.children}
     </Container>
   );

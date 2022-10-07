@@ -2,7 +2,8 @@ import React from 'react';
 import { Image, Segment, Container, Icon, Menu, Button } from 'semantic-ui-react';
 import { Header as H } from 'semantic-ui-react';
 import Link from 'next/link';
-import 'semantic-ui-css/semantic.min.css'
+import 'semantic-ui-css/semantic.min.css';
+import SearchBar from '../components/SearchBar';
 
 // export const Header = React.forwardRef((props, ref) => {
   // const HomeButton = React.forwardRef(({ href, onClick }, ref) => {
@@ -17,7 +18,7 @@ import 'semantic-ui-css/semantic.min.css'
 class Header extends React.Component {
   render() {
     return (
-      <Container style={{ marginTop: '10px', marginBottom: '10px'}}>
+      <Container style={{ marginTop: '10px', marginBottom: '15px'}}>
 	<Segment color='orange' inverted>
 	  <H as='h1' icon textAlign='center'>
 	    <Icon name='ethereum' />
@@ -29,6 +30,9 @@ class Header extends React.Component {
 	    <Link href="/">
 	      <Button color='yellow' icon='home' />
 	    </Link>
+	  </Menu.Item>
+	  <Menu.Item>
+	    <SearchBar source={this.props.source}/>
 	  </Menu.Item>
 	  <Menu.Menu position='right'>
 	    <Menu.Item>

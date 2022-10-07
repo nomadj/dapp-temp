@@ -40,6 +40,7 @@ class CreateContract extends Component {
   render() {
     return (
       <Layout>
+	<Header />
         <h3>Create a Contract</h3>
         <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={this.state.success}>
           <Form.Field>
