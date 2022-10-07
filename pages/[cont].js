@@ -31,11 +31,12 @@ export async function getServerSideProps(props) {
 
 class MyContract extends React.Component {
   state = { address: ''};
-  componentDidMount() {
-    web3.eth.getAccounts().then(accts => {
-      console.log(accts[0]);
-    });
+  
+  async componentDidMount() {
+    let accounts = await web3.eth.getAccounts();
+    this.setState({ address: accounts[0] });
   }
+  
   render() {
     const items = this.props.ints.map((num, index) => {
       return <NFT key={index} url={this.props.url} name={this.props.name} address={this.state.address} />

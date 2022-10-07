@@ -74,7 +74,7 @@ class CreateContract extends Component {
 	    header='Success!'
 	    content='Contract Created'
 	  />	  
-          <Button type='submit' primary loading={this.state.loading}>Create</Button>
+          <Button type='submit' loading={this.state.loading} color='yellow'>Create</Button>
         </Form>
       </Layout>
     );

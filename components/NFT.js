@@ -8,7 +8,7 @@ import { Card, Image, Embed } from 'semantic-ui-react'
 class NFT extends React.Component {
   render() {
     return (
-      <Card fluid color='pink'>
+      <Card fluid color='olive'>
 	<Embed url={this.props.url} active={true} />    
 	<Card.Content>
 	  <Card.Header>

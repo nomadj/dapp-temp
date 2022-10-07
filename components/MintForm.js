@@ -95,71 +95,6 @@ class MintForm extends Component {
     console.log(this.state)
   }
 
-  // render() {
-  //   return (
-  //     <div>
-  // 	<MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
-  //     <Form success error={!!this.errorMessage}>
-  // 	  <Form.Group>
-  // 	    <Form.Field>
-  // 	      <label>Video To Upload</label>
-  // 	      <Input
-  // 		id="imageName"
-  // 		type="file"
-  // 		onChange={() => this.fileHandler(event)}
-  // 	      />
-  // 	      <Button loading={this.state.isLoading} color='pink' attached='bottom' onClick={ event => this.ipfsAdd(document.getElementById("imageName").files[0])}>Mint</Button>
-  // 	    </Form.Field>
-  // 	    <Form.Field
-  // 	      id='meta-composer'
-  // 	      label='Who composed this content?'
-  // 	      placeholder='JS Bach'
-  // 	      error={{
-  // 		content: 'Enter a composer for this content',
-  // 		pointing: 'below'
-  // 	      }}
-  // 	      value={this.state.composer}
-  // 	      onChange={ event => this.setState({ composer: event.target.value })}
-  // 	    />
-  // 	    <Form.Field
-  // 	      id='meta-song-title'
-  // 	      control={Input}
-  // 	      label='What is the name of this piece?'
-  // 	      placeholder='Prelude in E major, BWV 1006a'
-  // 	      error={{
-  // 		content: 'Enter a song title for this content',
-  // 		pointing: 'below'
-  // 	      }}
-  // 	      value={this.state.title}
-  // 	      onChange={ event => this.setState({ title: event.target.value })}
-  // 	    />  
-  // 	    <Form.Field
-  // 	      id='meta-performer'
-  // 	      control={Input}
-  // 	      label='Who is the performer?'
-  // 	      placeholder='Andres Segovia'
-  // 	      error={{
-  // 		content: 'Enter a performer for this content',
-  // 		pointing: 'below'
-  // 	      }}
-  // 	      value={this.state.performer}
-  // 	      onChange={ event => this.setState({ performer: event.target.value})}
-  // 	    />
-  // 	    <Message
-  // 	      success
-  // 	      header='Success!'
-  // 	      content='NFT Minted at {Contract-Address-Here}'
-  // 	    />
-  // 	    <Message
-  // 	      error
-  // 	      header='Error!'
-  // 	      content={this.state.errorMessage}
-  // 	    />	
-  // 	  </Form.Group>
-  //     </Form>
-  // 	</div>
-  //   );
-  // }
   render() {
     return (
       <Layout>
@@ -204,7 +139,7 @@ class MintForm extends Component {
 	    header='Success!'
 	    content='Minted minted\ntx: {}'
 	  />	  
-          <Button type='submit' primary loading={this.state.isLoading}>Create</Button>
+          <Button type='submit' loading={this.state.isLoading} icon='gem' color='yellow' size='large'/>
         </Form>
       </Layout>
     );
