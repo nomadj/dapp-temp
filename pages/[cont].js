@@ -10,8 +10,9 @@ import NFT from '../components/NFT';
 import Header from '../components/Header'
 
 export async function getServerSideProps(props) {
-  const name = props.query['1'];
-  const address = props.query['0'];
+  const name = props.query['cont'];
+  console.log("LOOK HERE: ", props.query['0']);
+  // const address = props.query['0'];
   // const contract = new web3.eth.Contract(abi, address);
   // const conName = await contract.methods.name().call();
   // const res = await fetch('https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/8398');

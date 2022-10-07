@@ -39,6 +39,7 @@ export async function getServerSidePaths({ names }) {
       }
     };
   });
+  console.log(paths);
   
   return {
     paths,

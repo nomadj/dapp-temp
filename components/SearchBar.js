@@ -43,7 +43,6 @@ function exampleReducer(state, action) {
 }
 
 function SearchBar(props) {
-  console.log(source);
   const [state, dispatch] = React.useReducer(exampleReducer, initialState)
   const { loading, results, value } = state
 
@@ -79,7 +78,8 @@ function SearchBar(props) {
           placeholder='Search...'
           onResultSelect={(e, data) => {
             dispatch({ type: 'UPDATE_SELECTION', selection: data.result.title })
-	    Router.push('/');
+	    console.log("Contract Name: ", data.result.title, typeof(data.result.title));
+	    Router.push(`/${data.result.title}?0=${data.result.address}`);
 	  }
           }
           onSearchChange={handleSearchChange}
