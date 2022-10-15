@@ -12,7 +12,7 @@ import React from 'react';
 import Header from '../components/Header';
 
 export async function getServerSideProps() {
-  const address = '0x7B516015eA579dFa978Db3C3B75e677165a6E8C6'; // goerli
+  const address = '0x9E01e0A1a5f8472E64D0d5f0EbC6f7d21D7b4056'; // goerli
   // const address = '0x6996fe8fd3a5ddd9abe0e500c9b064c4e4e5b396'; // mainnet
   const factoryContract = new web3.eth.Contract(factoryAbi, address);
   const contracts = await factoryContract.methods.getDeployedContracts().call();

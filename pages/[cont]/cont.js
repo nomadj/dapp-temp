@@ -1,13 +1,13 @@
 import Head from 'next/head';
-import web3 from '../web3';
-import { abi } from '../abi';
-import Member from '../components/members';
-import Layout from '../components/Layout';
+import web3 from '../../web3';
+import { abi } from '../../abi';
+import Member from '../../components/members';
+import Layout from '../../components/Layout';
 import React, { useState, useEffect } from 'react';
 import { Card, Embed, Button } from 'semantic-ui-react';
 import Link from 'next/link';
-import NFT from '../components/NFT';
-import Header from '../components/Header'
+import NFT from '../../components/NFT';
+import Header from '../../components/Header'
 import Router from  'next/router'
 
 export async function getServerSideProps(props) {
