@@ -12,7 +12,7 @@ class IndexRow extends React.Component {
     return (
       <Card fluid color='olive'>
 	<Card.Content>
-	  <Image src='favicon.png' floated='right' size='mini' rounded />
+	  <Image src={this.props.image} floated='right' size='mini' rounded />
 	  <Card.Header>{this.props.name}</Card.Header>
 	  <Card.Header>
 	    <Link href={{ pathname: `/${this.props.name}/show`, query: [this.props.address, this.props.account] }}>

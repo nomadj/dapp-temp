@@ -1,7 +1,7 @@
 import web3 from './web3';
 import { factoryAbi } from './abi';
 
-const address = '0x9E01e0A1a5f8472E64D0d5f0EbC6f7d21D7b4056'; // goerli  
+const address = '0x56D171F2752252CdB0Fe96C24dDCAe404253C7c8'; // goerli  
 const instance =  new web3.eth.Contract(factoryAbi, address);
 
 // EVENT LISTENER
