@@ -13,15 +13,15 @@ contract Tambora is ERC721 {
 	}
 
 	address payable private _owner;
-	uint256 private _tokenId;
 	string private _baseURIextended;
+	uint256 public tokenId;	
 	uint256 public price;
 	string public contractType;
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => uint256[]) private _ownedTokens;
 
 	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory type_, address to_, string memory uri_) ERC721(name, symbol) {
-		_tokenId = 0;
+		tokenId = 0;
 		_owner = payable(deployer);
 		price = price_;
 		contractType = type_;
@@ -40,15 +40,15 @@ contract Tambora is ERC721 {
 		_baseURIextended = baseURI_;
 	}
 
-	function _setTokenURI(uint256 tokenId, string memory tokenURI_) internal {
-		require(_exists(tokenId), "ERC721Metadata: URI set of nonexistent token");
-		_tokenURIs[tokenId] = tokenURI_;
+	function _setTokenURI(uint256 tokenId_, string memory tokenURI_) internal {
+		require(_exists(tokenId_), "ERC721Metadata: URI set of nonexistent token");
+		_tokenURIs[tokenId_] = tokenURI_;
 	}
 
-	function tokenURI(uint256 tokenId) public view override returns (string memory) {
-		require(_exists(tokenId), "ERC721Metadata: URI query for nonexistent token");
+	function tokenURI(uint256 tokenId_) public view override returns (string memory) {
+		require(_exists(tokenId_), "ERC721Metadata: URI query for nonexistent token");
 
-		string memory _tokenURI = _tokenURIs[tokenId];
+		string memory _tokenURI = _tokenURIs[tokenId_];
 		string memory base = _baseURI();
 
 		// If there is no base URI, return token URI
@@ -60,16 +60,16 @@ contract Tambora is ERC721 {
 			return string(abi.encodePacked(base, _tokenURI));
 		}
 		// if there is a baseURI but no tokenURI, concatenate the tokenId to the base URI
-		return string(abi.encodePacked(base, tokenId.toString()));
+		return string(abi.encodePacked(base, tokenId_.toString()));
 	}
 
-	function mint(address to_ string memory uri) public payable {
+	function mint(address to_, string memory uri) public payable {
 		// require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
-		require(_tokenId < 500, "Mint failed: Tokens are sold out.");
-		_mint(to_, _tokenId);
-		_setTokenURI(_tokenId, uri);
-		_ownedTokens[to_].push(_tokenId);
-		_tokenId++;
+		require(tokenId < 100, "Mint failed: Tokens are sold out.");
+		_mint(to_, tokenId);
+		_setTokenURI(tokenId, uri);
+		_ownedTokens[to_].push(tokenId);
+		tokenId++;
 		_owner.transfer(_msgValue());
 	}
 
