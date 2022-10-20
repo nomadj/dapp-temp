@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import Layout from '../components/Layout';
-import { Form, Button, Input, Message } from 'semantic-ui-react';
+import { Form, Button, Input, Message, Select } from 'semantic-ui-react';
 import web3 from '../web3';
 import factory from '../factory';
 import Router from 'next/router';
 import { factoryAbi } from '../abi';
 import Header from '../components/Header';
+import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFactory.json';
+
+const options = [
+  { key: 'm', text: 'Musician', value: 'musician' }
+];
 
 class CreateContract extends Component {
   state = {
@@ -15,15 +20,19 @@ class CreateContract extends Component {
     errorMessage: '',
     loading: false,
     success: false,
-    image: ''
+    image: '',
+    contractType: ''
   };
 
+  handleChange = (e, { value }) => this.setState({ contractType: value })
+
   onSubmit = async (event) => {
+    console.log(this.state.contractType);
     event.preventDefault();
     this.setState({ loading: true, errorMessage: '', success: false });
     try {
       const accounts = await web3.eth.getAccounts();
-      const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether')).send({from: accounts[0]});
+      const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType).send({from: accounts[0]});
       this.setState({ success: true });
       async function pusher() {
 	const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
@@ -70,6 +79,13 @@ class CreateContract extends Component {
 	      placeholder="0.08"
             />
           </Form.Field>
+	  <Form.Field
+            control={Select}
+            label='Type'
+            options={options}
+            placeholder='Type'
+	    onChange={this.handleChange}
+          />
           <Message error header="Oops!" content={this.state.errorMessage} />
 	  <Message
 	    success

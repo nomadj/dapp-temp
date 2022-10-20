@@ -6,6 +6,7 @@ import Header from '../components/Header'
 import web3 from '../web3'
 import copy from 'copy-to-clipboard'
 import { abi } from '../abi'
+import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 
 // 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr'
 class MultiCard extends Component {
@@ -97,8 +98,8 @@ class MintForm extends Component {
   mintNFT = async (cid) => {
 //     try {
       const accounts = await web3.eth.getAccounts();
-      const contract = new web3.eth.Contract(abi, this.props.address);
-      const tx = await contract.methods.mint(`ipfs://${cid}`).send({from: accounts[0]});
+      const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
+    const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0]});
       this.setState({ success: true });
       // const pusher = async () => {
       // 	console.log('Minted successfully at: ', tx.transactionHash)

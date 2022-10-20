@@ -1,47 +1,8 @@
 // SPDX-License-Identifier: Pytheorus
 pragma solidity ^0.8.7;
 
-import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol";
-
-contract TamboraFactory {
-	event Deployed(Tambora indexed contractAddr);
-	address payable private _owner;
-	Tambora[] private _contracts;
-	string[] public names;
-	mapping (address => Tambora[]) private _ownedContracts;
-
-	constructor() {
-		_owner = payable(_msgSender());
-	}
-
-	function deployTambora(string memory name, string memory symbol, uint256 price_) public payable {
-		// require(_msgValue() >= 0.033 ether);
-		Tambora newContract = new Tambora(_msgSender(), name, symbol, price_);
-		_contracts.push(newContract);
-		names.push(name);
-		emit Deployed(newContract);
-		_ownedContracts[_msgSender()].push(newContract);
-		_owner.transfer(_msgValue());
-	}
-	function getNames() public view returns (string[] memory) {
-		return names;
-	}
-	function getDeployedContracts() public view returns (Tambora[] memory) {
-		return _contracts;
-	}
-
-	function getOwnedContracts(address contractOwner) public view returns (Tambora[] memory) {
-		return _ownedContracts[contractOwner];
-	}
-
-	function _msgSender() internal view returns (address) {
-		return msg.sender;
-	}
-
-	function _msgValue() internal view returns (uint256) {
-		return msg.value;
-	}
-}
+/* import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol"; */
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Tambora is ERC721 {
 	using Strings for uint256;
@@ -55,13 +16,16 @@ contract Tambora is ERC721 {
 	uint256 private _tokenId;
 	string private _baseURIextended;
 	uint256 public price;
+	string public contractType;
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => uint256[]) private _ownedTokens;
 
-	constructor(address deployer, string memory name, string memory symbol, uint256 price_) ERC721(name, symbol) {
+	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory type_, address to_, string memory uri_) ERC721(name, symbol) {
 		_tokenId = 0;
 		_owner = payable(deployer);
 		price = price_;
+		contractType = type_;
+		mint(to_, uri_);
 	}
 
   function owner() public view returns (address) {
@@ -99,12 +63,12 @@ contract Tambora is ERC721 {
 		return string(abi.encodePacked(base, tokenId.toString()));
 	}
 
-	function mint(string memory uri) public payable {
+	function mint(address to_ string memory uri) public payable {
 		// require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
 		require(_tokenId < 500, "Mint failed: Tokens are sold out.");
-		_mint(_msgSender(), _tokenId);
+		_mint(to_, _tokenId);
 		_setTokenURI(_tokenId, uri);
-		_ownedTokens[_msgSender()].push(_tokenId);
+		_ownedTokens[to_].push(_tokenId);
 		_tokenId++;
 		_owner.transfer(_msgValue());
 	}

@@ -1,8 +1,10 @@
 import web3 from './web3';
 import { factoryAbi } from './abi';
+import TamboraFactory from './artifacts/contracts/TamboraFactory.sol/TamboraFactory.json'
 
-const address = '0x56D171F2752252CdB0Fe96C24dDCAe404253C7c8'; // goerli  
-const instance =  new web3.eth.Contract(factoryAbi, address);
+const address = process.env.FACTORY_ADDRESS; // goerli  
+// const instance =  new web3.eth.Contract(factoryAbi, address);
+const instance =  new web3.eth.Contract(TamboraFactory.abi, address);
 
 // EVENT LISTENER
 // instance.events.Deployed(() => {

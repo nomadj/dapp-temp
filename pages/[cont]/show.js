@@ -7,19 +7,21 @@ import ContributeForm from '../../components/ContributeForm';
 import Link from 'next/link';
 import Header from '../../components/Header';
 import DownloadButton from '../../components/DownloadButton';
+import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
 
 export async function getServerSideProps(props) {
   const name = props.query['cont'];
   const address = props.query['0'];
-  const contract = new web3.eth.Contract(abi, address);
-  const tokenCount = await contract.methods.tokenId().call();
+  const contract = new web3.eth.Contract(Tambora.abi, address);
+//  const tokenCount = await contract.methods.tokenId().call();
   const manager = await contract.methods.owner().call();
+  const contractType = await contract.methods.contractType().call();
+  console.log("Contract Type: ", contractType);
 
   return {
     props: {
       address,
       manager,
-      tokenCount,
       name
     }
   };
@@ -44,7 +46,7 @@ class CampaignShow extends Component {
   }
 
   renderCards() {
-    const { address, manager, tokenCount, name } = this.props;
+    const { address, manager, name } = this.props;
 
     const items = [
       {

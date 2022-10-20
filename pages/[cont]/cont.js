@@ -9,12 +9,13 @@ import Link from 'next/link';
 import NFT from '../../components/NFT';
 import Header from '../../components/Header'
 import Router from  'next/router'
+import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
 
 export async function getServerSideProps(props) {
   const name = props.query['cont'];
   const address = props.query['0'];
   const account = props.query['1'];
-  const contract = new web3.eth.Contract(abi, address);
+  const contract = new web3.eth.Contract(Tambora.abi, address);
   const tokens = await contract.methods.getOwnedTokens(account).call();
   console.log(tokens);
   // const conName = await contract.methods.name().call();
