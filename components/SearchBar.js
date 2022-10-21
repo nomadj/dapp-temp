@@ -78,7 +78,7 @@ function SearchBar(props) {
           placeholder='Search...'
           onResultSelect={(e, data) => {
             dispatch({ type: 'UPDATE_SELECTION', selection: data.result.title })
-	    Router.push(`/${data.result.title}?0=${data.result.address}&1=${props.account}`);
+	    Router.push(`/${data.result.title}/show?0=${data.result.address}&1=${props.account}`);
 	  }
           }
           onSearchChange={handleSearchChange}

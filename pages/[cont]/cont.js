@@ -10,18 +10,33 @@ import NFT from '../../components/NFT';
 import Header from '../../components/Header'
 import Router from  'next/router'
 import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
+import DynamicButton from '../../components/DynamicButton'
 
 export async function getServerSideProps(props) {
-  const name = props.query['cont'];
+  const name = props.query['cont']; // Currently querying contract address
   const address = props.query['0'];
   const account = props.query['1'];
   const contract = new web3.eth.Contract(Tambora.abi, address);
-  const tokens = await contract.methods.getOwnedTokens(account).call();
-  console.log(tokens);
-  // const conName = await contract.methods.name().call();
-  // const res = await fetch('https://ipfs.io/ipfs/QmeSjSinHpPnmXmspMjwiXyN6zS4E9zccariGR3jxcaWtq/8398');
-  // const data = await res.json();
-  // const image = data.image.replace('ipfs://', 'https://ipfs.io/ipfs/');
+  const tokenIds = await contract.methods.getOwnedTokens(account).call();
+  const isTokenHolder = tokenIds.length > 0;
+  const tokenURIs = await Promise.all(
+    tokenIds.map(id => {
+      return contract.methods.tokenURI(id).call();
+    })
+  );
+  const results = await Promise.all(
+    tokenURIs.map(uri => {
+      return fetch(uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'));
+    })
+  );
+  const dataArray = await Promise.all(
+    results.map(res => {
+      return res.json();
+    })
+  );
+  const images = dataArray.map(data => {
+    return data.image.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
+  });
   const ints = [5, 6, 7]
   const url = 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr';
   
@@ -31,7 +46,9 @@ export async function getServerSideProps(props) {
       url,
       name,
       address,
-      account
+      account,
+      images,
+      isTokenHolder
     },
   };
 }
@@ -45,8 +62,8 @@ class MyContract extends React.Component {
   }
   
   render() {
-    const items = this.props.ints.map((num, index) => {
-      return <NFT key={index} url={this.props.url} name={this.props.name} address={this.state.address} />
+    const items = this.props.images.map((image, index) => {
+      return <NFT key={index} url={image} name="dummy name" address={this.state.address} />
     });
     return (
       <Layout>
@@ -55,10 +72,12 @@ class MyContract extends React.Component {
 	  {items}
 	</Card.Group>
 	<Link href={{pathname: '/minty', query: [this.props.address, this.props.account]}}>
-	<Button
-	  icon='ethereum'
-	/>
-	  </Link>
+	  <DynamicButton
+	    color='olive'
+	    isShowing={this.props.isTokenHolder}
+	    label='Mint'
+	  />
+	</Link>
       </Layout>
     );
   }
