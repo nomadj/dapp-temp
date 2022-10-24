@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Form, Input, Message, Button } from 'semantic-ui-react';
 import web3 from '../web3';
-import { abi } from '../abi';
+import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 
 class ContributeForm extends Component {
   state = {
@@ -13,7 +13,7 @@ class ContributeForm extends Component {
   onSubmit = async (event) => {
     event.preventDefault();
 
-    const contract = new web3.eth.Contract(abi, this.props.address);
+    const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
     this.setState({ loading: true, errorMessage: '' });
 
     try {

@@ -1,5 +1,4 @@
 import _ from 'lodash'
-import faker from 'faker'
 import React from 'react'
 import { Search, Grid, Header, Segment } from 'semantic-ui-react'
 import Router from 'next/router';

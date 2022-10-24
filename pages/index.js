@@ -5,7 +5,6 @@ import 'semantic-ui-css/semantic.min.css'
 import { Button, Card } from 'semantic-ui-react'
 import Layout from '../components/Layout'
 import web3 from '../web3'
-import { factoryAbi, abi } from '../abi'
 import IndexRow from '../components/IndexRow';
 import React from 'react';
 import Header from '../components/Header';

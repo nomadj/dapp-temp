@@ -5,7 +5,6 @@ import { Component, useState } from 'react'
 import Header from '../components/Header'
 import web3 from '../web3'
 import copy from 'copy-to-clipboard'
-import { abi } from '../abi'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 
 // 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr'

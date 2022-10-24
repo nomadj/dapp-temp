@@ -1,5 +1,4 @@
 import web3 from './web3';
-import { factoryAbi } from './abi';
 import TamboraFactory from './artifacts/contracts/TamboraFactory.sol/TamboraFactory.json'
 
 const address = process.env.FACTORY_ADDRESS; // goerli  

@@ -27,6 +27,7 @@ contract Tambora is ERC721 {
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => uint256[]) private _ownedTokens;
 	mapping (address => bool) private _isApproved;
+	mapping (address => Request) private _approved;
 	Request[] private _approvedRequests;
 	Request[] private _approvalRequests;
 

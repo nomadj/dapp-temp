@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Card, Grid, Button } from 'semantic-ui-react';
 import Layout from '../../components/Layout';
 import web3 from '../../web3';
-import { abi } from '../../abi';
 import ContributeForm from '../../components/ContributeForm';
 import Link from 'next/link';
 import Header from '../../components/Header';
@@ -38,7 +37,7 @@ class CampaignShow extends Component {
   async componentDidMount() {
     const accounts = await web3.eth.getAccounts();
     this.setState({ account: accounts[0] });
-    const contract = new web3.eth.Contract(abi, this.props.address);
+    const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
     const tokenBalance = await contract.methods.balanceOf(accounts[0]).call();
     if (tokenBalance > 0) {
       this.setState({ isTokenHolder: true, address: this.props.address });

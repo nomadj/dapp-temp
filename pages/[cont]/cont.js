@@ -1,6 +1,5 @@
 import Head from 'next/head';
 import web3 from '../../web3';
-import { abi } from '../../abi';
 import Member from '../../components/members';
 import Layout from '../../components/Layout';
 import React, { useState, useEffect } from 'react';
@@ -39,6 +38,15 @@ export async function getServerSideProps(props) {
   });
   const ints = [5, 6, 7]
   const url = 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr';
+  // (async function(){ 
+  //   var req = await fetch(images[0], {method:'HEAD'});
+  //   console.log(req.headers.get('content-type'));
+  // })()
+  var types = [];
+  for (let i = 0; i < images.length; i++) {
+    const req = await fetch(images[i], {method: 'HEAD'});
+    types.push(req.headers.get('content-type'));
+  }
   
   return {
     props: {
@@ -48,7 +56,8 @@ export async function getServerSideProps(props) {
       address,
       account,
       images,
-      isTokenHolder
+      isTokenHolder,
+      types
     },
   };
 }
@@ -63,12 +72,12 @@ class MyContract extends React.Component {
   
   render() {
     const items = this.props.images.map((image, index) => {
-      return <NFT key={index} url={image} name="dummy name" address={this.state.address} />
+      return <NFT key={index} url={image} name="dummy name" address={this.state.address} type={this.props.types[index]} />
     });
     return (
       <Layout>
 	<Header />
-	<Card.Group itemsPerRow={3}>
+	<Card.Group itemsPerRow={4}>
 	  {items}
 	</Card.Group>
 	<Link href={{pathname: '/minty', query: [this.props.address, this.props.account]}}>
