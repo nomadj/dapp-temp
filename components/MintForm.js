@@ -165,38 +165,40 @@ class MintForm extends Component {
       <div>
 	<h3>Mint an NFT</h3>
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
-          <Form.Field>
-            <label>Title</label>
-            <Input
-              value={this.state.title}
-              onChange={event => this.setState({ title: event.target.value })}
-	      placeholder='Prelude in E'
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Composer</label>
-            <Input
-              value={this.state.composer}
-              onChange={event => this.setState({ composer: event.target.value })}
-	      placeholder='J.S. Bach'
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Performer</label>
-            <Input
-              value={this.state.performer}
-              onChange={event => this.setState({ performer: event.target.value })}
-	      placeholder="Andres Segovia"
-            />
-          </Form.Field>
+	  <Form.Group widths='equal'>
+	    <Form.Field>
+	      <label>Title</label>
+	      <Input
+		value={this.state.title}
+		onChange={event => this.setState({ title: event.target.value })}
+		placeholder='Prelude in E'
+	      />
+	    </Form.Field>
+	    <Form.Field>
+	      <label>Composer</label>
+	      <Input
+		value={this.state.composer}
+		onChange={event => this.setState({ composer: event.target.value })}
+		placeholder='J.S. Bach'
+	      />
+	    </Form.Field>
+	    <Form.Field>
+	      <label>Performer</label>
+	      <Input
+		value={this.state.performer}
+		onChange={event => this.setState({ performer: event.target.value })}
+		placeholder="Andres Segovia"
+	      />
+	    </Form.Field>
+	  </Form.Group>
 	  <Form.Field>
-   	    <label>Image or Video</label>
-   	    <Input
-   	      id="imageName"
-   	      type="file"
-   	      onChange={() => this.fileHandler(event)}
-   	    />
-   	  </Form.Field>
+	    <label>Image or Video</label>
+	    <Input
+	      id="imageName"
+	      type="file"
+	      onChange={() => this.fileHandler(event)}
+	    />
+	  </Form.Field>
 	  <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
           <Message error header="Oops!" content={this.state.errorMessage} />
 	  <Message
