@@ -1,11 +1,13 @@
 import { create } from 'ipfs-http-client'
 import Layout from '../components/Layout'
-import { Transition, Message, Image, Card, Embed, Input, Form, Button } from 'semantic-ui-react'
+import { Transition, Message, Image, Card, Embed, Input, Form, Button, Progress } from 'semantic-ui-react'
 import { Component, useState } from 'react'
 import Header from '../components/Header'
 import web3 from '../web3'
 import copy from 'copy-to-clipboard'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
+import ProgBar from '../components/ProgBar'
+import InfoMessage from '../components/InfoMessage'
 
 // 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr'
 class MultiCard extends Component {
@@ -55,13 +57,20 @@ class MintForm extends Component {
     errorMessage: '',
     success: false,
     address: '',
-    account: ''
+    account: '',
+    fileSize: 0,
+    progPct: 0,
+    isInteracting: false,
+    isShowingProg: false,
+    infoMessage: '',
+    txHash: ''
   }
   componentDidMount() {
     // this.setState({ address: this.props.query['0'], account: this.props.query['1'] });
   }
 
   onSubmit = async (img) => {
+    console.log("FileSize: ", this.state.fileSize);
     this.setState({ isLoading: true, success: false, errorMessage: '' });
     const imgCid = await this.ipfsAdd(img);
     console.log("Image Added at ", imgCid);
@@ -70,11 +79,12 @@ class MintForm extends Component {
     const metaCid = await this.ipfsAdd(data);
     console.log("Metadata Added at ", metaCid);
     const txHash = await this.mintNFT(metaCid);
-    copy(txHash);
-    console.log("Minting Complete ", txHash);
+    // copy(txHash);
+    // console.log("Minting Complete ", txHash);
   }
   
   ipfsAdd = async (file) => {
+    this.setState({ isShowingProg: true, infoMessage: 'Interacting with Ethereum blockchain', infoMessage: 'Adding file to IPFS' });
     const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
 
     const client = create({
@@ -86,16 +96,18 @@ class MintForm extends Component {
       }
     })
     try {
-      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      const added = await client.add(file, { progress: prog  => this.setState({ progPct: ((prog / this.state.fileSize) * 100) })});
+      this.setState({ isShowingProg: false, infoMessage: '' });
       return added.path;
     } catch (event) {
       console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false });
+      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, isShowingProg: false, infoMessage: '' });
     }
   }
 
   mintNFT = async (cid) => {
-//     try {
+    this.setState({ isInteracting: true, infoMessage: 'Interacting with Ethereum Blockchain' });
+    try {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
     const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0]});
@@ -106,11 +118,11 @@ class MintForm extends Component {
       // }
       // setTimeout(pusher, 3000);
       console.log('Minted successfully at: ', tx.transactionHash);
-      this.setState({ isLoading: false, success: true });
+      this.setState({ isLoading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       return tx.transactionHash;
-   //  } catch (err){
-      this.setState({ errorMessage: err})
-    // }
+    } catch (error){
+      this.setState({ errorMessage: error, isLoading: false, infoMessage: '' })
+    }
   }
 
   createMeta = async (cid) => {
@@ -137,16 +149,15 @@ class MintForm extends Component {
 
   fileHandler = (event) => {
     event.preventDefault()
-    this.setState({ isMp4: false, isPng: false, errorMessage: '', success: false });
+    this.setState({ isMp4: false, isPng: false, errorMessage: '', success: false, fileSize: '' });
     if (event.target.value.endsWith('.png')) {
-      console.log('PNG DETECTED');
-      this.setState({ url: URL.createObjectURL(event.target.files[0]), isPng: true });
+      
+      this.setState({ url: URL.createObjectURL(event.target.files[0]), isPng: true, fileSize: event.target.files[0].size });
     } else if (event.target.value.endsWith('.mp4')) {
-      this.setState({ url: URL.createObjectURL(event.target.files[0]), isMp4: true });
+      this.setState({ url: URL.createObjectURL(event.target.files[0]), isMp4: true, fileSize: event.target.files[0].size });
     } else {
       console.log("Unsupported File at This Time")
     }
-    console.log(this.state)
   }
 
   render() {
@@ -191,9 +202,11 @@ class MintForm extends Component {
 	  <Message
 	    success
 	    header='Success!'
-	    content='Minted minted\ntx: {}'
-	  />	  
+	    content={`Minted at transaction ${this.state.txHash}`}
+	  />
+	  <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />
           <Button type='submit' loading={this.state.isLoading} icon='gem' color='yellow' size='large'/>
+	  <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
         </Form>
 	</div>
     );

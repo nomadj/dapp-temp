@@ -55,9 +55,8 @@ class CreateContract extends Component {
       }
       setTimeout(pusher, 3000);
     } catch (err) {
-      this.setState({ errorMessage: err.message });
+      this.setState({ errorMessage: err.message, loading: false });
       }
-      this.setState({ loading: false })
   };
 
   ipfsAdd = async (file) => {
