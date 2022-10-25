@@ -63,24 +63,16 @@ class MintForm extends Component {
     isInteracting: false,
     isShowingProg: false,
     infoMessage: '',
-    txHash: ''
+    txHash: '',
+    uri: ''
   }
   componentDidMount() {
     // this.setState({ address: this.props.query['0'], account: this.props.query['1'] });
   }
 
   onSubmit = async (img) => {
-    console.log("FileSize: ", this.state.fileSize);
     this.setState({ isLoading: true, success: false, errorMessage: '' });
-    const imgCid = await this.ipfsAdd(img);
-    console.log("Image Added at ", imgCid);
-    const data = await this.createMeta(imgCid);
-    console.log("Metadata Created");
-    const metaCid = await this.ipfsAdd(data);
-    console.log("Metadata Added at ", metaCid);
-    const txHash = await this.mintNFT(metaCid);
-    // copy(txHash);
-    // console.log("Minting Complete ", txHash);
+    await this.ipfsAdd(img);
   }
   
   ipfsAdd = async (file) => {
@@ -98,10 +90,30 @@ class MintForm extends Component {
     try {
       const added = await client.add(file, { progress: prog  => this.setState({ progPct: ((prog / this.state.fileSize) * 100) })});
       this.setState({ isShowingProg: false, infoMessage: '' });
-      return added.path;
+      await this.createMeta(added.path);
     } catch (event) {
       console.log(event);
       this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, isShowingProg: false, infoMessage: '' });
+    }
+  }
+
+  ipfsAddJSON = async (file) => {
+    const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
+
+    const client = create({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https',
+      headers: {
+	authorization: auth
+      }
+    })
+    try {
+      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      await this.mintNFT(added.path);
+    } catch (event) {
+      console.log(event);
+      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false });
     }
   }
 
@@ -121,11 +133,12 @@ class MintForm extends Component {
       this.setState({ isLoading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       return tx.transactionHash;
     } catch (error){
-      this.setState({ errorMessage: error, isLoading: false, infoMessage: '' })
+      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' })
     }
   }
 
   createMeta = async (cid) => {
+    try {
     const metadata = {
       "image": `ipfs://${cid}`,
       "attributes": [
@@ -144,7 +157,10 @@ class MintForm extends Component {
       ]
     };
     const data = JSON.stringify(metadata);
-    return data;
+      await this.ipfsAddJSON(data);
+    } catch (error) {
+      this.setState({ errorMessage: error, isLoading: false });
+    }
   }
 
   fileHandler = (event) => {
