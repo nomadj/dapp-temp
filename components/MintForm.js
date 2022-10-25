@@ -166,7 +166,7 @@ class MintForm extends Component {
 	<h3>Mint an NFT</h3>
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	  <Form.Group widths='equal'>
-	    <Form.Field>
+	    <Form.Field required>
 	      <label>Title</label>
 	      <Input
 		value={this.state.title}
@@ -174,7 +174,7 @@ class MintForm extends Component {
 		placeholder='Prelude in E'
 	      />
 	    </Form.Field>
-	    <Form.Field>
+	    <Form.Field required>
 	      <label>Composer</label>
 	      <Input
 		value={this.state.composer}
@@ -182,7 +182,7 @@ class MintForm extends Component {
 		placeholder='J.S. Bach'
 	      />
 	    </Form.Field>
-	    <Form.Field>
+	    <Form.Field required>
 	      <label>Performer</label>
 	      <Input
 		value={this.state.performer}
@@ -191,7 +191,7 @@ class MintForm extends Component {
 	      />
 	    </Form.Field>
 	  </Form.Group>
-	  <Form.Field>
+	  <Form.Field required>
 	    <label>Image or Video</label>
 	    <Input
 	      id="imageName"
