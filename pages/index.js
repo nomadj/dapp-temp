@@ -135,7 +135,7 @@ class Index extends React.Component {
     return (
       <Layout>
 	<Header source={this.props.conObj} account={this.state.account}/>
-	<Card.Group>
+	<Card.Group itemsPerRow={2}>
 	  {items}
 	</Card.Group>
       </Layout>

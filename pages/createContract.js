@@ -145,39 +145,41 @@ class CreateContract extends Component {
 	<Header />
         <h3>Create a Contract</h3>
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
-          <Form.Field>
-            <label>Name</label>
-            <Input
-              value={this.state.name}
-              onChange={event => this.setState({ name: event.target.value })}
-	      placeholder='MyAwesomeContract'
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Symbol</label>
-            <Input
-              value={this.state.symbol}
-              onChange={event => this.setState({ symbol: event.target.value })}
-	      placeholder='MACT'
-            />
-          </Form.Field>
-          <Form.Field>
-            <label>Price</label>
-            <Input
-	      label='Ether'
-	      labelPosition='right'
-              value={this.state.price}
-              onChange={event => this.setState({ price: event.target.value })}
-	      placeholder="0.08"
-            />
-          </Form.Field>
-	  <Form.Field
-            control={Select}
-            label='Type'
-            options={options}
-            placeholder='Type'
-	    onChange={this.handleChange}
-          />
+	  <Form.Group widths='equal'>
+	    <Form.Field>
+	      <label>Name</label>
+	      <Input
+		value={this.state.name}
+		onChange={event => this.setState({ name: event.target.value })}
+		placeholder='MyAwesomeContract'
+	      />
+	    </Form.Field>
+	    <Form.Field>
+	      <label>Symbol</label>
+	      <Input
+		value={this.state.symbol}
+		onChange={event => this.setState({ symbol: event.target.value })}
+		placeholder='MACT'
+	      />
+	    </Form.Field>
+	    <Form.Field>
+	      <label>Price</label>
+	      <Input
+		label='Ether'
+		labelPosition='right'
+		value={this.state.price}
+		onChange={event => this.setState({ price: event.target.value })}
+		placeholder="0.08"
+	      />
+	    </Form.Field>
+	    <Form.Field
+	      control={Select}
+	      label='Type'
+	      options={options}
+	      placeholder='Type'
+	      onChange={this.handleChange}
+	    />
+	  </Form.Group>
 	  <Form.Field>
    	    <label>Image or Video</label>
    	    <Input
@@ -192,7 +194,7 @@ class CreateContract extends Component {
 	    header='Success!'
 	    content='Contract Created'
 	  />	  
-          <Button type='submit' loading={this.state.loading} color='yellow'>Create</Button>
+          <Button type='submit' loading={this.state.loading} color='olive'>Create</Button>
         </Form>
       </Layout>
     );

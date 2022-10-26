@@ -7,21 +7,28 @@ import Link from 'next/link';
 import Header from '../../components/Header';
 import DownloadButton from '../../components/DownloadButton';
 import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
+import ContractShow from '../../components/ContractShow'
 
 export async function getServerSideProps(props) {
   const name = props.query['cont'];
   const address = props.query['0'];
   const contract = new web3.eth.Contract(Tambora.abi, address);
-//  const tokenCount = await contract.methods.tokenId().call();
+  const tokenId = await contract.methods.tokenId().call();
   const manager = await contract.methods.owner().call();
   const contractType = await contract.methods.contractType().call();
-  console.log("Contract Type: ", contractType);
+  const baseURL = 'https://fastload.infura-ipfs.io/ipfs/'
+  const tokenURI = await contract.methods.tokenURI(0).call();
+  const req = await fetch(tokenURI.replace('ipfs://', baseURL));
+  const metadata = await req.json();
+  const image = metadata.image.replace('ipfs://', baseURL);
 
   return {
     props: {
       address,
       manager,
-      name
+      name,
+      image,
+      tokenId
     }
   };
 }
@@ -31,6 +38,7 @@ class CampaignShow extends Component {
   state = {
     account: '',
     isTokenHolder: false,
+    isOwner: false,
     address: ''
   }
 
@@ -66,30 +74,17 @@ class CampaignShow extends Component {
     return <Card.Group items={items} />;
   }
 
+//  {this.renderCards()}
+
   render() {
     return (
       <Layout>
 	<Header />
-        <h3>Campaign Show</h3>
-        <Grid>
-          <Grid.Row>
-            <Grid.Column width={10}>
-              {this.renderCards()}
-            </Grid.Column>
-
-            <Grid.Column width={6}>
-              <ContributeForm address={this.props.address} />
-	      <DownloadButton isTokenHolder={this.state.isTokenHolder} address={this.state.address} />
-            </Grid.Column>
-          </Grid.Row>
-
+        <h1>Contract Details</h1>
+        <Grid style={{marginTop: '10px'}}>
           <Grid.Row>
             <Grid.Column>
-              <Link href={{ pathname: `/${this.props.address}/cont`, query: [this.props.address, this.state.account]}}>
-              <a>
-                <Button color='yellow'>View Tokens</Button>
-              </a>
-              </Link>
+	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={8} isTokenHolder={this.state.isTokenHolder} account={this.state.account}/>
             </Grid.Column>
           </Grid.Row>
         </Grid>
