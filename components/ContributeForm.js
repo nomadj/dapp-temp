@@ -39,8 +39,9 @@ class ContributeForm extends Component {
           <Input
             value={this.state.value}
             onChange={event => this.setState({ value: event.target.value })}
-            label="ether"
-            labelPosition="right"
+	    placeholder="0.08"
+	    label= "ether"
+	    labelPosition="right"
           />
         </Form.Field>
         <Message error header="Oops!" content={this.state.errorMessage} />

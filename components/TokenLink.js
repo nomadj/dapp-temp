@@ -15,16 +15,7 @@ class TokenLink extends Component {
 	</Link>
       );
     } else {
-      return (
-        <Link
-	  href={{
-	    pathname: `/${this.props.address}/join.js`,
-	    query: [this.props.address, this.props.account]
-	  }}
-	>
-	  <a>Join This Contract</a>
-	</Link>
-      );
+      return null;
     }
   }
 }

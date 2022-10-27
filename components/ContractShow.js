@@ -4,6 +4,7 @@ import ContributeForm from './ContributeForm';
 import DownloadButton from './DownloadButton';
 import TokenLink from './TokenLink';
 import Link from 'next/link';
+import RequestForm from './RequestForm';
 
 class ContractShow extends Component {
   render() {
@@ -17,7 +18,7 @@ class ContractShow extends Component {
 		meta={this.props.address}
 		image={this.props.image}
 		description={
-		  <TokenLink isTokenHolder={this.props.isTokenHolder} />
+		  <TokenLink isTokenHolder={this.props.isTokenHolder} address={this.props.address} account={this.props.account} />
 		}
 	      />
 	    </Grid.Column>

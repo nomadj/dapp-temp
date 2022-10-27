@@ -8,6 +8,7 @@ import Header from '../../components/Header';
 import DownloadButton from '../../components/DownloadButton';
 import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
 import ContractShow from '../../components/ContractShow'
+import RequestForm from '../../components/RequestForm'
 
 export async function getServerSideProps(props) {
   const name = props.query['cont'];
@@ -81,11 +82,14 @@ class CampaignShow extends Component {
       <Layout>
 	<Header />
         <h1>Contract Details</h1>
-        <Grid style={{marginTop: '10px'}}>
+        <Grid style={{marginTop: '10px'}} columns='equal'>
           <Grid.Row>
             <Grid.Column>
 	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={8} isTokenHolder={this.state.isTokenHolder} account={this.state.account}/>
             </Grid.Column>
+	    <Grid.Column>
+	      <RequestForm isShowing={!this.state.isTokenHolder} address={this.props.address} />
+	    </Grid.Column>
           </Grid.Row>
         </Grid>
       </Layout>
