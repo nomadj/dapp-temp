@@ -2,6 +2,7 @@ import { Card, Grid } from 'semantic-ui-react';
 import React, { Component } from 'react';
 import ContributeForm from './ContributeForm';
 import DownloadButton from './DownloadButton';
+import TokenLink from './TokenLink';
 import Link from 'next/link';
 
 class ContractShow extends Component {
@@ -16,14 +17,7 @@ class ContractShow extends Component {
 		meta={this.props.address}
 		image={this.props.image}
 		description={
-		  <Link
-		    href={{
-		      pathname: `/${this.props.address}/cont`,
-		      query: [this.props.address, this.props.account]
-		    }}
-		  >
-		    <a>View My Tokens</a>
-		  </Link>
+		  <TokenLink isTokenHolder={this.props.isTokenHolder} />
 		}
 	      />
 	    </Grid.Column>
