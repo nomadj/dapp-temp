@@ -40,9 +40,8 @@ class CreateContract extends Component {
   }
 
   onSubmit = async (img) => {
-    await this.ipfsAdd(img);
-    
     this.setState({ loading: true, errorMessage: '', success: false });
+    await this.ipfsAdd(img);
     try {
       const accounts = await web3.eth.getAccounts();
       const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`).send({from: accounts[0]});

@@ -12,6 +12,13 @@ class RequestForm extends Component {
     success: false
   };
 
+  thrower = () => {
+    
+    if (this.state.name === '') {
+      throw {message: 'Please enter your primary identifier'};
+    }
+  }
+
   onSubmit = async (event) => {
     event.preventDefault();
 
@@ -19,6 +26,7 @@ class RequestForm extends Component {
     this.setState({ loading: true, errorMessage: '', successMessage: '' });
 
     try {
+      this.thrower();
       const accounts = await web3.eth.getAccounts();
       await contract.methods.requestApproval(this.state.name).send({ from: accounts[0] });
       this.setState({ successMessage: 'Your request has been submitted for approval' });
@@ -33,19 +41,21 @@ class RequestForm extends Component {
     if (this.props.isShowing) {
       return (
 	<Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }} success={!!this.state.successMessage}>
-	  <Form.Field>
-	    <label>Get approved to mint from this contract</label>
-	    <Input
-	      value={this.state.name}
-	      onChange={event => this.setState({ name: event.target.value })}
-	      label="name"
-	      labelPosition="right"
-	      placeholder="Jiminy Cricket"
-	    />
-	  </Form.Field>
+	  <Form.Group>
+	    <Form.Field required>
+	      <h2>Get approved to mint from this contract</h2>
+	      <Input
+		value={this.state.name}
+		onChange={event => this.setState({ name: event.target.value })}
+		label="name"
+		labelPosition="right"
+		placeholder="Criminy Jicket"
+	      />
+	    </Form.Field>
+	  </Form.Group>
 	  <Message error header="Oops!" content={this.state.errorMessage} />
 	  <Message success header="Success!" content={this.state.successMessage} />
-	  <Button color='yellow' loading={this.state.loading}>Get Approved</Button>
+	  <Button color='olive' loading={this.state.loading}>Get Approved</Button>
 	</Form>
       );
     } else { return null; }

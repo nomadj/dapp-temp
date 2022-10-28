@@ -5,6 +5,7 @@ import DownloadButton from './DownloadButton';
 import TokenLink from './TokenLink';
 import Link from 'next/link';
 import RequestForm from './RequestForm';
+import RequestsCard from './RequestsCard';
 
 class ContractShow extends Component {
   render() {
@@ -23,10 +24,18 @@ class ContractShow extends Component {
 	      />
 	    </Grid.Column>
 	    <Grid.Column style={{marginRight: '10px'}}>
-	      <Card header='Tokens Minted' description={this.props.tokenId} />
-	      <Card header='Token Holders' description={this.props.tokenHolders} />
-	      <ContributeForm address={this.props.address} />
+	      <Card header='Tokens Minted' meta={this.props.tokenId} />
+	      <Card header='Token Holders' meta={this.props.tokenHolders} />
+	      <RequestsCard isShowing={this.props.isOwner} requestsCount={this.props.requestsCount}/>
 	      <DownloadButton isTokenHolder={this.props.isTokenHolder} address={this.props.address} />
+	    </Grid.Column>
+	  </Grid.Row>
+	  <Grid.Row>
+	    <Grid.Column>
+	      <ContributeForm address={this.props.address} />
+	    </Grid.Column>
+	    <Grid.Column>
+	      <RequestForm isShowing={!this.props.isTokenHolder} address={this.props.address} />
 	    </Grid.Column>
 	  </Grid.Row>
 	</Grid>

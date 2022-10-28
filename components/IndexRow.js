@@ -10,7 +10,7 @@ import web3 from '../web3'
 class IndexRow extends React.Component {
   render() {
     return (
-      <Card fluid color='olive'>
+      <Card fluid color='olive' style={{ overflowWrap: 'break-word' }}>
 	<Card.Content>
 	  <Image src={this.props.image} floated='right' size='mini' rounded />
 	  <Card.Header>{this.props.name}</Card.Header>

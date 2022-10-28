@@ -22,6 +22,8 @@ export async function getServerSideProps(props) {
   const req = await fetch(tokenURI.replace('ipfs://', baseURL));
   const metadata = await req.json();
   const image = metadata.image.replace('ipfs://', baseURL);
+  const tokenHolders = await contract.methods.getApprovedRequests().call();
+  const tokenHoldersCount = tokenHolders.length;
 
   return {
     props: {
@@ -29,7 +31,8 @@ export async function getServerSideProps(props) {
       manager,
       name,
       image,
-      tokenId
+      tokenId,
+      tokenHoldersCount
     }
   };
 }
@@ -40,7 +43,8 @@ class CampaignShow extends Component {
     account: '',
     isTokenHolder: false,
     isOwner: false,
-    address: ''
+    address: '',
+    requestsCount: ''
   }
 
   async componentDidMount() {
@@ -51,6 +55,15 @@ class CampaignShow extends Component {
     if (tokenBalance > 0) {
       this.setState({ isTokenHolder: true, address: this.props.address });
     }
+    try {
+    const requests = await contract.methods.getApprovalRequests().call({from: accounts[0]});
+      this.setState({ requestsCount: requests.length });
+    } catch {
+      this.setState({ requestsCount: 0 });
+    }
+    
+    const isOwner = accounts[0] === this.props.manager;
+    this.setState({isOwner: isOwner});
   }
 
   renderCards() {
@@ -85,11 +98,8 @@ class CampaignShow extends Component {
         <Grid style={{marginTop: '10px'}} columns='equal'>
           <Grid.Row>
             <Grid.Column>
-	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={8} isTokenHolder={this.state.isTokenHolder} account={this.state.account}/>
+	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={this.props.tokenHoldersCount + 1} isTokenHolder={this.state.isTokenHolder} account={this.state.account} requestsCount={this.state.requestsCount} isOwner={this.state.isOwner}/>
             </Grid.Column>
-	    <Grid.Column>
-	      <RequestForm isShowing={!this.state.isTokenHolder} address={this.props.address} />
-	    </Grid.Column>
           </Grid.Row>
         </Grid>
       </Layout>

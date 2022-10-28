@@ -23,7 +23,7 @@ class RequestRow extends Component {
 
   render() {
     const { Row, Cell } = Table;
-    const { id, request, approversCount } = this.props;
+    const { id, request } = this.props;
     const readyToFinalize = request.approvalCount > approversCount / 2;
     const needsApproval = request.approvalCount < approversCount / 2;
 
