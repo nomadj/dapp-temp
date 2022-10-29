@@ -9,6 +9,7 @@ import DownloadButton from '../../components/DownloadButton';
 import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
 import ContractShow from '../../components/ContractShow'
 import RequestForm from '../../components/RequestForm'
+import DynamicButton from '../../components/DynamicButton'
 
 export async function getServerSideProps(props) {
   const name = props.query['cont'];
@@ -44,7 +45,8 @@ class CampaignShow extends Component {
     isTokenHolder: false,
     isOwner: false,
     address: '',
-    requestsCount: ''
+    requestsCount: '',
+    isApproved: false
   }
 
   async componentDidMount() {
@@ -64,6 +66,9 @@ class CampaignShow extends Component {
     
     const isOwner = accounts[0] === this.props.manager;
     this.setState({isOwner: isOwner});
+    const isApproved = await contract.methods.isApproved().call({from: accounts[0]});
+    this.setState({isApproved: isApproved});
+    console.log("Is Approved: ", isApproved);
   }
 
   renderCards() {
@@ -98,7 +103,7 @@ class CampaignShow extends Component {
         <Grid style={{marginTop: '10px'}} columns='equal'>
           <Grid.Row>
             <Grid.Column>
-	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={this.props.tokenHoldersCount + 1} isTokenHolder={this.state.isTokenHolder} account={this.state.account} requestsCount={this.state.requestsCount} isOwner={this.state.isOwner}/>
+	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={this.props.tokenHoldersCount + 1} isTokenHolder={this.state.isTokenHolder} account={this.state.account} requestsCount={this.state.requestsCount} isOwner={this.state.isOwner} isApproved={this.state.isApproved} />
             </Grid.Column>
           </Grid.Row>
         </Grid>

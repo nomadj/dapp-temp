@@ -29,6 +29,11 @@ export async function getServerSideProps(props) {
 }
 
 class Requests extends Component {
+  state = {
+    success: false,
+    error: false
+  }
+  
   renderRows() {
     return this.props.requests.map((request, index) => {
       return (
@@ -37,6 +42,7 @@ class Requests extends Component {
           id={index}
           request={request}
           address={this.props.address}
+	  name={request[0]}
         />
       );
     });
@@ -54,9 +60,13 @@ class Requests extends Component {
               <HeaderCell>Name</HeaderCell>
 	      <HeaderCell textAlign='right'></HeaderCell>
               <HeaderCell textAlign='right'></HeaderCell>
+	      <HeaderCell />
+	      <HeaderCell />
             </Row>
           </Table.Header>
-          <Body>{this.renderRows()}</Body>
+          <Body>
+	    {this.renderRows()}
+	  </Body>
         </Table>
         <div>Found {this.props.requests.length} requests</div>
       </Layout>

@@ -35,7 +35,7 @@ class ContractShow extends Component {
 	      <ContributeForm address={this.props.address} />
 	    </Grid.Column>
 	    <Grid.Column>
-	      <RequestForm isShowing={!this.props.isTokenHolder} address={this.props.address} />
+	      <RequestForm isShowing={!this.props.isTokenHolder} address={this.props.address} isApproved={this.props.isApproved} isTokenHolder={this.props.isTokenHolder} />
 	    </Grid.Column>
 	  </Grid.Row>
 	</Grid>

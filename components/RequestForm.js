@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Form, Input, Message, Button } from 'semantic-ui-react';
 import web3 from '../web3';
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
+import DynamicButton from './DynamicButton'
 
 class RequestForm extends Component {
   state = {
@@ -38,12 +39,14 @@ class RequestForm extends Component {
   };
 
   render() {
-    if (this.props.isShowing) {
+    console.log("Is Approved: ", this.props.isApproved);
+    console.log("Is Token Holder: ", this.props.isTokenHolder);
+    if (this.props.isShowing && !this.props.isApproved) {
       return (
 	<Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }} success={!!this.state.successMessage}>
 	  <Form.Group>
 	    <Form.Field required>
-	      <h2>Get approved to mint from this contract</h2>
+	      <h2>Get approved</h2>
 	      <Input
 		value={this.state.name}
 		onChange={event => this.setState({ name: event.target.value })}
@@ -57,6 +60,10 @@ class RequestForm extends Component {
 	  <Message success header="Success!" content={this.state.successMessage} />
 	  <Button color='olive' loading={this.state.loading}>Get Approved</Button>
 	</Form>
+      );
+    } else if (this.props.isApproved) {
+      return (
+	<DynamicButton color='olive' label="HOORAY" isShowing={this.props.isApproved}/>
       );
     } else { return null; }
   }
