@@ -1,47 +1,52 @@
 import React, { Component } from 'react';
 import { Table, Button } from 'semantic-ui-react';
 import web3 from '../web3'
+import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 
 class RequestRow extends Component {
+  state = {
+    isLoading: false,
+    errorMessage: ''
+  }
   onApprove = async () => {
-    const campaign = Campaign(this.props.address);
-
-    const accounts = await web3.eth.getAccounts();
-    await campaign.methods.approveRequest(this.props.id).send({
-      from: accounts[0]
-    });
+    this.setState({ isLoading: true });
+    try {
+      const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
+      const accounts = await web3.eth.getAccounts();
+      await contract.methods.approveOrDenyRequest(this.props.id, true).send({
+	from: accounts[0]
+      });
+      this.setState({ isLoading: false });
+    } catch (error) {
+      this.setState({ isLoading: false, errorMessage: error.message });
+    }
   };
 
   onFinalize = async () => {
-    const campaign = Campaign(this.props.address);
+    // const campaign = Campaign(this.props.address);
 
-    const accounts = await web3.eth.getAccounts();
-    await campaign.methods.finalizeRequest(this.props.id).send({
-      from: accounts[0]
-    });
+    // const accounts = await web3.eth.getAccounts();
+    // await campaign.methods.finalizeRequest(this.props.id).send({
+    //   from: accounts[0]
+    // });
+    console.log("Finalize Clicked");
   }
 
   render() {
     const { Row, Cell } = Table;
     const { id, request } = this.props;
-    const readyToFinalize = request.approvalCount > approversCount / 2;
-    const needsApproval = request.approvalCount < approversCount / 2;
-
     return (
-      <Row disabled={request.complete} positive={readyToFinalize && !request.complete} negative={needsApproval}>
+      <Row disabled={false} positive={true} negative={false}>
         <Cell>{id}</Cell>
-        <Cell>{request.description}</Cell>
-        <Cell>{web3.utils.fromWei(request.value, 'ether')}</Cell>
-        <Cell>{request.recipient}</Cell>
-        <Cell>{request.approvalCount}/{approversCount}</Cell>
-        <Cell>
-          {request.complete ? null : (
-            <Button color="green" basic onClick={this.onApprove}>Approve</Button>
+        <Cell>{request[0]}</Cell>
+        <Cell textAlign='right'>
+          {request.isApproved ? null : (
+            <Button loading={this.state.isLoading}color="green" basic onClick={this.onApprove}>Approve</Button>
           )}
         </Cell>
-        <Cell>
-          {request.complete ? null : (
-            <Button color="teal" basic onClick={this.onFinalize}>Finalize</Button>
+        <Cell textAlign='right' width={1}>
+          {request.isApproved ? null : (
+            <Button color="red" basic onClick={this.onFinalize}>Deny</Button>
           )}
         </Cell>
       </Row>

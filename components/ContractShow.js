@@ -26,7 +26,7 @@ class ContractShow extends Component {
 	    <Grid.Column style={{marginRight: '10px'}}>
 	      <Card header='Tokens Minted' meta={this.props.tokenId} />
 	      <Card header='Token Holders' meta={this.props.tokenHolders} />
-	      <RequestsCard isShowing={this.props.isOwner} requestsCount={this.props.requestsCount}/>
+	      <RequestsCard isShowing={this.props.isOwner} requestsCount={this.props.requestsCount} address={this.props.address} account={this.props.account}/>
 	      <DownloadButton isTokenHolder={this.props.isTokenHolder} address={this.props.address} />
 	    </Grid.Column>
 	  </Grid.Row>

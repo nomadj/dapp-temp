@@ -4,13 +4,13 @@ import Link from 'next/link'
 
 class RequestsCard extends Component {
   render() {
-    if (this.props.isShowing) {
+    if (this.props.isShowing && this.props.requestsCount > 0) {
       return (
 	<Card
 	  header='Requests Pending'
 	  meta={this.props.requestsCount}
 	  description={
-	    <Link href='/'>
+	    <Link href={{ pathname: `/${this.props.address}/requests`, query: [this.props.address, this.props.account] }}>
 	      <a>View Requests</a>
 	    </Link>
 	  }
