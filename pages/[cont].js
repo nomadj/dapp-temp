@@ -71,7 +71,6 @@ class CampaignShow extends Component {
     this.setState({isOwner: isOwner});
     const isApproved = await contract.methods.isApproved().call({from: accounts[0]});
     this.setState({isApproved: isApproved});
-    console.log("Is Approved: ", isApproved);
   }
 
   renderCards() {

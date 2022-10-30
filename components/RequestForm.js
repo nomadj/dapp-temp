@@ -39,8 +39,6 @@ class RequestForm extends Component {
   };
 
   render() {
-    console.log("Is Approved: ", this.props.isApproved);
-    console.log("Is Token Holder: ", this.props.isTokenHolder);
     if (this.props.isShowing && !this.props.isApproved) {
       return (
 	<Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }} success={!!this.state.successMessage}>

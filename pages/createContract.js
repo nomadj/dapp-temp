@@ -40,10 +40,31 @@ class CreateContract extends Component {
     }
   }
 
+  removeSpecialChars = (name) => {
+    const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/
+    let formattedName = name;
+    for (let i = 0; i < name.length; i++) {
+      if (specialChars.test(name[i]) === true) {
+	formattedName = formattedName.replace(name[i], '');
+      }
+    }
+    return formattedName;
+  }
+
+  processName = (name) => {
+    const lowercaseName = name.toLowerCase();
+    const trimName = lowercaseName.trim();
+    const rmSpacesName = trimName.replaceAll(' ', '');
+    const rmSpecCharsName = this.removeSpecialChars(rmSpacesName);
+    return rmSpecCharsName;
+  }
+
   onSubmit = async (img) => {
     this.setState({ loading: true, errorMessage: '', success: false });
     await this.ipfsAdd(img);
     try {
+      const name = this.processName(this.state.name);
+      this.setState({ name: name });
       const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS);
       const names = await factory.methods.getNames().call();
       for (var i = 0; i < names.length; i++) {
@@ -89,6 +110,7 @@ class CreateContract extends Component {
   createMeta = async (cid) => {
     try {
       const metadata = {
+	"name": this.state.name,
 	"image": `ipfs://${cid}`,
 	"attributes": [
 	  {

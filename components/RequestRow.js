@@ -28,7 +28,7 @@ class RequestRow extends Component {
       this.setState({ isLoading: false, errorMessage: error.message, error: true });
     }
     setTimeout(() => {
-      Router.push({ pathname: `/${this.props.address}/show`, query: [this.props.address] });
+      Router.push({ pathname: `/${this.props.address}`, query: [this.props.address] });
     }, 3000);
   };
 

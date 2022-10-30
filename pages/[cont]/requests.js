@@ -18,8 +18,6 @@ export async function getServerSideProps(props) {
   // );
   const requests = await contract.methods.getApprovalRequests().call({from: props.query['1']});
   const approvedRequests = await contract.methods.getApprovedRequests().call();
-  console.log(approvedRequests[0]['name']);
-  
 
   return {
     props:{
