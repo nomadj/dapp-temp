@@ -23,7 +23,8 @@ class CreateContract extends Component {
     image: '',
     contractType: '',
     uri: '',
-    url: ''
+    url: '',
+    contractAddress: ''
   };
 
   handleChange = (e, { value }) => this.setState({ contractType: value })
@@ -43,9 +44,16 @@ class CreateContract extends Component {
     this.setState({ loading: true, errorMessage: '', success: false });
     await this.ipfsAdd(img);
     try {
+      const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS);
+      const names = await factory.methods.getNames().call();
+      for (var i = 0; i < names.length; i++) {
+	if (names[i] === this.state.name) {
+	  throw {message: 'Name already exists'};
+	}
+      }
       const accounts = await web3.eth.getAccounts();
       const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`).send({from: accounts[0]});
-      this.setState({ success: true });
+      this.setState({ success: true, loading: false, contractAddress: tx.events['Deployed'].returnValues.contractAddr });
       async function pusher() {
 	const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
 	const eventLog = tx.events['Deployed'].returnValues.contractAddr;
@@ -191,7 +199,7 @@ class CreateContract extends Component {
 	  <Message
 	    success
 	    header='Success!'
-	    content='Contract Created'
+	    content={`Contract Created at ${this.state.contractAddress}`}
 	  />	  
           <Button type='submit' loading={this.state.loading} color='olive'>Create</Button>
         </Form>

@@ -15,7 +15,7 @@ class IndexRow extends React.Component {
 	  <Image src={this.props.image} floated='right' size='mini' rounded />
 	  <Card.Header>{this.props.name}</Card.Header>
 	  <Card.Header>
-	    <Link href={{ pathname: `/${this.props.name}/show`, query: [this.props.address, this.props.account] }}>
+	    <Link href={{ pathname: `/${this.props.name}` }}>
 	      <a>{this.props.address}</a>
 	    </Link>
 	  </Card.Header>

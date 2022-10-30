@@ -1,19 +1,22 @@
 import React, { Component } from 'react';
 import { Card, Grid, Button } from 'semantic-ui-react';
-import Layout from '../../components/Layout';
-import web3 from '../../web3';
-import ContributeForm from '../../components/ContributeForm';
+import Layout from '../components/Layout';
+import web3 from '../web3';
+import ContributeForm from '../components/ContributeForm';
 import Link from 'next/link';
-import Header from '../../components/Header';
-import DownloadButton from '../../components/DownloadButton';
-import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
-import ContractShow from '../../components/ContractShow'
-import RequestForm from '../../components/RequestForm'
-import DynamicButton from '../../components/DynamicButton'
+import Header from '../components/Header';
+import DownloadButton from '../components/DownloadButton';
+import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
+import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFactory.json'
+import ContractShow from '../components/ContractShow'
+import RequestForm from '../components/RequestForm'
+import DynamicButton from '../components/DynamicButton'
 
 export async function getServerSideProps(props) {
+  const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
+  const address = await factory.methods.getContractAddress(props.query['cont']).call();
   const name = props.query['cont'];
-  const address = props.query['0'];
+//  const address = props.query['0'];
   const contract = new web3.eth.Contract(Tambora.abi, address);
   const tokenId = await contract.methods.tokenId().call();
   const manager = await contract.methods.owner().call();
