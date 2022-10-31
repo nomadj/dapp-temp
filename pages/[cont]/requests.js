@@ -18,10 +18,11 @@ export async function getServerSideProps(props) {
   // );
   const requests = await contract.methods.getApprovalRequests().call({from: props.query['1']});
   const approvedRequests = await contract.methods.getApprovedRequests().call();
+  const contractName = await contract.methods.name().call();
 
   return {
     props:{
-      address, requests
+      address, requests, contractName
     }
   };
 }
@@ -41,6 +42,7 @@ class Requests extends Component {
           request={request}
           address={this.props.address}
 	  name={request[0]}
+	  contractName={this.props.contractName}
         />
       );
     });
