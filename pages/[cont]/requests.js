@@ -16,8 +16,7 @@ export async function getServerSideProps(props) {
   //     return campaign.methods.getApprovalRequests().call();
   //   })
   // );
-  const requests = await contract.methods.getApprovalRequests().call({from: props.query['1']});
-  const approvedRequests = await contract.methods.getApprovedRequests().call();
+  const requests = await contract.methods.getPendingClients().call({from: props.query['1']});
   const contractName = await contract.methods.name().call();
 
   return {

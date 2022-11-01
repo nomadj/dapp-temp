@@ -15,10 +15,10 @@ contract TamboraFactory {
 		_owner = payable(_msgSender());
 	}
 
-	function deployTambora(string memory name, string memory symbol, uint256 price_, string memory type_, address to_, string memory uri_) public payable {
+	function deployTambora(string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_) public payable {
 		// require(_msgValue() >= 0.033 ether);
 		require(address(getContractAddress(name)) == address(0), "Name already exists");
-		Tambora newContract = new Tambora(_msgSender(), name, symbol, price_, type_, to_, uri_);
+		Tambora newContract = new Tambora(_msgSender(), name, symbol, price_, contractType_, to_, uri_);
 		_contracts.push(newContract);
 		names.push(name);
 		_contractName[name] = newContract;

@@ -18,15 +18,16 @@ export async function getServerSideProps(props) {
   const name = props.query['cont'];
 //  const address = props.query['0'];
   const contract = new web3.eth.Contract(Tambora.abi, address);
-  const tokenId = await contract.methods.tokenId().call();
-  const manager = await contract.methods.owner().call();
-  const contractType = await contract.methods.contractType().call();
+  const showData = await contract.methods.getShowData().call();
+  const tokenId = showData.tokenId;
+  const manager = showData.manager;
+  const contractType = showData.contractType;
   const baseURL = 'https://fastload.infura-ipfs.io/ipfs/'
-  const tokenURI = await contract.methods.tokenURI(0).call();
+  const tokenURI = showData.tokenURI;
   const req = await fetch(tokenURI.replace('ipfs://', baseURL));
   const metadata = await req.json();
   const image = metadata.image.replace('ipfs://', baseURL);
-  const tokenHolders = await contract.methods.getApprovedRequests().call();
+  const tokenHolders = showData.approvedCount;
   const tokenHoldersCount = tokenHolders.length;
 
   return {
@@ -64,22 +65,25 @@ class CampaignShow extends Component {
     const accounts = await web3.eth.getAccounts();
     this.setState({ account: accounts[0] });
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
+    const clientData = await contract.methods.getClientData().call({ from: accounts[0] });
+    
     const tokenBalance = await contract.methods.balanceOf(accounts[0]).call();
     if (tokenBalance > 0) {
       this.setState({ isTokenHolder: true, address: this.props.address });
     }
     try {
-    const requests = await contract.methods.getApprovalRequests().call({from: accounts[0]});
+    const requests = await contract.methods.getPendingClients().call({from: accounts[0]});
       this.setState({ requestsCount: requests.length });
     } catch {
       this.setState({ requestsCount: 0 });
     }
-    
+    const status = clientData.status;
     const isOwner = accounts[0] === this.props.manager;
     this.setState({isOwner: isOwner});
-    const isApproved = await contract.methods.isApproved().call({ from: accounts[0] });
-    const userData = await contract.methods.approved(accounts[0]).call({ from: accounts[0] });
-    this.setState({ isApproved: isApproved, userName: userData[0] });
+    // const isApproved = await contract.methods.isApproved().call({ from: accounts[0] });
+    // const userData = await contract.methods.approved(accounts[0]).call({ from: accounts[0] });
+    this.setState({ isApproved: status === 'approved', isOwner: status === 'owner', isDenied: status == 'denied', isGuest: status === 'guest', userName: clientData.name });
+    console.log("Client Status: ", status);
   }
 
   renderCards() {

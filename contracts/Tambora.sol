@@ -6,36 +6,43 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 
 contract Tambora is ERC721 {
 	using Strings for uint256;
+	event Request(Client indexed clientData);
+	event Response(Client indexed clientData, bool indexed res);
+	event Minted(uint256 indexed tokenId, address indexed addr);
 
 	modifier onlyOwner() {
 		_checkOwner();
 		_;
 	}
 
-	struct Request {
+	// client types: guest, pending, approved, holder, owner, denied
+
+	struct Client {
 		string name;
 		address addr;
-		bool isApproved;
-		uint256 minted; 
+		uint256 minted;
+		uint256 mintAllowance;
+		string status;
 	}
 
 	address payable private _owner;
-	string private _baseURIextended;
+	// string private _baseURIextended;
 	uint256 public tokenId;	
-	uint256 public price;
+	uint256 private price;
 	string public contractType;
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => uint256[]) private _ownedTokens;
-	mapping (address => bool) private _isApproved;
-	mapping (address => Request) public approved;
-	Request[] private _approvedRequests;
-	Request[] private _approvalRequests;
+	mapping (address => Client) public clients;
+	mapping (address => Client) public pendingClients;
+	Client[] private _pendingClients;
+	Client[] private _clients;
 
-	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory type_, address to_, string memory uri_) ERC721(name, symbol) {
+	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_) ERC721(name, symbol) {
 		tokenId = 0;
 		_owner = payable(deployer);
 		price = price_;
-		contractType = type_;
+		contractType = contractType_;
+		clients[owner()] = Client({ name: name, addr: deployer, minted: 1, mintAllowance: 200, status: 'owner' });
 		mint(to_, uri_);
 	}
 
@@ -47,9 +54,9 @@ contract Tambora is ERC721 {
 		require(owner() == _msgSender(), "Ownable: caller is not the owner");
 	}
 
-	function setBaseURI(string memory baseURI_) external onlyOwner() {
-		_baseURIextended = baseURI_;
-	}
+	/* function setBaseURI(string memory baseURI_) external onlyOwner() { */
+	/* 	_baseURIextended = baseURI_; */
+	/* } */
 
 	function _setTokenURI(uint256 tokenId_, string memory tokenURI_) internal {
 		require(_exists(tokenId_), "ERC721Metadata: URI set of nonexistent token");
@@ -68,6 +75,8 @@ contract Tambora is ERC721 {
 		}
 		// If both are set, concatenate the base and token URI
 		if (bytes(_tokenURI).length > 0) {
+
+
 			return string(abi.encodePacked(base, _tokenURI));
 		}
 		// if there is a baseURI but no tokenURI, concatenate the tokenId to the base URI
@@ -77,11 +86,14 @@ contract Tambora is ERC721 {
 	function mint(address to_, string memory uri) public payable {
 		// require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
 		require(tokenId < 100, "Mint failed: Tokens are sold out.");
+		require(clients[to_].minted < clients[to_].mintAllowance, "Mint allowance exceeded.");
 		_mint(to_, tokenId);
 		_setTokenURI(tokenId, uri);
 		_ownedTokens[to_].push(tokenId);
+		emit Minted(tokenId, to_);
 		tokenId++;
 		_owner.transfer(_msgValue());
+		clients[_msgSender()].minted += 1;
 	}
 
 	function getOwnedTokens(address tokenOwner) public view returns (uint256[] memory){
@@ -91,39 +103,71 @@ contract Tambora is ERC721 {
 	function _msgValue() internal view returns (uint256) {
 		return msg.value;
 	}
-
-	function getApprovalRequests() public view onlyOwner returns (Request[] memory) {
-		return _approvalRequests;
-	}
-
-	function getApprovedRequests() public view returns (Request[] memory) {
-		return _approvedRequests;
-	}
-
+	
 	function requestApproval(string memory name) public {
-		_approvalRequests.push(Request({name: name, addr: _msgSender(), isApproved: false, minted: 0}));
+		Client memory client = Client({ name: name, addr: _msgSender(), minted: 0, mintAllowance: 0, status: 'pending' });
+		_pendingClients.push(client);
+		pendingClients[_msgSender()] = client;
+		emit Request(client);
 	}
 
-	function approveOrDenyRequest(uint256 index, bool decision) public onlyOwner {
-		if (decision == true) {
-			_approvalRequests[index].isApproved = true;
-			_isApproved[_approvalRequests[index].addr] = true;
-			_approvedRequests.push(_approvalRequests[index]);
-			_approvalRequests[index] = _approvalRequests[_approvalRequests.length - 1];
-			_approvalRequests.pop();
+	function getPendingClients() public view returns (Client[] memory) {
+		return _pendingClients;
+	}
+
+	/* function approveClient(uint256 index) public onlyOwner { */
+	/* 	_pendingClients[index].status = 'approved'; */
+	/* 	clients[_msgSender()] = _clients[index]; */
+	/* } */
+
+	/* function denyClient(uint256 index) public onlyOwner { */
+	/* 	_clients[index].status = 'denied'; */
+	/* 	clients[_msgSender()] = _clients[index]; */
+	/* } */
+
+	function approveOrDenyClient(uint256 index, bool decision) public onlyOwner {
+		Client memory client = _pendingClients[index];
+		if (decision) {
+			client.status = 'approved';
+			_clients.push(client);
 		} else {
-			_approvalRequests[index] = _approvalRequests[_approvalRequests.length - 1];
-			_approvalRequests.pop();
+			client.status = 'denied';
+		}
+		clients[client.addr] = client;
+		emit Response(client, decision);
+		_pendingClients[index] = _pendingClients[_pendingClients.length - 1];
+		_pendingClients.pop();
+	}
+
+	function finalizeClient(string memory uri) public payable {
+		require(keccak256(bytes(clients[_msgSender()].status)) == keccak256(bytes('approved')));
+		clients[_msgSender()].mintAllowance = 5;
+		mint(_msgSender(), uri);
+		clients[_msgSender()].status = 'holder';
+		_owner.transfer(_msgValue());
+	}
+
+	function getClientData() public view returns (Client memory) {
+		// Client memory client = keccak256(bytes(clients[_msgSender()]));
+		// Client memory pendingClient = keccak256(bytes(pendingClients[_msgSender()]));
+		if (clients[_msgSender()].addr != address(0)) {
+			return clients[_msgSender()];
+		} else if (pendingClients[_msgSender()].addr != address(0)) {
+			return pendingClients[_msgSender()];
+		} else {
+			return Client({ name: 'thedude', addr: _msgSender(), minted: 0, mintAllowance: 0, status: 'guest' });
 		}
 	}
 
-	function finalizeRequest(string memory uri) public payable {
-		require(_isApproved[_msgSender()] == true);
-		mint(_msgSender(), uri);
-		_owner.transfer(_msgValue());
+	struct ShowData {
+		uint256 tokenId;
+		address manager;
+		string contractType;
+		string tokenURI;
+		uint256 approvedCount;
 	}
-	
-	function isApproved() public view returns (bool) {
-		return _isApproved[_msgSender()];
+
+	function getShowData() public view returns (ShowData memory) {
+		return ShowData({ tokenId: tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), approvedCount: _clients.length });
 	}
 }

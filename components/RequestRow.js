@@ -20,10 +20,10 @@ class RequestRow extends Component {
     try {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const accounts = await web3.eth.getAccounts();
-      await contract.methods.approveOrDenyRequest(this.props.id, true).send({
+      await contract.methods.approveOrDenyClient(this.props.id, true).send({
 	from: accounts[0]
       });
-      this.setState({ isLoading: false, success: true });
+      this.setState({ isLoading: false, success: true, successMessage: `You have approved ${this.props.name}`});
     } catch (error) {
       this.setState({ isLoading: false, errorMessage: error.message, error: true });
     }
@@ -37,13 +37,16 @@ class RequestRow extends Component {
     try {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const accounts = await web3.eth.getAccounts();
-      await contract.methods.approveOrDenyRequest(this.props.id, false).send({
+      await contract.methods.approveOrDenyClient(this.props.id, false).send({
 	from: accounts[0]
       });
-      this.setState({ success: true, denyLoading: false });
+      this.setState({ success: true, denyLoading: false, successMessage: `You have denied ${this.props.name}` });
     } catch (error) {
       this.setState({ error: true, errorMessage: error.message, denyLoading: false });
     }
+    setTimeout(() => {
+      Router.push({ pathname: `/${this.props.contractName}`, query: [this.props.address] });
+    }, 3000);
   }
 
   render() {
@@ -54,7 +57,7 @@ class RequestRow extends Component {
 	<Cell>{id}</Cell>
 	<Cell>{request[0]}</Cell>
 	<Cell>
-	  <SuccessMessage isShowing={this.state.success} header='Success!' content={`You have approved ${this.props.name}`} />
+	  <SuccessMessage isShowing={this.state.success} header='Success!' content={this.state.successMessage} />
 	</Cell>
 	<Cell>
 	  <ErrorMessage isShowing={this.state.error} header='Oops!' content={this.state.errorMessage} />
