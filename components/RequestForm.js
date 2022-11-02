@@ -68,14 +68,12 @@ class RequestForm extends Component {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       this.setState({ isInteracting: true, infoMessage: 'Interacting with the Ethereum Blockchain' });
       const tx = await contract.methods.finalizeClient(`ipfs://${added.path}`).send({ from: accounts[0] });
-      console.log("Finalized! --> ", tx.transactionHash);
       this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       setTimeout(() => {
 	Router.reload(window.location.pathname)
       }, 1000);
-    } catch (event) {
-      console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', loading: false, infoMessage: '', isInteracting: false });
+    } catch (error) {
+      this.setState({ errorMessage: error.message, loading: false, infoMessage: '', isInteracting: false });
     }
   }
 
@@ -145,11 +143,11 @@ class RequestForm extends Component {
     } else if (this.props.isApproved) {
       return (
 	<div>
-	  <h2>You have been approved!</h2>
-	  <DynamicButton loading={this.state.loading} color='olive' label="Finalize" isShowing={this.props.isApproved} onClick={this.createMeta} />
+	  <h2>You are approved!</h2>
 	  <InfoMessage isShowing={this.state.isInteracting} header="Please Wait..." content={this.state.infoMessage} />
 	  <SuccessMessage isShowing={!!this.state.successMessage} header="Success" content={this.state.successMessage} />
 	  <ErrorMessage isShowing={!!this.state.errorMessage} header="Error" content={this.state.errorMessage} />
+	  <DynamicButton loading={this.state.loading} color='blue' label="Finalize" isShowing={this.props.isApproved} onClick={this.createMeta} />
 	</div>
       );
     } else if (this.props.isPending) {

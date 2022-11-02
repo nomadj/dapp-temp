@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Grid, Button } from 'semantic-ui-react';
+import { Card, Grid, Button, Container, Segment, Icon, Image } from 'semantic-ui-react';
 import Layout from '../components/Layout';
 import web3 from '../web3';
 import ContributeForm from '../components/ContributeForm';
@@ -117,8 +117,25 @@ class CampaignShow extends Component {
         <Grid style={{marginTop: '10px'}} columns='equal'>
           <Grid.Row>
             <Grid.Column>
-	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={this.props.tokenHoldersCount + 1} isTokenHolder={this.state.isTokenHolder} account={this.state.account} requestsCount={this.state.requestsCount} isOwner={this.state.isOwner} isApproved={this.state.isApproved} userName={this.state.userName} metadata={this.props.metadata} isPending={this.state.isPending} />
+	      <ContractShow
+		name={this.props.name}
+		address={this.props.address}
+		image={this.props.image}
+		tokenId={this.props.tokenId}
+		tokenHolders={this.props.tokenHoldersCount + 1}
+		isTokenHolder={this.state.isTokenHolder}
+		account={this.state.account}
+		requestsCount={this.state.requestsCount}
+		isOwner={this.state.isOwner}
+		isApproved={this.state.isApproved}
+		userName={this.state.userName}
+		metadata={this.props.metadata}
+		isPending={this.state.isPending}
+	      />
             </Grid.Column>
+	    <Grid.Column>
+	      <Image src='eth.png' style={{ marginLeft: 100 }} /> 
+	    </Grid.Column>
           </Grid.Row>
         </Grid>
       </Layout>
@@ -127,3 +144,5 @@ class CampaignShow extends Component {
 }
 
 export default CampaignShow;
+
+// Image is 220x310

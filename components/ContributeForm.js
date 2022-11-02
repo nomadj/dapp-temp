@@ -33,9 +33,9 @@ class ContributeForm extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px', marginLeft: '6px', marginRight: '55px' }}>
         <Form.Field>
-          <h2>Donate to this contract</h2>
+          <h2>Donate</h2>
           <Input
             value={this.state.value}
             onChange={event => this.setState({ value: event.target.value })}
