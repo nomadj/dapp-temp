@@ -5,6 +5,8 @@ import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import DynamicButton from './DynamicButton'
 import { create } from 'ipfs-http-client'
 import InfoMessage from './InfoMessage'
+import SuccessMessage from './SuccessMessage'
+import ErrorMessage from './ErrorMessage'
 import Router from 'next/router'
 
 class RequestForm extends Component {
@@ -68,6 +70,9 @@ class RequestForm extends Component {
       const tx = await contract.methods.finalizeClient(`ipfs://${added.path}`).send({ from: accounts[0] });
       console.log("Finalized! --> ", tx.transactionHash);
       this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
+      setTimeout(() => {
+	Router.reload(window.location.pathname)
+      }, 1000);
     } catch (event) {
       console.log(event);
       this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', loading: false, infoMessage: '', isInteracting: false });
@@ -98,25 +103,25 @@ class RequestForm extends Component {
     event.preventDefault();
 
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-    this.setState({ loading: true, errorMessage: '', successMessage: '' });
+    this.setState({ loading: true, errorMessage: '', successMessage: '', infoMessage: 'Interacting with the EVM' });
 
     try {
       this.thrower();
       const accounts = await web3.eth.getAccounts();
       await contract.methods.requestApproval(this.state.name).send({ from: accounts[0] });
-      this.setState({ successMessage: 'Your request has been submitted for approval' });
+      this.setState({ successMessage: 'Your request has been submitted for approval', isApproved: false, isPending: true, infoMessage: '' });
       // Router.replaceRoute(`/campaigns/${this.props.address}`) //refresh page
       setTimeout(() => {
 	Router.reload(window.location.pathname);
-      }, 2000);
+      }, 1000);
     } catch (err) {
-      this.setState({ errorMessage: err.message });
+      this.setState({ errorMessage: err.message, infoMessage: '' });
     }
     this.setState({ loading: false, name: '' });
   };
 
   render() {
-    if (this.props.isShowing && !this.props.isApproved) {
+    if (this.props.isShowing && !this.props.isApproved && !this.props.isPending) {
       return (
 	<Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }} success={!!this.state.successMessage}>
 	  <Form.Group>
@@ -133,18 +138,22 @@ class RequestForm extends Component {
 	  </Form.Group>
 	  <Message error header="Oops!" content={this.state.errorMessage} />
 	  <Message success header="Success!" content={this.state.successMessage} />
+	  <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
 	  <Button color='olive' loading={this.state.loading}>Get Approved</Button>
 	</Form>
       );
     } else if (this.props.isApproved) {
       return (
 	<div>
-	  <DynamicButton loading={this.state.loading} color='olive' label="HOORAY" isShowing={this.props.isApproved} onClick={this.createMeta} />
+	  <h2>You have been approved!</h2>
+	  <DynamicButton loading={this.state.loading} color='olive' label="Finalize" isShowing={this.props.isApproved} onClick={this.createMeta} />
 	  <InfoMessage isShowing={this.state.isInteracting} header="Please Wait..." content={this.state.infoMessage} />
+	  <SuccessMessage isShowing={!!this.state.successMessage} header="Success" content={this.state.successMessage} />
+	  <ErrorMessage isShowing={!!this.state.errorMessage} header="Error" content={this.state.errorMessage} />
 	</div>
       );
     } else if (this.props.isPending) {
-      return null;
+      return <h2>Waiting for approval...</h2>;
     } else { return null; }
   }
 }

@@ -24,12 +24,12 @@ class RequestRow extends Component {
 	from: accounts[0]
       });
       this.setState({ isLoading: false, success: true, successMessage: `You have approved ${this.props.name}`});
+      setTimeout(() => {
+	Router.reload(window.location.pathname);
+      }, 1000);
     } catch (error) {
       this.setState({ isLoading: false, errorMessage: error.message, error: true });
     }
-    setTimeout(() => {
-      Router.push({ pathname: `/${this.props.contractName}`, query: [this.props.address] });
-    }, 3000);
   };
 
   onDeny = async () => {
@@ -41,12 +41,12 @@ class RequestRow extends Component {
 	from: accounts[0]
       });
       this.setState({ success: true, denyLoading: false, successMessage: `You have denied ${this.props.name}` });
+      setTimeout(() => {
+	Router.reload(window.location.pathname);
+    }, 1000);
     } catch (error) {
       this.setState({ error: true, errorMessage: error.message, denyLoading: false });
     }
-    setTimeout(() => {
-      Router.push({ pathname: `/${this.props.contractName}`, query: [this.props.address] });
-    }, 3000);
   }
 
   render() {
@@ -64,12 +64,12 @@ class RequestRow extends Component {
 	</Cell>
 	<Cell textAlign='right'>
 	  {request.isApproved ? null : (
-	    <Button loading={this.state.isLoading} color="green" basic onClick={this.onApprove}>Approve</Button>
+	    <Button disabled={this.state.denyLoading} loading={this.state.isLoading} color="green" basic onClick={this.onApprove}>Approve</Button>
 	  )}
 	</Cell>
 	<Cell textAlign='right' width={1}>
 	  {request.isApproved ? null : (
-	    <Button loading={this.state.denyLoading} color="red" basic onClick={this.onDeny}>Deny</Button>
+	    <Button disabled={this.state.isLoading} loading={this.state.denyLoading} color="red" basic onClick={this.onDeny}>Deny</Button>
 	  )}
 	</Cell>
       </Row>
