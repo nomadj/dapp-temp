@@ -4,14 +4,18 @@ import web3 from '../web3';
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import DynamicButton from './DynamicButton'
 import { create } from 'ipfs-http-client'
+import InfoMessage from './InfoMessage'
+import Router from 'next/router'
 
 class RequestForm extends Component {
   state = {
     name: '',
     errorMessage: '',
     successMessage: '',
+    infoMessage: '',
     loading: false,
-    success: false
+    success: false,
+    isInteracting: false,
   };
 
   thrower = () => {
@@ -22,7 +26,7 @@ class RequestForm extends Component {
   }
 
   createMeta = async () => {
-    this.setState({ loading: true });
+    this.setState({ loading: true, errorMessage: '', infoMessage: '', success: false, successMessage: '' });
     try {
       const metadata = {
 	"name": this.props.userName,
@@ -58,10 +62,15 @@ class RequestForm extends Component {
     })
     try {
       const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
-      await this.mintNFT(added.path);
+      const accounts = await web3.eth.getAccounts();
+      const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
+      this.setState({ isInteracting: true, infoMessage: 'Interacting with the Ethereum Blockchain' });
+      const tx = await contract.methods.finalizeClient(`ipfs://${added.path}`).send({ from: accounts[0] });
+      console.log("Finalized! --> ", tx.transactionHash);
+      this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
     } catch (event) {
       console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', loading: false });
+      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', loading: false, infoMessage: '', isInteracting: false });
     }
   }
 
@@ -97,6 +106,9 @@ class RequestForm extends Component {
       await contract.methods.requestApproval(this.state.name).send({ from: accounts[0] });
       this.setState({ successMessage: 'Your request has been submitted for approval' });
       // Router.replaceRoute(`/campaigns/${this.props.address}`) //refresh page
+      setTimeout(() => {
+	Router.reload(window.location.pathname);
+      }, 2000);
     } catch (err) {
       this.setState({ errorMessage: err.message });
     }
@@ -126,8 +138,13 @@ class RequestForm extends Component {
       );
     } else if (this.props.isApproved) {
       return (
-	<DynamicButton loading={this.state.loading} color='olive' label="HOORAY" isShowing={this.props.isApproved} onClick={this.createMeta} />
+	<div>
+	  <DynamicButton loading={this.state.loading} color='olive' label="HOORAY" isShowing={this.props.isApproved} onClick={this.createMeta} />
+	  <InfoMessage isShowing={this.state.isInteracting} header="Please Wait..." content={this.state.infoMessage} />
+	</div>
       );
+    } else if (this.props.isPending) {
+      return null;
     } else { return null; }
   }
 }

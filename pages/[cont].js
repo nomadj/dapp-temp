@@ -52,6 +52,8 @@ class CampaignShow extends Component {
     address: '',
     requestsCount: '',
     isApproved: false,
+    isPending: false,
+    isHolder: false,
     userName: '',
     loading: false,
     errorMessage: '',
@@ -79,10 +81,7 @@ class CampaignShow extends Component {
     }
     const status = clientData.status;
     const isOwner = accounts[0] === this.props.manager;
-    this.setState({isOwner: isOwner});
-    // const isApproved = await contract.methods.isApproved().call({ from: accounts[0] });
-    // const userData = await contract.methods.approved(accounts[0]).call({ from: accounts[0] });
-    this.setState({ isApproved: status === 'approved', isOwner: status === 'owner', isDenied: status == 'denied', isGuest: status === 'guest', userName: clientData.name });
+    this.setState({ isOwner: isOwner, isApproved: status === 'approved', isOwner: status === 'owner', isDenied: status === 'denied', isGuest: status === 'guest', isPending: status === 'pending', isHolder: status === 'holder', userName: clientData.name });
     console.log("Client Status: ", status);
   }
 
@@ -118,7 +117,7 @@ class CampaignShow extends Component {
         <Grid style={{marginTop: '10px'}} columns='equal'>
           <Grid.Row>
             <Grid.Column>
-	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={this.props.tokenHoldersCount + 1} isTokenHolder={this.state.isTokenHolder} account={this.state.account} requestsCount={this.state.requestsCount} isOwner={this.state.isOwner} isApproved={this.state.isApproved} userName={this.state.userName} metadata={this.props.metadata} />
+	      <ContractShow name={this.props.name} address={this.props.address} image={this.props.image} tokenId={this.props.tokenId} tokenHolders={this.props.tokenHoldersCount + 1} isTokenHolder={this.state.isTokenHolder} account={this.state.account} requestsCount={this.state.requestsCount} isOwner={this.state.isOwner} isApproved={this.state.isApproved} userName={this.state.userName} metadata={this.props.metadata} isPending={this.state.isPending} />
             </Grid.Column>
           </Grid.Row>
         </Grid>
