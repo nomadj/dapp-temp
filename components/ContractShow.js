@@ -6,6 +6,7 @@ import TokenLink from './TokenLink';
 import Link from 'next/link';
 import RequestForm from './RequestForm';
 import RequestsCard from './RequestsCard';
+import UploadForm from './UploadForm';
 
 class ContractShow extends Component {
   render() {
@@ -42,19 +43,15 @@ class ContractShow extends Component {
 		address={this.props.address}
 		account={this.props.account}
 	      />
+	      <UploadForm
+		isShowing={this.props.isOwner}
+		address={this.props.address}
+	      />
 	      <DownloadButton
 		isTokenHolder={this.props.isTokenHolder}
 		address={this.props.address}
+		style={{ marginBottom: '4px' }}
 	      />
-	    </Grid.Column>
-	  </Grid.Row>
-	  <Grid.Row>
-	    <Grid.Column>
-	      <ContributeForm
-		address={this.props.address}
-	      />
-	    </Grid.Column>
-	    <Grid.Column>
 	      <RequestForm
 		isShowing={!this.props.isTokenHolder}
 		address={this.props.address}
@@ -67,6 +64,15 @@ class ContractShow extends Component {
 		isPending={this.props.isPending}
 		contractName={this.props.name}
 	      />
+	    </Grid.Column>
+	  </Grid.Row>
+	  <Grid.Row>
+	    <Grid.Column>
+	      <ContributeForm
+		address={this.props.address}
+	      />
+	    </Grid.Column>
+	    <Grid.Column>
 	    </Grid.Column>
 	  </Grid.Row>
 	</Grid>

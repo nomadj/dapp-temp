@@ -5,6 +5,7 @@ import web3 from '../web3';
 import factory from '../factory';
 import Router from 'next/router';
 import Header from '../components/Header';
+import InfoMessage from '../components/InfoMessage';
 import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFactory.json';
 import { create } from 'ipfs-http-client';
 
@@ -18,6 +19,7 @@ class CreateContract extends Component {
     symbol: '',
     price: '',
     errorMessage: '',
+    infoMessage: '',
     loading: false,
     success: false,
     image: '',
@@ -60,8 +62,9 @@ class CreateContract extends Component {
   }
 
   onSubmit = async (img) => {
-    this.setState({ loading: true, errorMessage: '', success: false });
+    this.setState({ loading: true, errorMessage: '', success: false, infoMessage: 'Adding file to IPFS' });
     await this.ipfsAdd(img);
+    this.setState({ infoMessage: 'Interacting with the EVM' });
     try {
       const name = this.processName(this.state.name);
       this.setState({ name: name });
@@ -69,12 +72,12 @@ class CreateContract extends Component {
       const names = await factory.methods.getNames().call();
       for (var i = 0; i < names.length; i++) {
 	if (names[i] === this.state.name) {
-	  throw {message: 'Name already exists'};
+	  throw { message: 'Name already exists' };
 	}
       }
       const accounts = await web3.eth.getAccounts();
       const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`).send({from: accounts[0]});
-      this.setState({ success: true, loading: false, contractAddress: tx.events['Deployed'].returnValues.contractAddr });
+      this.setState({ infoMessage: '', success: true, loading: false, contractAddress: tx.events['Deployed'].returnValues.contractAddr });
       async function pusher() {
 	const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
 	const eventLog = tx.events['Deployed'].returnValues.contractAddr;
@@ -83,7 +86,7 @@ class CreateContract extends Component {
       }
       setTimeout(pusher, 3000);
     } catch (err) {
-      this.setState({ errorMessage: err.message, loading: false });
+      this.setState({ errorMessage: err.message, loading: false, infoMessage: '' });
       }
   };
 
@@ -103,11 +106,12 @@ class CreateContract extends Component {
       await this.createMeta(added.path);
     } catch (event) {
       console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false });
+      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, infoMessage: '' });
     }
   }
 
   createMeta = async (cid) => {
+    this.setState({ infoMessage: 'Creating metadata' });
     try {
       const metadata = {
 	"name": this.state.name,
@@ -126,11 +130,12 @@ class CreateContract extends Component {
       const data = JSON.stringify(metadata);
       await this.ipfsAddJSON(data);
     } catch (error){
-      this.setState({ errorMessage: error, isLoading: false });
+      this.setState({ errorMessage: error, isLoading: false, infoMessage: '' });
     }
   }
 
   ipfsAddJSON = async (file) => {
+    this.setState({ infoMessage: 'Adding metadata to IPFS' });
     const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
 
     const client = create({
@@ -146,7 +151,7 @@ class CreateContract extends Component {
       this.setState({ uri: added.path });
     } catch (event) {
       console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false });
+      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, infoMessage: '' });
     }
   }
 
@@ -164,7 +169,7 @@ class CreateContract extends Component {
       console.log('Minted successfully at: ', tx.transactionHash);
       this.setState({ isLoading: false, success: true });
     } catch (error){
-      this.setState({ errorMessage: error})
+      this.setState({ errorMessage: error, infoMessage: '' })
     }
   }
 
@@ -222,7 +227,12 @@ class CreateContract extends Component {
 	    success
 	    header='Success!'
 	    content={`Contract Created at ${this.state.contractAddress}`}
-	  />	  
+	  />
+	  <InfoMessage
+	    isShowing={!!this.state.infoMessage}
+	    header='Please Wait...'
+	    content={this.state.infoMessage}
+	  />
           <Button type='submit' loading={this.state.loading} color='olive'>Create</Button>
         </Form>
       </Layout>

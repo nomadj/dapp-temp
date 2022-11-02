@@ -4,6 +4,7 @@ import web3 from '../web3'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import SuccessMessage from './SuccessMessage'
 import ErrorMessage from './ErrorMessage'
+import InfoMessage from './InfoMessage'
 import Router from 'next/router'
 
 class RequestRow extends Component {
@@ -11,41 +12,42 @@ class RequestRow extends Component {
     isLoading: false,
     errorMessage: '',
     successMessage: '',
+    infoMessage: '',
     success: false,
     error: false,
     denyLoading: false
   }
   onApprove = async () => {
-    this.setState({ isLoading: true, errorMessage: '', successMessage: '', error: false, success: false });
+    this.setState({ isLoading: true, errorMessage: '', successMessage: '', error: false, success: false, infoMessage: 'Interacting with the EVM' });
     try {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const accounts = await web3.eth.getAccounts();
       await contract.methods.approveOrDenyClient(this.props.id, true).send({
 	from: accounts[0]
       });
-      this.setState({ isLoading: false, success: true, successMessage: `You have approved ${this.props.name}`});
+      this.setState({ isLoading: false, success: true, successMessage: `You have approved ${this.props.name}`, infoMessage: '' });
       setTimeout(() => {
 	Router.reload(window.location.pathname);
       }, 1000);
     } catch (error) {
-      this.setState({ isLoading: false, errorMessage: error.message, error: true });
+      this.setState({ isLoading: false, errorMessage: error.message, error: true, infoMessage: '' });
     }
   };
 
   onDeny = async () => {
-    this.setState({ denyLoading: true });
+    this.setState({ denyLoading: true, infoMessage: 'Interacting with the EVM' });
     try {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const accounts = await web3.eth.getAccounts();
       await contract.methods.approveOrDenyClient(this.props.id, false).send({
 	from: accounts[0]
       });
-      this.setState({ success: true, denyLoading: false, successMessage: `You have denied ${this.props.name}` });
+      this.setState({ success: true, denyLoading: false, successMessage: `You have denied ${this.props.name}`, infoMessage: '' });
       setTimeout(() => {
 	Router.reload(window.location.pathname);
     }, 1000);
     } catch (error) {
-      this.setState({ error: true, errorMessage: error.message, denyLoading: false });
+      this.setState({ error: true, errorMessage: error.message, denyLoading: false, infoMessage: '' });
     }
   }
 
@@ -58,9 +60,8 @@ class RequestRow extends Component {
 	<Cell>{request[0]}</Cell>
 	<Cell>
 	  <SuccessMessage isShowing={this.state.success} header='Success!' content={this.state.successMessage} />
-	</Cell>
-	<Cell>
 	  <ErrorMessage isShowing={this.state.error} header='Oops!' content={this.state.errorMessage} />
+	  <InfoMessage isShowing={!!this.state.infoMessage} header='Please Wait...' content={this.state.infoMessage} />
 	</Cell>
 	<Cell textAlign='right'>
 	  {request.isApproved ? null : (

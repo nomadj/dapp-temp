@@ -36,6 +36,7 @@ contract Tambora is ERC721 {
 	mapping (address => Client) public pendingClients;
 	Client[] private _pendingClients;
 	Client[] private _clients;
+	string[] private _fileLocations;
 
 	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_) ERC721(name, symbol) {
 		tokenId = 0;
@@ -169,5 +170,13 @@ contract Tambora is ERC721 {
 
 	function getShowData() public view returns (ShowData memory) {
 		return ShowData({ tokenId: tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), approvedCount: _clients.length });
+	}
+
+	function addFileLocation(string memory uri_) public onlyOwner {
+		_fileLocations.push(uri_);
+	}
+
+	function getFileLocations() public view returns (string[] memory) {
+		return _fileLocations;
 	}
 }
