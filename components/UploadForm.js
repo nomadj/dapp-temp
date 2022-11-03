@@ -4,6 +4,7 @@ import InfoMessage from './InfoMessage'
 import { create } from 'ipfs-http-client'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import web3 from '../web3'
+import { proString } from '../utils'
 
 export default class UploadForm extends Component {
   state = {
@@ -12,7 +13,8 @@ export default class UploadForm extends Component {
     successMessage: '',
     infoMessage: '',
     isPdf: false,
-    loading: false
+    loading: false,
+    name: ''
   }
   ipfsAdd = async (file) => {
     const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
@@ -40,7 +42,7 @@ export default class UploadForm extends Component {
       this.setState({ infoMessage: 'Interacting with the EVM' });
       const accounts = await web3.eth.getAccounts();
       const contract = await new web3.eth.Contract(Tambora.abi, this.props.address);
-      const tx = await contract.methods.addFileLocation('beginners', uri).send({ from: accounts[0] });
+      const tx = await contract.methods.addFileLocation(this.state.name, uri).send({ from: accounts[0] });
       this.setState({ loading: false, successMessage: `Transaction complete ${tx.transactionHash}`, infoMessage: '' });
     } catch (error) {
       this.setState({ loading: false, errorMessage: error.message, infoMessage: '' });
@@ -68,11 +70,21 @@ export default class UploadForm extends Component {
 	<Form onSubmit={ event => {this.onSubmit(document.getElementById('upload-picker').files[0])}} error={!!this.state.errorMessage} success={!!this.state.successMessage}>
 	  <Form.Field>
 	    <Input
+	      label='name'
+	      labelPosition='right'
+	      value={this.state.name}
+	      onChange={event => {
+		const ps = proString(event.target.value);
+		this.setState({ name: ps })
+	      }}
+	      placeholder='filename.pdf'
+	    />
+	    <Input
 	      type='file'
 	      id='upload-picker'
 	      onChange={() => this.fileHandler(event)}
 	    />
-	    <Button loading={this.state.loading} color='violet' icon='upload' size='mini' style={{ marginTop: '4px' }} />
+	    <Button floated='right' loading={this.state.loading} color='violet' icon='upload' size='mini' />
 	  </Form.Field>
 	  <Message error header='Error' content={this.state.errorMessage} />
 	  <Message success header='Success' content={this.state.successMessage} style={{ overflowWrap: 'break-word', marginBottom: '10px' }} />
