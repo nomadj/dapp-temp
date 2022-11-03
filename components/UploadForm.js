@@ -40,7 +40,7 @@ export default class UploadForm extends Component {
       this.setState({ infoMessage: 'Interacting with the EVM' });
       const accounts = await web3.eth.getAccounts();
       const contract = await new web3.eth.Contract(Tambora.abi, this.props.address);
-      const tx = await contract.methods.addFileLocation(uri).send({ from: accounts[0] });
+      const tx = await contract.methods.addFileLocation('beginners', uri).send({ from: accounts[0] });
       this.setState({ loading: false, successMessage: `Transaction complete ${tx.transactionHash}`, infoMessage: '' });
     } catch (error) {
       this.setState({ loading: false, errorMessage: error.message, infoMessage: '' });

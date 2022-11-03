@@ -36,7 +36,7 @@ contract Tambora is ERC721 {
 	mapping (address => Client) public pendingClients;
 	Client[] private _pendingClients;
 	Client[] private _clients;
-	string[] private _fileLocations;
+	File[] private _fileStore;
 
 	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_) ERC721(name, symbol) {
 		tokenId = 0;
@@ -166,17 +166,25 @@ contract Tambora is ERC721 {
 		string contractType;
 		string tokenURI;
 		uint256 approvedCount;
+		File[] fileStore;
 	}
 
 	function getShowData() public view returns (ShowData memory) {
-		return ShowData({ tokenId: tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), approvedCount: _clients.length });
+		return ShowData({ tokenId: tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), approvedCount: _clients.length, fileStore: _fileStore });
 	}
 
-	function addFileLocation(string memory uri_) public onlyOwner {
-		_fileLocations.push(uri_);
+	function addFileLocation(string memory name_, string memory uri_) public onlyOwner {
+		File memory fileObj = File({ name: name_, uri: uri_});
+		_fileStore.push(fileObj);
 	}
 
-	function getFileLocations() public view returns (string[] memory) {
-		return _fileLocations;
+	struct File {
+		string name;
+		string uri;
+	}
+
+	function getFileStore() public view returns (File[] memory) {
+		require(keccak256(bytes(clients[_msgSender()].status)) == keccak256(bytes('holder')), "Client is not a holder.");
+		return _fileStore;
 	}
 }

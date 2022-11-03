@@ -7,6 +7,7 @@ import Link from 'next/link';
 import RequestForm from './RequestForm';
 import RequestsCard from './RequestsCard';
 import UploadForm from './UploadForm';
+import DownloadFiles from './DownloadFiles';
 
 class ContractShow extends Component {
   render() {
@@ -17,7 +18,6 @@ class ContractShow extends Component {
 	    <Grid.Column style={{ marginLeft: '6px', overflowWrap: 'break-word'}}>
 	      <Card
 		header={this.props.name}
-		meta={this.props.address}
 		image={this.props.image}
 		description={
 		  <TokenLink
@@ -47,10 +47,10 @@ class ContractShow extends Component {
 		isShowing={this.props.isOwner}
 		address={this.props.address}
 	      />
-	      <DownloadButton
-		isTokenHolder={this.props.isTokenHolder}
+	      <DownloadFiles
 		address={this.props.address}
-		style={{ marginBottom: '4px' }}
+		fileStore={this.props.fileStore}
+		isTokenHolder={this.props.isTokenHolder}
 	      />
 	      <RequestForm
 		isShowing={!this.props.isTokenHolder}
@@ -81,3 +81,10 @@ class ContractShow extends Component {
   }
 }
 export default ContractShow
+
+
+// <DownloadButton
+//   isTokenHolder={this.props.isTokenHolder}
+//   address={this.props.address}
+//   style={{ marginBottom: '4px' }}
+//   />
