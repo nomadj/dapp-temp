@@ -27,6 +27,9 @@ class ContractShow extends Component {
 		  />
 		}
 	      />
+	      <ContributeForm
+		address={this.props.address}
+	      />
 	    </Grid.Column>
 	    <Grid.Column style={{marginRight: '10px'}}>
 	      <Card
@@ -68,9 +71,6 @@ class ContractShow extends Component {
 	  </Grid.Row>
 	  <Grid.Row>
 	    <Grid.Column>
-	      <ContributeForm
-		address={this.props.address}
-	      />
 	    </Grid.Column>
 	    <Grid.Column>
 	    </Grid.Column>

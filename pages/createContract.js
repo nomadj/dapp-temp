@@ -177,7 +177,7 @@ class CreateContract extends Component {
     return (
       <Layout>
 	<Header />
-        <h3>Create a Contract</h3>
+        <h3>Create your own ERC721 contract.</h3>
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	  <Form.Group widths='equal'>
 	    <Form.Field>
@@ -197,7 +197,7 @@ class CreateContract extends Component {
 	      />
 	    </Form.Field>
 	    <Form.Field>
-	      <label>Price</label>
+	      <label>Price (per 5 tokens)</label>
 	      <Input
 		label='Ether'
 		labelPosition='right'
@@ -233,6 +233,7 @@ class CreateContract extends Component {
 	    header='Please Wait...'
 	    content={this.state.infoMessage}
 	  />
+	  <h3>Creation allows 200 tokens to be minted from your contract.</h3>
           <Button type='submit' loading={this.state.loading} color='olive'>Create</Button>
         </Form>
       </Layout>

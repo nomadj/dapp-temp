@@ -53,8 +53,7 @@ export default class UploadForm extends Component {
   fileHandler = (event) => {
     event.preventDefault()
     this.setState({ isPdf: false, errorMessage: '', success: false });
-    if (event.target.value.endsWith('.pdf')) {
-      console.log('pdf detected');
+    if (event.target.value.endsWith('.pdf') || event.target.value.endsWith('.py')) {
       this.setState({ url: URL.createObjectURL(event.target.files[0]) });
     } else {
       this.setState({ errorMessage: "Unsupported File at This Time" });
@@ -68,7 +67,15 @@ export default class UploadForm extends Component {
     if (this.props.isShowing) {
       return (
 	<Form onSubmit={ event => {this.onSubmit(document.getElementById('upload-picker').files[0])}} error={!!this.state.errorMessage} success={!!this.state.successMessage}>
-	  <Form.Field>
+	  <h2>Upload File</h2>
+	  <Form.Field style={{ marginBottom: '10px' }} >
+	    <Message error header='Error' content={this.state.errorMessage} />
+	    <Message success header='Success' content={this.state.successMessage} style={{ overflowWrap: 'break-word', marginBottom: '10px' }} />
+	    <InfoMessage
+	      isShowing={!!this.state.infoMessage}
+	      header='Please Wait...'
+	      content={this.state.infoMessage}
+	    />
 	    <Input
 	      label='name'
 	      labelPosition='right'
@@ -84,15 +91,8 @@ export default class UploadForm extends Component {
 	      id='upload-picker'
 	      onChange={() => this.fileHandler(event)}
 	    />
-	    <Button floated='right' loading={this.state.loading} color='violet' icon='upload' size='mini' />
+	    <Button floated='right' loading={this.state.loading} color='violet' icon='upload' size='mini' style={{ marginRight: '14px' }} />
 	  </Form.Field>
-	  <Message error header='Error' content={this.state.errorMessage} />
-	  <Message success header='Success' content={this.state.successMessage} style={{ overflowWrap: 'break-word', marginBottom: '10px' }} />
-	  <InfoMessage
-	    isShowing={!!this.state.infoMessage}
-	    header='Please Wait...'
-	    content={this.state.infoMessage}
-	  />
 	</Form>
       );
     } else {

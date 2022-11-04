@@ -25,10 +25,13 @@ contract Tambora is ERC721 {
 		string status;
 	}
 
+	address payable private _factoryOwner;
 	address payable private _owner;
 	// string private _baseURIextended;
 	uint256 public tokenId;	
 	uint256 private price;
+	uint256 private _mintAllowance;
+	uint256 private _allottedAmount;
 	string public contractType;
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => uint256[]) private _ownedTokens;
@@ -38,12 +41,14 @@ contract Tambora is ERC721 {
 	Client[] private _clients;
 	File[] private _fileStore;
 
-	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_) ERC721(name, symbol) {
+	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_) ERC721(name, symbol) {
 		tokenId = 0;
 		_owner = payable(deployer);
+		_factoryOwner = payable(factoryOwner_);
 		price = price_;
 		contractType = contractType_;
-		clients[owner()] = Client({ name: name, addr: deployer, minted: 1, mintAllowance: 200, status: 'owner' });
+		_allottedAmount = 5;
+		clients[owner()] = Client({ name: name, addr: deployer, minted: 1, mintAllowance: 5, status: 'owner' });
 		mint(to_, uri_);
 	}
 
@@ -80,7 +85,7 @@ contract Tambora is ERC721 {
 
 			return string(abi.encodePacked(base, _tokenURI));
 		}
-		// if there is a baseURI but no tokenURI, concatenate the tokenId to the base URI
+		// If there is a baseURI but no tokenURI, concatenate the tokenId to the base URI
 		return string(abi.encodePacked(base, tokenId_.toString()));
 	}
 
@@ -146,6 +151,7 @@ contract Tambora is ERC721 {
 		mint(_msgSender(), uri);
 		clients[_msgSender()].status = 'holder';
 		_owner.transfer(_msgValue());
+		_allottedAmount += 5;
 	}
 
 	function getClientData() public view returns (Client memory) {
@@ -186,5 +192,21 @@ contract Tambora is ERC721 {
 	function getFileStore() public view returns (File[] memory) {
 		require(keccak256(bytes(clients[_msgSender()].status)) == keccak256(bytes('holder')), "Client is not a holder.");
 		return _fileStore;
+	}
+
+	function increaseClientMintAllowance(address clientAddr) public payable onlyOwner returns (uint256) {
+		require(_allottedAmount < _mintAllowance, "This contract has reached it's mint allowance.");
+		require(_msgValue() >= price, "Not enough ether sent.");
+		clients[clientAddr].mintAllowance += 5;
+		_allottedAmount += 5;
+		payable(owner()).transfer(_msgValue());
+		return clients[clientAddr].mintAllowance;
+	}
+
+	function increaseContractMintAllowance() public payable onlyOwner returns (uint256) {
+		require(_msgValue() >= 0.04 ether, "This transaction requires 0.04 ether");
+		_mintAllowance += 200;
+		_factoryOwner.transfer(_msgValue());
+		return _mintAllowance;
 	}
 }

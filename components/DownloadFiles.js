@@ -1,30 +1,35 @@
 import React, { Component } from 'react'
-import { Card, Grid } from 'semantic-ui-react'
+import { Card, Grid, Accordion, Icon } from 'semantic-ui-react'
 import web3 from '../web3'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import FileRow from '../components/FileRow'
 
 export default class DownloadFiles extends Component {
-  // async componentDidMount() {
-  //   const accounts = await web3.eth.getAccounts();
-  //   const contract = await new web3.eth.Contract(Tambora.abi, this.props.address);
-  //   const fileStore = await contract.methods.getFileStore().call({ from: accounts[0] });
-  //   this.setState({ fileStore: fileStore });
-  // }
+  state = {
+    activeIndex: 0
+  }
+  
+  handleClick = (e, titleProps) => {
+    const { index } = titleProps
+    const { activeIndex } = this.state
+    const newIndex = activeIndex === index ? -1 : index
+
+    this.setState({ activeIndex: newIndex })
+  }
   
   render() {
+    const { activeIndex } = this.state;
     console.log(this.props.fileStore);
     if (this.props.isTokenHolder) {
       const items = this.props.fileStore.map((obj, i) => {
 	return <FileRow name={obj[0]} uri={obj[1]} index={i} />
       });
-     
       return (
-	<div>
+	<div style={{marginTop: '10px'}}>
 	<h2>File Downloads</h2>
-	<Card.Group>
+	  <Card.Group>
 	    {items}
-	</Card.Group>
+	  </Card.Group>
 	</div>
       );
     } else {
