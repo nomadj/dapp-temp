@@ -5,13 +5,14 @@ import { Card, Image, Embed } from 'semantic-ui-react'
 
 class NFT extends React.Component {
   render() {
+    const { name, description, image, attributes } = this.props.meta;
     if (this.props.type === 'image/png') {
       return (
         <Card color='olive'>
 	  <Image src={this.props.url} wrapped ui={false} />
 	  <Card.Content>
 	    <Card.Header>
-	      <Link href="/">
+	      <Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, name, description, image, this.props.type, attributes[0].trait_type, attributes[0].value]}} >
 		<a>{this.props.name}</a>
 	      </Link>
 	    </Card.Header>
@@ -24,7 +25,7 @@ class NFT extends React.Component {
 	  <Embed url={this.props.url} active={true} />    
 	  <Card.Content>
 	    <Card.Header>
-	      <Link href="/">
+	      <Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, name, description, image, this.props.type, attributes[0].trait_type, attributes[0].value]}} >
 		<a>{this.props.name}</a>
 	      </Link>
 	    </Card.Header>

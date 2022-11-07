@@ -189,9 +189,9 @@ class MintForm extends Component {
 	    <Form.Field required>
 	      <label>Name</label>
 	      <Input
-		value={this.state.title}
-		onChange={event => this.setState({ title: event.target.value })}
-		placeholder='Prelude in E'
+		value={this.state.name}
+		onChange={event => this.setState({ name: event.target.value })}
+		placeholder='University Entrance Audition'
 	      />
 	    </Form.Field>
 	    <Form.Field required>
@@ -199,15 +199,15 @@ class MintForm extends Component {
 	      <Input
 		value={this.state.composer}
 		onChange={event => this.setState({ composer: event.target.value })}
-		placeholder='J.S. Bach'
+		placeholder="Alice Vanderblatt performing classical guitar"
 	      />
 	    </Form.Field>
 	    <Form.Field required>
-	      <label>Performer</label>
+	      <label>Owner</label>
 	      <Input
 		value={this.state.performer}
 		onChange={event => this.setState({ performer: event.target.value })}
-		placeholder="Andres Segovia"
+		placeholder="Alice Vanderblatt"
 	      />
 	    </Form.Field>
 	  </Form.Group>

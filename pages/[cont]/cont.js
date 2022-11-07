@@ -15,9 +15,6 @@ export async function getServerSideProps(props) {
   const name = props.query['cont']; // Currently querying contract address
   const address = props.query['0'];
   const account = props.query['1'];
-  console.log("Name: ", name);
-  console.log("Address: ", address);
-  console.log("Account: ", account);
   const contract = new web3.eth.Contract(Tambora.abi, address);
   const tokenIds = await contract.methods.getOwnedTokens(account).call();
   const isTokenHolder = tokenIds.length > 0;
@@ -26,7 +23,6 @@ export async function getServerSideProps(props) {
       return contract.methods.tokenURI(id).call();
     })
   );
-  console.log("Token Uris: ", tokenURIs);
   const results = await Promise.all(
     tokenURIs.map(uri => {
       return fetch(uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'));
@@ -37,14 +33,13 @@ export async function getServerSideProps(props) {
       return res.json();
     })
   );
+  console.log("Data Array: ", dataArray);
   const images = dataArray.map(data => {
     return data.image.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
   });
-  console.log("Images: ", images);
   const tokenNames = dataArray.map(data => {
     return data.name;
   });
-  console.log("Token Names: ", tokenNames);
   const ints = [5, 6, 7];
   const url = 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr';
   // (async function(){ 
@@ -67,7 +62,8 @@ export async function getServerSideProps(props) {
       images,
       isTokenHolder,
       types,
-      tokenNames
+      tokenNames,
+      dataArray
     },
   };
 }
@@ -82,7 +78,7 @@ class MyContract extends React.Component {
   
   render() {
     const items = this.props.images.map((image, index) => {
-      return <NFT key={index} url={image} name={this.props.tokenNames[index]} address={this.state.address} type={this.props.types[index]} />
+      return <NFT key={index} url={image} name={this.props.tokenNames[index]} address={this.state.address} type={this.props.types[index]} meta={this.props.dataArray[index]} />
     });
     return (
       <Layout>
