@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Message, Button } from 'semantic-ui-react';
+import { Form, Input, Message, Button, Popup } from 'semantic-ui-react';
 import web3 from '../web3';
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import DynamicButton from './DynamicButton'
@@ -33,14 +33,19 @@ class RequestForm extends Component {
       const metadata = {
 	"name": this.props.userName,
 	"image": this.props.metadata.image,
+	"description": `Membership token for client ${this.props.userName}`,
 	"attributes": [
-	  {
-	    "trait_type": "title",
-	    "value": "student"
-	  },
 	  {
 	    "trait_type": "role",
 	    "value": "client"
+	  },
+	  {
+	    "trait_type": "token type",
+	    "value": "contract membership"
+	  },
+	  {
+	    "trait_type": "aux uri",
+	    "value": ""
 	  }
 	]
       };
@@ -137,18 +142,31 @@ class RequestForm extends Component {
 	  <Message error header="Oops!" content={this.state.errorMessage} />
 	  <Message success header="Success!" content={this.state.successMessage} />
 	  <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
-	  <Button color='olive' loading={this.state.loading}>Get Approved</Button>
+	  <Button disabled={this.state.loading} color='olive' loading={this.state.loading}>Get Approved</Button>
 	</Form>
       );
     } else if (this.props.isApproved) {
       return (
-	<div>
-	  <h2>You are approved!</h2>
-	  <InfoMessage isShowing={this.state.isInteracting} header="Please Wait..." content={this.state.infoMessage} />
-	  <SuccessMessage isShowing={!!this.state.successMessage} header="Success" content={this.state.successMessage} />
-	  <ErrorMessage isShowing={!!this.state.errorMessage} header="Error" content={this.state.errorMessage} />
-	  <DynamicButton loading={this.state.loading} color='blue' label="Finalize" isShowing={this.props.isApproved} onClick={this.createMeta} />
-	</div>
+	<Popup
+	  trigger={
+	    <div>
+	      <h2>You are approved!</h2>
+	      <InfoMessage isShowing={this.state.isInteracting} header="Please Wait..." content={this.state.infoMessage} />
+	      <SuccessMessage isShowing={!!this.state.successMessage} header="Success" content={this.state.successMessage} />
+	      <ErrorMessage isShowing={!!this.state.errorMessage} header="Error" content={this.state.errorMessage} />
+	      <DynamicButton
+		disabled={this.state.loading}
+		loading={this.state.loading}
+		color='violet'
+		icon="birthday"
+		isShowing={this.props.isApproved}
+		onClick={this.createMeta}
+	      />
+	    </div>
+	  }
+	  position='top left'
+	  content='Congratulations! Click to finalize and mint your access token.'
+	/>
       );
     } else if (this.props.isPending) {
       return <h2>Waiting for approval...</h2>;

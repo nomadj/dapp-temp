@@ -7,11 +7,11 @@ class TokenLink extends Component {
       return (
 	<Link
 	  href={{
-	    pathname: `/${this.props.address}/cont`,
+	    pathname: `/${this.props.name}/cont`,
 	    query: [this.props.address, this.props.account]
 	  }}
 	>
-	  <a>View My Tokens</a>
+	  <a>view my tokens</a>
 	</Link>
       );
     } else {

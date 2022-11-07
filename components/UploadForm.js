@@ -5,6 +5,7 @@ import { create } from 'ipfs-http-client'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import web3 from '../web3'
 import { proString } from '../utils'
+import Router from 'next/router'
 
 export default class UploadForm extends Component {
   state = {
@@ -33,17 +34,21 @@ export default class UploadForm extends Component {
       this.setState({ infoMessage: `File added at ${basePath}${added.path}`});
       await this.addFileLocation(`${basePath}${added.path}`);
     } catch (error) {
-      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+      this.setState({ errorMessage: 'Please choose a valid pdf file', loading: false, infoMessage: '' });
     }
   }
 
   addFileLocation = async (uri) => {
     try {
+      if (this.state.name === '') {
+	throw { message: 'Please enter a name for your file' };
+      }
       this.setState({ infoMessage: 'Interacting with the EVM' });
       const accounts = await web3.eth.getAccounts();
       const contract = await new web3.eth.Contract(Tambora.abi, this.props.address);
       const tx = await contract.methods.addFileLocation(this.state.name, uri).send({ from: accounts[0] });
       this.setState({ loading: false, successMessage: `Transaction complete ${tx.transactionHash}`, infoMessage: '' });
+      setTimeout(() => Router.reload(window.location.pathname, 1000));
     } catch (error) {
       this.setState({ loading: false, errorMessage: error.message, infoMessage: '' });
     }
@@ -66,7 +71,13 @@ export default class UploadForm extends Component {
   render() {
     if (this.props.isShowing) {
       return (
-	<Form onSubmit={ event => {this.onSubmit(document.getElementById('upload-picker').files[0])}} error={!!this.state.errorMessage} success={!!this.state.successMessage}>
+	<Form
+	  onSubmit={ event => {
+	    this.onSubmit(document.getElementById('upload-picker').files[0]);
+	  }}
+	  error={!!this.state.errorMessage}
+	  success={!!this.state.successMessage}
+	>
 	  <h2>Upload File</h2>
 	  <Form.Field style={{ marginBottom: '10px' }} >
 	    <Message error header='Error' content={this.state.errorMessage} />
@@ -77,7 +88,7 @@ export default class UploadForm extends Component {
 	      content={this.state.infoMessage}
 	    />
 	    <Input
-	      label='name'
+	      label={<Button disabled={this.state.loading} loading={this.state.loading} color='violet' icon='upload' size='mini' />}
 	      labelPosition='right'
 	      value={this.state.name}
 	      onChange={event => {
@@ -91,7 +102,6 @@ export default class UploadForm extends Component {
 	      id='upload-picker'
 	      onChange={() => this.fileHandler(event)}
 	    />
-	    <Button floated='right' loading={this.state.loading} color='violet' icon='upload' size='mini' style={{ marginRight: '14px' }} />
 	  </Form.Field>
 	</Form>
       );

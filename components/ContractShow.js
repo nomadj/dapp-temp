@@ -12,7 +12,7 @@ import DownloadFiles from './DownloadFiles';
 class ContractShow extends Component {
   render() {
     return (
-      <Card.Group>
+      <Card.Group> 
 	<Grid columns='equal'>
 	  <Grid.Row>
 	    <Grid.Column style={{ marginLeft: '6px', overflowWrap: 'break-word'}}>
@@ -24,6 +24,7 @@ class ContractShow extends Component {
 		    isTokenHolder={this.props.isTokenHolder}
 		    address={this.props.address}
 		    account={this.props.account}
+		    name={this.props.name}
 		  />
 		}
 	      />

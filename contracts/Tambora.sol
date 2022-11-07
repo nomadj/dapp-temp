@@ -15,7 +15,7 @@ contract Tambora is ERC721 {
 		_;
 	}
 
-	// client types: guest, pending, approved, holder, owner, denied
+	// status enum: guest, pending, approved, holder, owner, denied
 
 	struct Client {
 		string name;
@@ -37,6 +37,7 @@ contract Tambora is ERC721 {
 	mapping (address => uint256[]) private _ownedTokens;
 	mapping (address => Client) public clients;
 	mapping (address => Client) public pendingClients;
+	mapping (address => File[]) private _individualFiles;
 	Client[] private _pendingClients;
 	Client[] private _clients;
 	File[] private _fileStore;
@@ -102,7 +103,7 @@ contract Tambora is ERC721 {
 		clients[_msgSender()].minted += 1;
 	}
 
-	function getOwnedTokens(address tokenOwner) public view returns (uint256[] memory){
+	function getOwnedTokens(address tokenOwner) public view returns (uint256[] memory) {
 		return _ownedTokens[tokenOwner];
 	}
 
@@ -120,16 +121,6 @@ contract Tambora is ERC721 {
 	function getPendingClients() public view returns (Client[] memory) {
 		return _pendingClients;
 	}
-
-	/* function approveClient(uint256 index) public onlyOwner { */
-	/* 	_pendingClients[index].status = 'approved'; */
-	/* 	clients[_msgSender()] = _clients[index]; */
-	/* } */
-
-	/* function denyClient(uint256 index) public onlyOwner { */
-	/* 	_clients[index].status = 'denied'; */
-	/* 	clients[_msgSender()] = _clients[index]; */
-	/* } */
 
 	function approveOrDenyClient(uint256 index, bool decision) public onlyOwner {
 		Client memory client = _pendingClients[index];
@@ -173,10 +164,11 @@ contract Tambora is ERC721 {
 		string tokenURI;
 		uint256 approvedCount;
 		File[] fileStore;
+		File[] individualFilestore;
 	}
 
 	function getShowData() public view returns (ShowData memory) {
-		return ShowData({ tokenId: tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), approvedCount: _clients.length, fileStore: _fileStore });
+		return ShowData({ tokenId: tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), approvedCount: _clients.length, fileStore: _fileStore, individualFilestore: _individualFiles[_msgSender()] });
 	}
 
 	function addFileLocation(string memory name_, string memory uri_) public onlyOwner {
@@ -204,9 +196,13 @@ contract Tambora is ERC721 {
 	}
 
 	function increaseContractMintAllowance() public payable onlyOwner returns (uint256) {
-		require(_msgValue() >= 0.04 ether, "This transaction requires 0.04 ether");
+		require(_msgValue() >= 0.05 ether, "This transaction requires 0.05 ether");
 		_mintAllowance += 200;
 		_factoryOwner.transfer(_msgValue());
 		return _mintAllowance;
+	}
+
+	function addIndividualFile(address to_, string memory uri_, string memory name_) public onlyOwner {
+		_individualFiles[to_].push(File({name: name_, uri: uri_}));
 	}
 }

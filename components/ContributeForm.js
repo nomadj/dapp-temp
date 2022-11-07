@@ -2,38 +2,42 @@ import React, { Component } from 'react';
 import { Form, Input, Message, Button } from 'semantic-ui-react';
 import web3 from '../web3';
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
+import Router from 'next/router'
+import InfoMessage from '../components/InfoMessage'
 
 class ContributeForm extends Component {
   state = {
     value: '',
     errorMessage: '',
-    loading: false
+    successMessage: '',
+    infoMessage: '',
+    loading: false,
   };
 
   onSubmit = async (event) => {
     event.preventDefault();
-
+    this.setState({ loading: true, errorMessage: '', infoMessage: 'Interacting with the EVM', successMessage: '' });
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-    this.setState({ loading: true, errorMessage: '' });
 
     try {
       const accounts = await web3.eth.getAccounts();
       const owner = await contract.methods.owner().call();
-      await web3.eth.sendTransaction({
+      const tx = await web3.eth.sendTransaction({
         from: accounts[0],
 	to: owner,
         value: web3.utils.toWei(this.state.value, 'ether')
       });
-      // Router.replaceRoute(`/campaigns/${this.props.address}`) //refresh page
+      this.setState({ successMessage: `Your donation of ${this.state.value} eth has been made at transaction hash ${tx.transactionHash}`, infoMessage: '' });
+      // setTimeout(() => Router.reload(window.location.pathname), 1000);
     } catch (err) {
-      this.setState({ errorMessage: err.message });
+      this.setState({ errorMessage: err.message, successMessage: '', infoMessage: '' });
     }
     this.setState({ loading: false, value: '' });
   };
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px' }}>
         <Form.Field>
           <h2>Donate</h2>
           <Input
@@ -44,8 +48,10 @@ class ContributeForm extends Component {
 	    labelPosition="right"
           />
         </Form.Field>
-        <Message error header="Oops!" content={this.state.errorMessage} />
-        <Button color='green' loading={this.state.loading}>Donate</Button>
+        <Message error header="Error" content={this.state.errorMessage} />
+	<Message success header="Thank You!" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
+	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
+        <Button disabled={this.state.loading} color='green' loading={this.state.loading}>Donate</Button>
       </Form>
     );
   }

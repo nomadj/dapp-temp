@@ -51,9 +51,10 @@ class MintForm extends Component {
     url: '',
     isPng: false,
     isMp4: false,
-    composer: '',
-    title: '',
+    description: '',
+    name: '',
     performer: '',
+    tokenType: '',
     errorMessage: '',
     success: false,
     address: '',
@@ -64,7 +65,8 @@ class MintForm extends Component {
     isShowingProg: false,
     infoMessage: '',
     txHash: '',
-    uri: ''
+    uri: '',
+    auxUri: ''
   }
   componentDidMount() {
     // this.setState({ address: this.props.query['0'], account: this.props.query['1'] });
@@ -139,24 +141,26 @@ class MintForm extends Component {
 
   createMeta = async (cid) => {
     try {
-    const metadata = {
-      "image": `ipfs://${cid}`,
-      "attributes": [
-	{
-	  "trait_type": "title",
-	  "value": this.state.title
-	},
-	{
-	  "trait_type": "composer",
-	  "value": this.state.composer
-	},
-	{
-	  "trait_type": "performer",
-	  "value": this.state.performer
-	}
-      ]
-    };
-    const data = JSON.stringify(metadata);
+      const metadata = {
+	"name": this.state.name,
+	"description": this.state.description,
+	"image": `ipfs://${cid}`,
+	"attributes": [
+	  {
+	    "trait_type": "token type",
+	    "value": this.state.tokenType
+	  },
+	  {
+	    "trait_type": "role",
+	    "value": "owner"
+	  },
+	  {
+	    "trait_type": "aux uri",
+	    "value": this.state.auxUri
+	  }
+	]
+      };
+      const data = JSON.stringify(metadata);
       await this.ipfsAddJSON(data);
     } catch (error) {
       this.setState({ errorMessage: error, isLoading: false });
@@ -183,7 +187,7 @@ class MintForm extends Component {
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	  <Form.Group widths='equal'>
 	    <Form.Field required>
-	      <label>Title</label>
+	      <label>Name</label>
 	      <Input
 		value={this.state.title}
 		onChange={event => this.setState({ title: event.target.value })}
@@ -191,7 +195,7 @@ class MintForm extends Component {
 	      />
 	    </Form.Field>
 	    <Form.Field required>
-	      <label>Composer</label>
+	      <label>Description</label>
 	      <Input
 		value={this.state.composer}
 		onChange={event => this.setState({ composer: event.target.value })}

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Layout from '../components/Layout';
-import { Form, Button, Input, Message, Select } from 'semantic-ui-react';
+import { Form, Button, Input, Message, Select, Popup } from 'semantic-ui-react';
 import web3 from '../web3';
 import factory from '../factory';
 import Router from 'next/router';
@@ -24,6 +24,7 @@ class CreateContract extends Component {
     success: false,
     image: '',
     contractType: '',
+    auxUri: '',
     uri: '',
     url: '',
     contractAddress: ''
@@ -116,14 +117,19 @@ class CreateContract extends Component {
       const metadata = {
 	"name": this.state.name,
 	"image": `ipfs://${cid}`,
+	"description": `Token prime of ${this.state.name} contract`,
 	"attributes": [
-	  {
-	    "trait_type": "title",
-	    "value": "professional"
-	  },
 	  {
 	    "trait_type": "role",
 	    "value": "owner"
+	  },
+	  {
+	    "trait_type": "token type",
+	    "value": "contract membership"
+	  },
+	  {
+	    "trait_type": "aux uri",
+	    "value": ""
 	  }
 	]
       };
@@ -181,15 +187,23 @@ class CreateContract extends Component {
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	  <Form.Group widths='equal'>
 	    <Form.Field>
-	      <label>Name</label>
+	      <Popup
+		trigger={<label>Name</label>}
+		content='Enter a name for your contract. Use only lowercase letters.'
+		position='top left'
+              />
 	      <Input
 		value={this.state.name}
 		onChange={event => this.setState({ name: event.target.value })}
-		placeholder='MyAwesomeContract'
+		placeholder='myawesomecontract'
 	      />
 	    </Form.Field>
 	    <Form.Field>
-	      <label>Symbol</label>
+	      <Popup
+		trigger={<label>Symbol</label>}
+		content='Symbols are all in caps and 3-4 characters long'
+		position='top left'
+              />
 	      <Input
 		value={this.state.symbol}
 		onChange={event => this.setState({ symbol: event.target.value })}
@@ -197,7 +211,11 @@ class CreateContract extends Component {
 	      />
 	    </Form.Field>
 	    <Form.Field>
-	      <label>Price (per 5 tokens)</label>
+	      <Popup
+		trigger={<label>Price</label>}
+		content='Enter the amount, in ether, you would like to charge your clients. For the amount specified, clients will be given approval to mint 5 NFT tokens from your contract.'
+		position='top left'
+              />
 	      <Input
 		label='Ether'
 		labelPosition='right'
@@ -206,16 +224,26 @@ class CreateContract extends Component {
 		placeholder="0.08"
 	      />
 	    </Form.Field>
-	    <Form.Field
-	      control={Select}
-	      label='Type'
-	      options={options}
-	      placeholder='Type'
-	      onChange={this.handleChange}
+	    <Popup
+	      trigger={
+		<Form.Field
+		  control={Select}
+		  label='Type'
+		  options={options}
+		  placeholder='Type'
+		  onChange={this.handleChange}
+		/>
+	      }
+	      content='We are working hard to expand this list to meet the needs of society'
+	      position='top left'
 	    />
 	  </Form.Group>
 	  <Form.Field>
-   	    <label>Image or Video</label>
+	    <Popup
+	      trigger={<label>Image</label>}
+	      position='top left'
+	      content="Choose a .png file to represent your contract. Each of your clients will be minted a token containing this image."
+	    />
    	    <Input
    	      id="image-picker"
    	      type="file"
@@ -233,8 +261,11 @@ class CreateContract extends Component {
 	    header='Please Wait...'
 	    content={this.state.infoMessage}
 	  />
-	  <h3>Creation allows 200 tokens to be minted from your contract.</h3>
-          <Button type='submit' loading={this.state.loading} color='olive'>Create</Button>
+	  <Popup
+	    trigger={<Button type='submit' loading={this.state.loading} color='olive'>Create</Button>}
+	    location='top left'
+	    content="Clicking on 'Create' will mint you the 'token prime' and mark you as the owner of the contract. As the owner, you will be authorized to approve up to 200 token mintings. At that point you may choose to extend the contract's mint allowance."
+	  />
         </Form>
       </Layout>
     );

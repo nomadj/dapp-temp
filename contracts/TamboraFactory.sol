@@ -14,9 +14,9 @@ contract TamboraFactory {
 	constructor() {
 		_owner = payable(_msgSender());
 	}
-
+	
 	function deployTambora(string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_) public payable {
-		// require(_msgValue() >= 0.033 ether);
+		// require(_msgValue() >= 0.05 ether);
 		require(address(getContractAddress(name)) == address(0), "Name already exists");
 		Tambora newContract = new Tambora(_msgSender(), name, symbol, price_, contractType_, to_, uri_, _owner);
 		_contracts.push(newContract);
@@ -35,15 +35,12 @@ contract TamboraFactory {
 	function getDeployedContracts() public view returns (Tambora[] memory) {
 		return _contracts;
 	}
-
 	function getOwnedContracts(address contractOwner) public view returns (Tambora[] memory) {
 		return _ownedContracts[contractOwner];
 	}
-
 	function _msgSender() internal view returns (address) {
 		return msg.sender;
 	}
-
 	function _msgValue() internal view returns (uint256) {
 		return msg.value;
 	}
