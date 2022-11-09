@@ -19,7 +19,6 @@ export default class DownloadFiles extends Component {
   
   render() {
     const { activeIndex } = this.state;
-    console.log(this.props.fileStore);
     if (this.props.isTokenHolder) {
       const items = this.props.fileStore.map((obj, i) => {
 	return <FileRow name={obj[0]} uri={obj[1]} index={i} />

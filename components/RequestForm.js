@@ -8,6 +8,7 @@ import InfoMessage from './InfoMessage'
 import SuccessMessage from './SuccessMessage'
 import ErrorMessage from './ErrorMessage'
 import Router from 'next/router'
+import { proString } from '../utils'
 
 class RequestForm extends Component {
   state = {
@@ -21,10 +22,9 @@ class RequestForm extends Component {
   };
 
   thrower = () => {
-    
     if (this.state.name === '') {
-      throw {message: 'Please enter your primary identifier'};
-    }
+      throw { message: 'Please enter your primary identifier' };
+    } 
   }
 
   createMeta = async () => {
@@ -132,7 +132,7 @@ class RequestForm extends Component {
 	      <h2>Get approved</h2>
 	      <Input
 		value={this.state.name}
-		onChange={event => this.setState({ name: event.target.value })}
+		onChange={event => this.setState({ name: proString(event.target.value) })}
 		label="name"
 		labelPosition="right"
 		placeholder="Criminy Jicket"

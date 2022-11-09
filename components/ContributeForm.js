@@ -4,6 +4,7 @@ import web3 from '../web3';
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import Router from 'next/router'
 import InfoMessage from '../components/InfoMessage'
+import { floatsOnly } from '../utils'
 
 class ContributeForm extends Component {
   state = {
@@ -42,16 +43,14 @@ class ContributeForm extends Component {
           <h2>Donate</h2>
           <Input
             value={this.state.value}
-            onChange={event => this.setState({ value: event.target.value })}
+            onChange={event => this.setState({ value: floatsOnly(event.target.value) })}
 	    placeholder="0.08"
-	    label= "ether"
-	    labelPosition="right"
+	    label={<Button disabled={this.state.loading} color='green' loading={this.state.loading} icon='ethereum' />}
           />
         </Form.Field>
         <Message error header="Error" content={this.state.errorMessage} />
 	<Message success header="Thank You!" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
 	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
-        <Button disabled={this.state.loading} color='green' loading={this.state.loading}>Donate</Button>
       </Form>
     );
   }

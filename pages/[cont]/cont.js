@@ -15,6 +15,9 @@ export async function getServerSideProps(props) {
   const name = props.query['cont']; // Currently querying contract address
   const address = props.query['0'];
   const account = props.query['1'];
+  const minted = props.query['2'];
+  const mintAllowance = props.query['3'];
+  const mintDisabled = minted >= mintAllowance;
   const contract = new web3.eth.Contract(Tambora.abi, address);
   const tokenIds = await contract.methods.getOwnedTokens(account).call();
   const isTokenHolder = tokenIds.length > 0;
@@ -63,7 +66,8 @@ export async function getServerSideProps(props) {
       isTokenHolder,
       types,
       tokenNames,
-      dataArray
+      dataArray,
+      mintDisabled
     },
   };
 }
@@ -80,21 +84,34 @@ class MyContract extends React.Component {
     const items = this.props.images.map((image, index) => {
       return <NFT key={index} url={image} name={this.props.tokenNames[index]} address={this.state.address} type={this.props.types[index]} meta={this.props.dataArray[index]} />
     });
-    return (
-      <Layout>
-	<Header />
-	<Card.Group itemsPerRow={4}>
+    if (this.props.mintDisabled) {
+      return (
+	<Layout>
+	  <Header />
+	  <h1>You have reached your mint allowance. Request more.</h1>
+	<Card.Group>
 	  {items}
 	</Card.Group>
-	<Link href={{pathname: '/minty', query: [this.props.address, this.props.account]}}>
-	  <DynamicButton
-	    color='olive'
-	    isShowing={this.props.isTokenHolder}
-	    label='Mint'
-	  />
-	</Link>
       </Layout>
-    );
+      );
+    } else {
+      return (
+	<Layout>
+	  <Header />
+	  <Link href={{pathname: '/minty', query: [this.props.address, this.props.account]}}>
+	    <DynamicButton
+	      color='olive'
+	      isShowing={this.props.isTokenHolder && !this.props.mintDisabled}
+	      label='Mint a new token'
+	      marginBottom='10px'
+	    />
+	  </Link>
+	  <Card.Group>
+	    {items}
+	  </Card.Group>
+	</Layout>
+      );
+    }
   }
 }
 export default MyContract;

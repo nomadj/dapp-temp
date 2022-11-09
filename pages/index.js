@@ -135,6 +135,7 @@ class Index extends React.Component {
     return (
       <Layout>
 	<Header source={this.props.conObj} account={this.state.account}/>
+	<h1 style={{textAlign: 'center'}}>Welcome to Fastload, the Decentralized NFT Network</h1>
 	<Card.Group itemsPerRow={2}>
 	  {items}
 	</Card.Group>

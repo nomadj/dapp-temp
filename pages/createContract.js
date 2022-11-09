@@ -8,6 +8,7 @@ import Header from '../components/Header';
 import InfoMessage from '../components/InfoMessage';
 import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFactory.json';
 import { create } from 'ipfs-http-client';
+import ImageResize from 'image-resize';
 
 const options = [
   { key: 'm', text: 'Musician', value: 'musician' }
@@ -64,6 +65,11 @@ class CreateContract extends Component {
 
   onSubmit = async (img) => {
     this.setState({ loading: true, errorMessage: '', success: false, infoMessage: 'Adding file to IPFS' });
+    // const imageResize = await new ImageResize({
+    //   format: 'png',
+    //   height: '160'
+    // });
+    // const newImage = await imageResize.play(img); 
     await this.ipfsAdd(img);
     this.setState({ infoMessage: 'Interacting with the EVM' });
     try {
@@ -82,7 +88,6 @@ class CreateContract extends Component {
       async function pusher() {
 	const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
 	const eventLog = tx.events['Deployed'].returnValues.contractAddr;
-	console.log(eventLog);
 	Router.push({pathname: '/', query: [eventLog]});
       }
       setTimeout(pusher, 3000);
@@ -105,9 +110,8 @@ class CreateContract extends Component {
     try {
       const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
       await this.createMeta(added.path);
-    } catch (event) {
-      console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, infoMessage: '' });
+    } catch (error) {
+      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
     }
   }
 
@@ -183,7 +187,7 @@ class CreateContract extends Component {
     return (
       <Layout>
 	<Header />
-        <h3>Create your own ERC721 contract.</h3>
+        <h3>Create your own ERC721 contract</h3>
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	  <Form.Group widths='equal'>
 	    <Form.Field>

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Image, Embed } from 'semantic-ui-react'
+import { Card, Image, Embed, Button } from 'semantic-ui-react'
 import Layout from '../../components/Layout'
 import Header from '../../components/Header'
 
@@ -12,6 +12,10 @@ export async function getServerSideProps(props) {
   const filetype = props.query['4'];
   const attrTrait1 = props.query['5'];
   const attrVal1 = props.query['6'];
+  const attrTrait2 = props.query['7'];
+  const attrVal2 = props.query['8'];
+  const attrTrait3 = props.query['9'];
+  const attrVal3 = props.query['10'];
  
   return {
     props: {
@@ -20,6 +24,10 @@ export async function getServerSideProps(props) {
       image,
       attrTrait1,
       attrVal1,
+      attrTrait2,
+      attrVal2,
+      attrTrait3,
+      attrVal3,
       filetype
     }
   }
@@ -31,23 +39,38 @@ export default class TokenShow extends Component {
       return (
 	<Layout>
 	  <Header />
-	  <Card.Group>
+	  <Card.Group itemsPerRow={4}>
 	    <Card>
 	      <Card.Content>
 		<Image src={this.props.image} floated='right' size='mini' rounded />
 		<Card.Header>{this.props.name}</Card.Header>
+		<Button size="mini">Transfer</Button>
 	      </Card.Content>
 	    </Card>
-	    <Card
-	      header='Description'
-	      content={this.props.description}
-	    />
 	    <Card>
 	      <Card.Content>
-		<Card.Header>Trait Type</Card.Header>
-		<Card.Description>{this.props.attrTrait1}</Card.Description>
+		<Card.Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Card.Header>
+		<Card.Description>{this.props.attrVal2}</Card.Description>
+	      </Card.Content>	      
+	    </Card>
+	    <Card>
+	      <Card.Content>
+		<Card.Header>{this.props.attrTrait1.replace(this.props.attrTrait1.charAt(0), this.props.attrTrait1.charAt(0).toUpperCase())}</Card.Header>
+		<Card.Description>{this.props.attrVal1}</Card.Description>
 	      </Card.Content>
-	    </Card>	
+	    </Card>
+	    <Card>
+	      <Card.Content>
+		<Card.Header>Description</Card.Header>
+		<Card.Description>{this.props.description}</Card.Description>
+	      </Card.Content>
+	    </Card>
+	    <Card>
+	      <Card.Content>
+		<Card.Header>{this.props.attrTrait3.replace(this.props.attrTrait3.charAt(0), this.props.attrTrait3.charAt(0).toUpperCase())}</Card.Header>
+		<Card.Description>{this.props.attrVal3}</Card.Description>
+	      </Card.Content>
+	    </Card>	    
 	  </Card.Group>
 	</Layout>
       );
@@ -69,8 +92,8 @@ export default class TokenShow extends Component {
 	    />
 	    <Card>
 	      <Card.Content>
-		<Card.Header>Trait Type</Card.Header>
-		<Card.Description>{this.props.attrTrait1}</Card.Description>
+		<Card.Header>{this.props.attrTrait1}</Card.Header>
+		<Card.Description>{this.props.attrVal1}</Card.Description>
 	      </Card.Content>
 	    </Card>	
 	  </Card.Group>

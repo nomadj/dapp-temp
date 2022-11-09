@@ -25,6 +25,7 @@ class ContractShow extends Component {
 		    address={this.props.address}
 		    account={this.props.account}
 		    name={this.props.name}
+		    clientData={this.props.clientData}
 		  />
 		}
 	      />
@@ -62,7 +63,7 @@ class ContractShow extends Component {
 		isApproved={this.props.isApproved}
 		isTokenHolder={this.props.isTokenHolder}
 		onFinalize={this.props.onFinalize}
-		floading={this.props.loading}
+		loading={this.props.loading}
 		userName={this.props.userName}
 		metadata={this.props.metadata}
 		isPending={this.props.isPending}

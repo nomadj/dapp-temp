@@ -135,6 +135,8 @@ class MintForm extends Component {
       this.setState({ isLoading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       return tx.transactionHash;
     } catch (error){
+      const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
+      console.log(contract.events);
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' })
     }
   }
@@ -197,8 +199,8 @@ class MintForm extends Component {
 	    <Form.Field required>
 	      <label>Description</label>
 	      <Input
-		value={this.state.composer}
-		onChange={event => this.setState({ composer: event.target.value })}
+		value={this.state.description}
+		onChange={event => this.setState({ description: event.target.value })}
 		placeholder="Alice Vanderblatt performing classical guitar"
 	      />
 	    </Form.Field>
@@ -227,7 +229,7 @@ class MintForm extends Component {
 	    content={`Minted at transaction ${this.state.txHash}`}
 	  />
 	  <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />
-          <Button type='submit' loading={this.state.isLoading} icon='gem' color='yellow' size='large'/>
+          <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='gem' color='yellow' size='large'/>
 	  <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
         </Form>
 	</div>

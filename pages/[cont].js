@@ -30,7 +30,6 @@ export async function getServerSideProps(props) {
   const image = metadata.image.replace('ipfs://', baseURL);
   const tokenHolders = showData.approvedCount;
   const tokenHoldersCount = tokenHolders.length;
-  console.log(fileStore);
 
   return {
     props: {
@@ -63,7 +62,8 @@ class CampaignShow extends Component {
     success: false,
     isInteracting: false,
     infoMessage: '',
-    txHash: ''
+    txHash: '',
+    clientData: {}
   }
 
   async componentDidMount() {
@@ -71,6 +71,7 @@ class CampaignShow extends Component {
     this.setState({ account: accounts[0] });
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
     const clientData = await contract.methods.getClientData().call({ from: accounts[0] });
+    this.setState({ clientData: clientData });
     
     const tokenBalance = await contract.methods.balanceOf(accounts[0]).call();
     if (tokenBalance > 0) {
@@ -135,6 +136,7 @@ class CampaignShow extends Component {
 		metadata={this.props.metadata}
 		isPending={this.state.isPending}
 		fileStore={this.props.fileStore}
+		clientData={this.state.clientData}
 	      />
             </Grid.Column>
 	    <Grid.Column>

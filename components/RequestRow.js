@@ -70,7 +70,7 @@ class RequestRow extends Component {
 	</Cell>
 	<Cell textAlign='right' width={1}>
 	  {request.isApproved ? null : (
-	    <Button disabled={this.state.isLoading} loading={this.state.denyLoading} color="red" basic onClick={this.onDeny}>Deny</Button>
+	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.denyLoading} color="red" basic onClick={this.onDeny}>Deny</Button>
 	  )}
 	</Cell>
       </Row>
