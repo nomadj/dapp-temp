@@ -35,12 +35,18 @@ contract Tambora is ERC721Enumerable {
 	string public contractType;
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => uint256[]) private _ownedTokens;
+	mapping (uint256 => ClientToken) private memberTokens;
 	mapping (address => Client) public clients;
 	mapping (address => Client) public pendingClients;
 	mapping (address => File[]) private _individualFiles;
 	Client[] private _pendingClients;
 	Client[] private _clients;
 	File[] private _fileStore;
+
+	struct ClientToken {
+		uint256 minted;
+		uint256 mintAllowance;
+	}
 
 	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_) ERC721(name, symbol) {
 		tokenId = 0;
