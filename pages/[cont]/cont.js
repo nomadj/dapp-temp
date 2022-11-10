@@ -12,14 +12,21 @@ import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
 import DynamicButton from '../../components/DynamicButton'
 
 export async function getServerSideProps(props) {
-  const name = props.query['cont']; // Currently querying contract address
+  const name = props.query['cont']; 
   const address = props.query['0'];
   const account = props.query['1'];
   const minted = props.query['2'];
   const mintAllowance = props.query['3'];
   const mintDisabled = minted >= mintAllowance;
   const contract = new web3.eth.Contract(Tambora.abi, address);
-  const tokenIds = await contract.methods.getOwnedTokens(account).call();
+  // const tokenIds = await contract.methods.getOwnedTokens(account).call();
+  const tokenBalance = await contract.methods.balanceOf(account).call();
+  console.log('Token Balance: ', tokenBalance);
+  var tokenIds = [];
+  for (let i = 0; i < tokenBalance; i++) {
+    const token = await contract.methods.tokenOfOwnerByIndex(account, i).call();
+    tokenIds.push(token);
+  }
   const isTokenHolder = tokenIds.length > 0;
   const tokenURIs = await Promise.all(
     tokenIds.map(id => {
@@ -45,10 +52,6 @@ export async function getServerSideProps(props) {
   });
   const ints = [5, 6, 7];
   const url = 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr';
-  // (async function(){ 
-  //   var req = await fetch(images[0], {method:'HEAD'});
-  //   console.log(req.headers.get('content-type'));
-  // })()
   var types = [];
   for (let i = 0; i < images.length; i++) {
     const req = await fetch(images[i], {method: 'HEAD'});
@@ -67,7 +70,8 @@ export async function getServerSideProps(props) {
       types,
       tokenNames,
       dataArray,
-      mintDisabled
+      mintDisabled,
+      tokenIds
     },
   };
 }
@@ -82,7 +86,7 @@ class MyContract extends React.Component {
   
   render() {
     const items = this.props.images.map((image, index) => {
-      return <NFT key={index} url={image} name={this.props.tokenNames[index]} address={this.state.address} type={this.props.types[index]} meta={this.props.dataArray[index]} />
+      return <NFT key={index} url={image} name={this.props.tokenNames[index]} address={this.props.address} type={this.props.types[index]} meta={this.props.dataArray[index]} tokenId={this.props.tokenIds[index]} />
     });
     if (this.props.mintDisabled) {
       return (

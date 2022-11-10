@@ -30,6 +30,7 @@ export async function getServerSideProps(props) {
   const image = metadata.image.replace('ipfs://', baseURL);
   const tokenHolders = showData.approvedCount;
   const tokenHoldersCount = tokenHolders.length;
+  const methods = contract.methods;
 
   return {
     props: {
@@ -126,7 +127,7 @@ class CampaignShow extends Component {
 		address={this.props.address}
 		image={this.props.image}
 		tokenId={this.props.tokenId}
-		tokenHolders={this.props.tokenHoldersCount + 1}
+		tokenHolders={this.props.tokenHoldersCount}
 		isTokenHolder={this.state.isTokenHolder}
 		account={this.state.account}
 		requestsCount={this.state.requestsCount}

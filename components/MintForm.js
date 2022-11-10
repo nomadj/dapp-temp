@@ -68,9 +68,6 @@ class MintForm extends Component {
     uri: '',
     auxUri: ''
   }
-  componentDidMount() {
-    // this.setState({ address: this.props.query['0'], account: this.props.query['1'] });
-  }
 
   onSubmit = async (img) => {
     this.setState({ isLoading: true, success: false, errorMessage: '' });
@@ -149,12 +146,12 @@ class MintForm extends Component {
 	"image": `ipfs://${cid}`,
 	"attributes": [
 	  {
-	    "trait_type": "token type",
-	    "value": this.state.tokenType
-	  },
-	  {
 	    "trait_type": "role",
 	    "value": "owner"
+	  },
+	  {
+	    "trait_type": "token type",
+	    "value": this.state.tokenType
 	  },
 	  {
 	    "trait_type": "aux uri",

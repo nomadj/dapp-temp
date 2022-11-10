@@ -3,12 +3,12 @@ pragma solidity ^0.8.7;
 
 /* import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol"; */
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
-contract Tambora is ERC721 {
+contract Tambora is ERC721Enumerable {
 	using Strings for uint256;
 	event Request(Client indexed clientData);
 	event Response(Client indexed clientData, bool indexed res);
-	event Minted(uint256 indexed tokenId, address indexed addr);
 
 	modifier onlyOwner() {
 		_checkOwner();
@@ -97,7 +97,6 @@ contract Tambora is ERC721 {
 		_mint(to_, tokenId);
 		_setTokenURI(tokenId, uri);
 		_ownedTokens[to_].push(tokenId);
-		emit Minted(tokenId, to_);
 		tokenId++;
 		_owner.transfer(_msgValue());
 		clients[_msgSender()].minted += 1;
@@ -196,8 +195,8 @@ contract Tambora is ERC721 {
 	}
 
 	function increaseContractMintAllowance() public payable onlyOwner returns (uint256) {
-		require(_msgValue() >= 0.05 ether, "This transaction requires 0.05 ether");
-		_mintAllowance += 200;
+		require(_msgValue() >= 0.04 ether, "This transaction requires 0.04 ether");
+		_mintAllowance += 100;
 		_factoryOwner.transfer(_msgValue());
 		return _mintAllowance;
 	}
@@ -205,4 +204,21 @@ contract Tambora is ERC721 {
 	function addIndividualFile(address to_, string memory uri_, string memory name_) public onlyOwner {
 		_individualFiles[to_].push(File({name: name_, uri: uri_}));
 	}
+
+	/* function safeTransferFrom(address from_, address to_, uint256 tokenId_, uint256 index_) public { */
+	/* 	require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner or approved"); */
+	/* 	_ownedTokens[from_][index_] = _ownedTokens[from_][_ownedTokens[from_].length - 1]; */
+	/* 	_ownedTokens[from_].pop(); */
+	/* 	_ownedTokens[to_].push(tokenId_); */
+	/* 	safeTransferFrom(from_, to_, tokenId_, ""); */
+	/* } */
+
+	/* function transferFrom(address from_, address to_, uint256 tokenId_, uint256 index_) public { */
+	/* 	//solhint-disable-next-line max-line-length */
+	/* 	require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner or approved"); */
+	/* 	_ownedTokens[from_][index_] = _ownedTokens[from_][_ownedTokens[from_].length - 1]; */
+	/* 	_ownedTokens[from_].pop(); */
+	/* 	_ownedTokens[to_].push(tokenId_); */
+	/* 	_transfer(from_, to_, tokenId_); */
+	/* } */
 }

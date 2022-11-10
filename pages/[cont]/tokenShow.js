@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { Card, Image, Embed, Button } from 'semantic-ui-react'
 import Layout from '../../components/Layout'
 import Header from '../../components/Header'
+import TransferForm from '../../components/TransferForm'
 
 export async function getServerSideProps(props) {
   const contractName = props.query['cont'];
@@ -16,6 +17,7 @@ export async function getServerSideProps(props) {
   const attrVal2 = props.query['8'];
   const attrTrait3 = props.query['9'];
   const attrVal3 = props.query['10'];
+  const tokenId = props.query['11'];
  
   return {
     props: {
@@ -28,7 +30,9 @@ export async function getServerSideProps(props) {
       attrVal2,
       attrTrait3,
       attrVal3,
-      filetype
+      filetype,
+      tokenId,
+      addr
     }
   }
 }
@@ -44,7 +48,7 @@ export default class TokenShow extends Component {
 	      <Card.Content>
 		<Image src={this.props.image} floated='right' size='mini' rounded />
 		<Card.Header>{this.props.name}</Card.Header>
-		<Button size="mini">Transfer</Button>
+		<Button>Transfer</Button>
 	      </Card.Content>
 	    </Card>
 	    <Card>
@@ -70,7 +74,8 @@ export default class TokenShow extends Component {
 		<Card.Header>{this.props.attrTrait3.replace(this.props.attrTrait3.charAt(0), this.props.attrTrait3.charAt(0).toUpperCase())}</Card.Header>
 		<Card.Description>{this.props.attrVal3}</Card.Description>
 	      </Card.Content>
-	    </Card>	    
+	    </Card>
+	    <TransferForm tokenId={this.props.tokenId} address={this.props.addr} marginLeft={10} />
 	  </Card.Group>
 	</Layout>
       );
@@ -95,7 +100,7 @@ export default class TokenShow extends Component {
 		<Card.Header>{this.props.attrTrait1}</Card.Header>
 		<Card.Description>{this.props.attrVal1}</Card.Description>
 	      </Card.Content>
-	    </Card>	
+	    </Card>
 	  </Card.Group>
 	</Layout>
       );
