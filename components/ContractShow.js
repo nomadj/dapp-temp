@@ -25,7 +25,7 @@ class ContractShow extends Component {
 		    address={this.props.address}
 		    account={this.props.account}
 		    name={this.props.name}
-		    clientData={this.props.clientData}
+		    mintData={this.props.mintData}
 		  />
 		}
 	      />
@@ -37,10 +37,6 @@ class ContractShow extends Component {
 	      <Card
 		header='Tokens Minted'
 		meta={this.props.tokenId}
-	      />
-	      <Card
-		header='Token Holders'
-		meta={this.props.tokenHolders}
 	      />
 	      <RequestsCard
 		isShowing={this.props.isOwner}

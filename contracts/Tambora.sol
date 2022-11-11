@@ -32,6 +32,7 @@ contract Tambora is ERC721Enumerable {
 	File[] private _fileStore;
 
 	struct ClientToken {
+		uint256 mintId;
 		uint256 minted;
 		uint256 mintAllowance;
 	}
@@ -58,7 +59,7 @@ contract Tambora is ERC721Enumerable {
 		price = price_;
 		contractType = contractType_;
 		_allottedAmount = 10;
-		memberTokens[0] = ClientToken({ minted: 1, mintAllowance: 10 });
+		memberTokens[0] = ClientToken({ minted: 1, mintAllowance: 10, mintId: 0 });
 		_mint(to_, 0);
 		_setTokenURI(0, uri_);
 		_tokenId = 1;
@@ -134,7 +135,7 @@ contract Tambora is ERC721Enumerable {
 
 	function finalizeClient(string memory uri) public payable {
 		require(isApproved[_msgSender()], "Client has not been approved.");
-		memberTokens[_tokenId] = ClientToken({ minted: 1, mintAllowance: 5 });
+		memberTokens[_tokenId] = ClientToken({ minted: 1, mintAllowance: 5, mintId: _tokenId });
 		_mint(_msgSender(), _tokenId);
 		_setTokenURI(_tokenId, uri);
 		_tokenId++;

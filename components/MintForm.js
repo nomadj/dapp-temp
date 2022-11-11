@@ -8,6 +8,7 @@ import copy from 'copy-to-clipboard'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import ProgBar from '../components/ProgBar'
 import InfoMessage from '../components/InfoMessage'
+import Router from 'next/router'
 
 // 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr'
 class MultiCard extends Component {
@@ -110,9 +111,8 @@ class MintForm extends Component {
     try {
       const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
       await this.mintNFT(added.path);
-    } catch (event) {
-      console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false });
+    } catch (error) {
+      this.setState({ errorMessage: error.message, isLoading: false });
     }
   }
 
@@ -121,7 +121,7 @@ class MintForm extends Component {
     try {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-    const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0]});
+      const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId).send({from: accounts[0]});
       this.setState({ success: true });
       // const pusher = async () => {
       // 	console.log('Minted successfully at: ', tx.transactionHash)
@@ -130,7 +130,8 @@ class MintForm extends Component {
       // setTimeout(pusher, 3000);
       console.log('Minted successfully at: ', tx.transactionHash);
       this.setState({ isLoading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
-      return tx.transactionHash;
+      setTimeout(() => Router.push({ pathname: `/${this.props.contractName}` }), 3000);
+      // return tx.transactionHash;
     } catch (error){
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       console.log(contract.events);
@@ -219,14 +220,14 @@ class MintForm extends Component {
 	    />
 	  </Form.Field>
 	  <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
-          <Message error header="Oops!" content={this.state.errorMessage} />
+          <Message error header="Error" content={this.state.errorMessage} />
 	  <Message
 	    success
 	    header='Success!'
 	    content={`Minted at transaction ${this.state.txHash}`}
 	  />
 	  <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />
-          <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='gem' color='yellow' size='large'/>
+          <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large'/>
 	  <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
         </Form>
 	</div>

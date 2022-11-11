@@ -62,7 +62,7 @@ class CampaignShow extends Component {
     isInteracting: false,
     infoMessage: '',
     txHash: '',
-    clientData: {}
+    mintData: {}
   }
 
   async componentDidMount() {
@@ -73,6 +73,18 @@ class CampaignShow extends Component {
     const isPending = await contract.methods.isPending(accounts[0]).call();
     const isApproved = await contract.methods.isApproved(accounts[0]).call();
     const name = await contract.methods.approvedName(accounts[0]).call();
+    var tokenIds = [];
+    for (let i = 0; i < balanceOf; i++) {
+      const token = await contract.methods.tokenOfOwnerByIndex(accounts[0], i).call();
+      tokenIds.push(token);
+    }
+    let mintData = [];
+    for (let id of tokenIds) {
+      const data = await contract.methods.memberTokens(id).call();
+      mintData.push(data);
+    }
+    console.log('Mint Data: ', mintData[0]);
+    this.setState({ mintData: mintData });
 
     if (balanceOf > 0 && this.props.owner !== accounts[0]) {
       this.setState({ isHolder: true });
@@ -145,7 +157,7 @@ class CampaignShow extends Component {
 		metadata={this.props.metadata}
 		isPending={this.state.isPending}
 		fileStore={this.props.fileStore}
-		clientData={this.state.clientData}
+		mintData={this.state.mintData}
 	      />
             </Grid.Column>
 	    <Grid.Column>

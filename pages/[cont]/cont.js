@@ -3,7 +3,7 @@ import web3 from '../../web3';
 import Member from '../../components/members';
 import Layout from '../../components/Layout';
 import React, { useState, useEffect } from 'react';
-import { Card, Embed, Button } from 'semantic-ui-react';
+import { Card, Embed, Button, Menu, Grid, Popup } from 'semantic-ui-react';
 import Link from 'next/link';
 import NFT from '../../components/NFT';
 import Header from '../../components/Header'
@@ -17,26 +17,17 @@ export async function getServerSideProps(props) {
   const account = props.query['1'];
   const minted = props.query['2'];
   const mintAllowance = props.query['3'];
-  const mintDisabled = minted >= mintAllowance;
+  const mintId = props.query['4'];
+  const mintDisabled = Number(minted) >= Number(mintAllowance);
   const contract = new web3.eth.Contract(Tambora.abi, address);
   // const tokenIds = await contract.methods.getOwnedTokens(account).call();
   const tokenBalance = await contract.methods.balanceOf(account).call();
-  console.log('Token Balance: ', tokenBalance);
+  console.log("Minted: ", minted, " Allowance: ", mintAllowance);
   var tokenIds = [];
   for (let i = 0; i < tokenBalance; i++) {
     const token = await contract.methods.tokenOfOwnerByIndex(account, i).call();
     tokenIds.push(token);
   }
-  // var tokenIds = [];
-  // for (let i = 0; i < balanceOf; i++) {
-  //   const token = await contract.methods.tokenOfOwnerByIndex(account, i).call();
-  //   tokenIds.push(token);
-  // }
-  // let tokenObjs = [];
-  // for (let id of tokenIds) {
-  //   const tokenObj = await contract.memberTokens(id).call();
-  //   tokenObjs.push(tokenObj);
-  // }
   const isTokenHolder = tokenIds.length > 0;
   const tokenURIs = await Promise.all(
     tokenIds.map(id => {
@@ -61,18 +52,16 @@ export async function getServerSideProps(props) {
     return data.name;
   });
   console.log("Token Names: ", tokenNames);
-  const ints = [5, 6, 7];
-  const url = 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr';
   var types = [];
   for (let i = 0; i < images.length; i++) {
     const req = await fetch(images[i], {method: 'HEAD'});
     types.push(req.headers.get('content-type'));
   }
+
+  console.log("Mint Disabled: ", mintDisabled);
   
   return {
     props: {
-      ints,
-      url,
       name,
       address,
       account,
@@ -82,7 +71,10 @@ export async function getServerSideProps(props) {
       tokenNames,
       dataArray,
       mintDisabled,
-      tokenIds
+      tokenIds,
+      minted,
+      mintAllowance,
+      mintId
     },
   };
 }
@@ -113,17 +105,40 @@ class MyContract extends React.Component {
       return (
 	<Layout>
 	  <Header />
-	  <Link href={{pathname: '/minty', query: [this.props.address, this.props.account]}}>
-	    <DynamicButton
-	      color='olive'
-	      isShowing={this.props.isTokenHolder && !this.props.mintDisabled}
-	      label='Mint a new token'
-	      marginBottom='10px'
-	    />
-	  </Link>
-	  <Card.Group>
-	    {items}
-	  </Card.Group>
+	  <Grid>
+	    <Grid.Row>
+	      <Card.Group>
+		<Card>
+		  <Card.Content>
+		    <Link href={{pathname: '/minty', query: [this.props.address, this.props.mintId]}}>
+			<DynamicButton
+			  color='olive'
+			  isShowing={this.props.isTokenHolder && !this.props.mintDisabled}
+			  icon='ethereum'
+			  marginBottom='10px'
+			  marginLeft='13px'
+			  floated='right'
+			  size='tiny'
+			/>
+		      </Link>
+		    <Card.Header>Minted</Card.Header>
+		    <Card.Meta>{this.props.minted}</Card.Meta>
+		  </Card.Content>
+		</Card>
+		<Card>
+		  <Card.Content>
+		    <Card.Header>Mint Allowance</Card.Header>
+		    <Card.Meta>{this.props.mintAllowance}</Card.Meta>
+		  </Card.Content>		  
+		</Card>
+	      </Card.Group>
+	    </Grid.Row>
+	    <Grid.Row>
+	      <Card.Group>
+		{items}
+	      </Card.Group>
+	    </Grid.Row>
+	  </Grid>
 	</Layout>
       );
     }
