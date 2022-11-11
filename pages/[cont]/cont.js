@@ -27,6 +27,16 @@ export async function getServerSideProps(props) {
     const token = await contract.methods.tokenOfOwnerByIndex(account, i).call();
     tokenIds.push(token);
   }
+  // var tokenIds = [];
+  // for (let i = 0; i < balanceOf; i++) {
+  //   const token = await contract.methods.tokenOfOwnerByIndex(account, i).call();
+  //   tokenIds.push(token);
+  // }
+  // let tokenObjs = [];
+  // for (let id of tokenIds) {
+  //   const tokenObj = await contract.memberTokens(id).call();
+  //   tokenObjs.push(tokenObj);
+  // }
   const isTokenHolder = tokenIds.length > 0;
   const tokenURIs = await Promise.all(
     tokenIds.map(id => {
@@ -50,6 +60,7 @@ export async function getServerSideProps(props) {
   const tokenNames = dataArray.map(data => {
     return data.name;
   });
+  console.log("Token Names: ", tokenNames);
   const ints = [5, 6, 7];
   const url = 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr';
   var types = [];

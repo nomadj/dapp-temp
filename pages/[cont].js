@@ -16,8 +16,8 @@ export async function getServerSideProps(props) {
   const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
   const address = await factory.methods.getContractAddress(props.query['cont']).call();
   const name = props.query['cont'];
-//  const address = props.query['0'];
   const contract = new web3.eth.Contract(Tambora.abi, address);
+  const owner = await contract.methods.owner().call();
   const showData = await contract.methods.getShowData().call();
   const fileStore = showData.fileStore;
   const tokenId = showData.tokenId;
@@ -28,9 +28,6 @@ export async function getServerSideProps(props) {
   const req = await fetch(tokenURI.replace('ipfs://', baseURL));
   const metadata = await req.json();
   const image = metadata.image.replace('ipfs://', baseURL);
-  const tokenHolders = showData.approvedCount;
-  const tokenHoldersCount = tokenHolders.length;
-  const methods = contract.methods;
 
   return {
     props: {
@@ -39,9 +36,9 @@ export async function getServerSideProps(props) {
       name,
       image,
       tokenId,
-      tokenHoldersCount,
       metadata,
-      fileStore
+      fileStore,
+      owner
     }
   };
 }
@@ -57,6 +54,7 @@ class CampaignShow extends Component {
     isApproved: false,
     isPending: false,
     isHolder: false,
+    isGuest: false,
     userName: '',
     loading: false,
     errorMessage: '',
@@ -71,8 +69,22 @@ class CampaignShow extends Component {
     const accounts = await web3.eth.getAccounts();
     this.setState({ account: accounts[0] });
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-    const clientData = await contract.methods.getClientData().call({ from: accounts[0] });
-    this.setState({ clientData: clientData });
+    const balanceOf = await contract.methods.balanceOf(accounts[0]).call();
+    const isPending = await contract.methods.isPending(accounts[0]).call();
+    const isApproved = await contract.methods.isApproved(accounts[0]).call();
+    const name = await contract.methods.approvedName(accounts[0]).call();
+
+    if (balanceOf > 0 && this.props.owner !== accounts[0]) {
+      this.setState({ isHolder: true });
+    } else if (this.props.owner === accounts[0]) {
+      this.setState({ isOwner: true });
+    } else if (isPending) {
+      this.setState({ isPending: true });
+    } else if (isApproved) {
+      this.setState({ isApproved: true, userName: name });
+    } else {
+      this.setState({ isGuest: true });
+    }
     
     const tokenBalance = await contract.methods.balanceOf(accounts[0]).call();
     if (tokenBalance > 0) {
@@ -84,10 +96,6 @@ class CampaignShow extends Component {
     } catch {
       this.setState({ requestsCount: 0 });
     }
-    const status = clientData.status;
-    const isOwner = accounts[0] === this.props.manager;
-    this.setState({ isOwner: isOwner, isApproved: status === 'approved', isOwner: status === 'owner', isDenied: status === 'denied', isGuest: status === 'guest', isPending: status === 'pending', isHolder: status === 'holder', userName: clientData.name });
-    console.log("Client Status: ", status);
   }
 
   renderCards() {

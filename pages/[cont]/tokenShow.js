@@ -44,32 +44,31 @@ export default class TokenShow extends Component {
 	<Layout>
 	  <Header />
 	  <Card.Group itemsPerRow={4}>
-	    <Card>
+	    <Card color='olive'>
 	      <Card.Content>
 		<Image src={this.props.image} floated='right' size='mini' rounded />
 		<Card.Header>{this.props.name}</Card.Header>
-		<Button>Transfer</Button>
 	      </Card.Content>
 	    </Card>
-	    <Card>
+	    <Card color='olive'>
 	      <Card.Content>
 		<Card.Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Card.Header>
 		<Card.Description>{this.props.attrVal2}</Card.Description>
 	      </Card.Content>	      
 	    </Card>
-	    <Card>
+	    <Card color='olive'>
 	      <Card.Content>
 		<Card.Header>{this.props.attrTrait1.replace(this.props.attrTrait1.charAt(0), this.props.attrTrait1.charAt(0).toUpperCase())}</Card.Header>
 		<Card.Description>{this.props.attrVal1}</Card.Description>
 	      </Card.Content>
 	    </Card>
-	    <Card>
+	    <Card color='olive'>
 	      <Card.Content>
 		<Card.Header>Description</Card.Header>
 		<Card.Description>{this.props.description}</Card.Description>
 	      </Card.Content>
 	    </Card>
-	    <Card>
+	    <Card color='olive'>
 	      <Card.Content>
 		<Card.Header>{this.props.attrTrait3.replace(this.props.attrTrait3.charAt(0), this.props.attrTrait3.charAt(0).toUpperCase())}</Card.Header>
 		<Card.Description>{this.props.attrVal3}</Card.Description>
