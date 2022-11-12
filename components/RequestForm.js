@@ -140,8 +140,8 @@ class RequestForm extends Component {
 		/>
 	      </Form.Field>
 	    </Form.Group>
-	    <Message error header="Oops!" content={this.state.errorMessage} />
-	    <Message success header="Success!" content={this.state.successMessage} />
+	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	    <Message success color='teal' header="Success" content={this.state.successMessage} />
 	    <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
 	    <Button disabled={this.state.loading} color='olive' loading={this.state.loading}>Get Approved</Button>
 	  </Form>
@@ -149,29 +149,31 @@ class RequestForm extends Component {
       );
     } else if (this.props.isApproved) {
       return (
-	<Popup
-	  trigger={
-	    <div>
-	      <h2>You are approved!</h2>
-	      <InfoMessage isShowing={this.state.isInteracting} header="Please Wait..." content={this.state.infoMessage} />
-	      <SuccessMessage isShowing={!!this.state.successMessage} header="Success" content={this.state.successMessage} />
-	      <ErrorMessage isShowing={!!this.state.errorMessage} header="Error" content={this.state.errorMessage} />
-	      <DynamicButton
-		disabled={this.state.loading}
-		loading={this.state.loading}
-		color='violet'
-		icon="birthday"
-		isShowing={this.props.isApproved}
-		onClick={this.createMeta}
-	      />
-	    </div>
-	  }
-	  position='top left'
-	  content='Congratulations! Click to finalize and mint your access token.'
-	/>
+	<Card.Content>
+	  <Popup
+	    trigger={
+	      <div>
+		<h2>You are approved!</h2>
+		<InfoMessage isShowing={this.state.isInteracting} header="Please Wait..." content={this.state.infoMessage} />
+		<SuccessMessage isShowing={!!this.state.successMessage} header="Success" content={this.state.successMessage} />
+		<ErrorMessage isShowing={!!this.state.errorMessage} header="Error" content={this.state.errorMessage} />
+		<DynamicButton
+		  disabled={this.state.loading}
+		  loading={this.state.loading}
+		  color='violet'
+		  icon="birthday"
+		  isShowing={this.props.isApproved}
+		  onClick={this.createMeta}
+		/>
+	      </div>
+	    }
+	    position='top left'
+	    content='Congratulations! Click to finalize and mint your access token.'
+	  />
+	</Card.Content>
       );
     } else if (this.props.isPending) {
-      return <h2>Waiting for approval...</h2>;
+      return <Card.Content><Card.Header>Waiting for approval...</Card.Header></Card.Content>;
     } else { return null; }
   }
 }

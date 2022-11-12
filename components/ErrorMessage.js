@@ -4,7 +4,7 @@ import React, { Component } from 'react'
 export default class ErrorMessage extends Component {
   render() {
     if (this.props.isShowing) {
-      return <Message error header={this.props.header} content={this.props.content} />;
+      return <Message error color='purple' header={this.props.header} content={this.props.content} />;
     } else {
       return null;
     }

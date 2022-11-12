@@ -11,7 +11,7 @@ class TokenLink extends Component {
 	    query: [this.props.address, this.props.account, this.props.mintData[0].minted, this.props.mintData[0].mintAllowance, this.props.mintData[0].mintId]
 	  }}
 	>
-	  <a>view my tokens</a>
+	 <h3><a>View my tokens</a></h3>
 	</Link>
       );
     } else {

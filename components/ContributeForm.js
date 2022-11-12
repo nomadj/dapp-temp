@@ -38,7 +38,7 @@ class ContributeForm extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px'}}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px' }}>
         <Form.Field>
           <h2>Donate</h2>
           <Input
@@ -46,15 +46,15 @@ class ContributeForm extends Component {
             onChange={event => this.setState({ value: floatsOnly(event.target.value) })}
 	    placeholder="0.08"
 	    action={{
-	      color: 'green',
+	      color: 'teal',
 
 	      icon: 'ethereum'
 	    }}
 	    actionPosition='left'
           />
         </Form.Field>
-        <Message error header="Error" content={this.state.errorMessage} />
-	<Message success header="Thank You!" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
+        <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	<Message success color='teal' header="Thank You!" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
 	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
       </Form>
     );

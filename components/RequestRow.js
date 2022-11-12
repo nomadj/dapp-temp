@@ -59,18 +59,18 @@ class RequestRow extends Component {
 	<Cell>{id}</Cell>
 	<Cell>{request[0]}</Cell>
 	<Cell>
-	  <SuccessMessage isShowing={this.state.success} header='Success!' content={this.state.successMessage} />
-	  <ErrorMessage isShowing={this.state.error} header='Oops!' content={this.state.errorMessage} />
+	  <SuccessMessage isShowing={this.state.success} header='Success' content={this.state.successMessage} />
+	  <ErrorMessage isShowing={this.state.error} header='Error' content={this.state.errorMessage} />
 	  <InfoMessage isShowing={!!this.state.infoMessage} header='Please Wait...' content={this.state.infoMessage} />
 	</Cell>
 	<Cell textAlign='right'>
 	  {request.isApproved ? null : (
-	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.isLoading} color="green" basic onClick={this.onApprove}>Approve</Button>
+	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.isLoading} color="teal" basic onClick={this.onApprove}>Approve</Button>
 	  )}
 	</Cell>
 	<Cell textAlign='right' width={1}>
 	  {request.isApproved ? null : (
-	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.denyLoading} color="red" basic onClick={this.onDeny}>Deny</Button>
+	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.denyLoading} color="purple" basic onClick={this.onDeny}>Deny</Button>
 	  )}
 	</Cell>
       </Row>

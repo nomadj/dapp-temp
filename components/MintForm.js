@@ -117,7 +117,7 @@ class MintForm extends Component {
   }
 
   mintNFT = async (cid) => {
-    this.setState({ isInteracting: true, infoMessage: 'Interacting with Ethereum Blockchain' });
+    this.setState({ isInteracting: true, infoMessage: 'Interacting with the EVM' });
     try {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
@@ -176,7 +176,7 @@ class MintForm extends Component {
     } else if (event.target.value.endsWith('.mp4')) {
       this.setState({ url: URL.createObjectURL(event.target.files[0]), isMp4: true, fileSize: event.target.files[0].size });
     } else {
-      console.log("Unsupported File at This Time")
+      this.setState({ errorMessage: 'Unsupported file at this time.' });
     }
   }
 
@@ -219,16 +219,17 @@ class MintForm extends Component {
 	      onChange={() => this.fileHandler(event)}
 	    />
 	  </Form.Field>
+	  <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
 	  <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
-          <Message error header="Error" content={this.state.errorMessage} />
+          <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	  <Message
 	    success
-	    header='Success!'
+	    color='teal'
+	    header='Success'
 	    content={`Minted at transaction ${this.state.txHash}`}
 	  />
 	  <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />
           <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large'/>
-	  <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
         </Form>
 	</div>
     );

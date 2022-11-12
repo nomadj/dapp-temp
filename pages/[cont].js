@@ -16,6 +16,7 @@ export async function getServerSideProps(props) {
   const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
   const address = await factory.methods.getContractAddress(props.query['cont']).call();
   const name = props.query['cont'];
+  const title = name.replace(name.charAt(0), name.charAt(0).toUpperCase());
   const contract = new web3.eth.Contract(Tambora.abi, address);
   const owner = await contract.methods.owner().call();
   const showData = await contract.methods.getShowData().call();
@@ -38,7 +39,8 @@ export async function getServerSideProps(props) {
       tokenId,
       metadata,
       fileStore,
-      owner
+      owner,
+      title
     }
   };
 }
@@ -138,7 +140,7 @@ class CampaignShow extends Component {
     return (
       <Layout>
 	<Header />
-        <h1>Contract Details</h1>
+        <h1>{this.props.title}</h1>
         <Grid style={{marginTop: '10px'}} >
           <Grid.Row>
             <Grid.Column>

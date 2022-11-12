@@ -19,7 +19,6 @@ class ContractShow extends Component {
 	      <Card>
 		<Image src={this.props.image} />
 		<Card.Content>
-		  <Card.Header>{this.props.name}</Card.Header>		
 		  <Card.Description>
 		    <TokenLink
 		      isTokenHolder={this.props.isTokenHolder}
