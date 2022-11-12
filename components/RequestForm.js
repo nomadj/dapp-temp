@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Form, Input, Message, Button, Popup } from 'semantic-ui-react';
+import { Form, Input, Message, Button, Popup, Card } from 'semantic-ui-react';
 import web3 from '../web3';
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import DynamicButton from './DynamicButton'
@@ -126,24 +126,26 @@ class RequestForm extends Component {
   render() {
     if (this.props.isShowing && !this.props.isApproved && !this.props.isPending) {
       return (
-	<Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }} success={!!this.state.successMessage}>
-	  <Form.Group>
-	    <Form.Field required>
-	      <h2>Get approved</h2>
-	      <Input
-		value={this.state.name}
-		onChange={event => this.setState({ name: proString(event.target.value) })}
-		label="name"
-		labelPosition="right"
-		placeholder="Criminy Jicket"
-	      />
-	    </Form.Field>
-	  </Form.Group>
-	  <Message error header="Oops!" content={this.state.errorMessage} />
-	  <Message success header="Success!" content={this.state.successMessage} />
-	  <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
-	  <Button disabled={this.state.loading} color='olive' loading={this.state.loading}>Get Approved</Button>
-	</Form>
+	<Card.Content>
+	  <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }} success={!!this.state.successMessage}>
+	    <Form.Group>
+	      <Form.Field required>
+		<h2>Get approved</h2>
+		<Input
+		  value={this.state.name}
+		  onChange={event => this.setState({ name: proString(event.target.value) })}
+		  label="name"
+		  labelPosition="right"
+		  placeholder="Criminy Jicket"
+		/>
+	      </Form.Field>
+	    </Form.Group>
+	    <Message error header="Oops!" content={this.state.errorMessage} />
+	    <Message success header="Success!" content={this.state.successMessage} />
+	    <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
+	    <Button disabled={this.state.loading} color='olive' loading={this.state.loading}>Get Approved</Button>
+	  </Form>
+	</Card.Content>
       );
     } else if (this.props.isApproved) {
       return (

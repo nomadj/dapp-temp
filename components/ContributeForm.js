@@ -38,14 +38,19 @@ class ContributeForm extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px' }}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px'}}>
         <Form.Field>
           <h2>Donate</h2>
           <Input
             value={this.state.value}
             onChange={event => this.setState({ value: floatsOnly(event.target.value) })}
 	    placeholder="0.08"
-	    label={<Button disabled={this.state.loading} color='green' loading={this.state.loading} icon='ethereum' />}
+	    action={{
+	      color: 'green',
+
+	      icon: 'ethereum'
+	    }}
+	    actionPosition='left'
           />
         </Form.Field>
         <Message error header="Error" content={this.state.errorMessage} />

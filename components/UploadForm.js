@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, Message, Button } from 'semantic-ui-react'
+import { Form, Input, Message, Button, Container, Card } from 'semantic-ui-react'
 import InfoMessage from './InfoMessage'
 import { create } from 'ipfs-http-client'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
@@ -71,39 +71,41 @@ export default class UploadForm extends Component {
   render() {
     if (this.props.isShowing) {
       return (
-	<Form
-	  onSubmit={ event => {
-	    this.onSubmit(document.getElementById('upload-picker').files[0]);
-	  }}
-	  error={!!this.state.errorMessage}
-	  success={!!this.state.successMessage}
-	>
-	  <h2>Upload File</h2>
-	  <Form.Field style={{ marginBottom: '10px' }} >
-	    <Message error header='Error' content={this.state.errorMessage} />
-	    <Message success header='Success' content={this.state.successMessage} style={{ overflowWrap: 'break-word', marginBottom: '10px' }} />
-	    <InfoMessage
-	      isShowing={!!this.state.infoMessage}
-	      header='Please Wait...'
-	      content={this.state.infoMessage}
-	    />
-	    <Input
-	      label={<Button disabled={this.state.loading} loading={this.state.loading} color='violet' icon='upload' size='mini' />}
-	      labelPosition='right'
-	      value={this.state.name}
-	      onChange={event => {
-		const ps = proString(event.target.value);
-		this.setState({ name: ps })
-	      }}
-	      placeholder='filename.pdf'
-	    />
-	    <Input
-	      type='file'
-	      id='upload-picker'
-	      onChange={() => this.fileHandler(event)}
-	    />
-	  </Form.Field>
-	</Form>
+	<Card.Content>
+	  <Form
+	    onSubmit={ event => {
+	      this.onSubmit(document.getElementById('upload-picker').files[0]);
+	    }}
+	    error={!!this.state.errorMessage}
+	    success={!!this.state.successMessage}
+	  >
+	    <h2>Upload File</h2>
+	    <Form.Field style={{ marginBottom: '10px' }} >
+	      <Message error header='Error' content={this.state.errorMessage} />
+	      <Message success header='Success' content={this.state.successMessage} style={{ overflowWrap: 'break-word', marginBottom: '10px' }} />
+	      <InfoMessage
+		isShowing={!!this.state.infoMessage}
+		header='Please Wait...'
+		content={this.state.infoMessage}
+	      />
+	      <Input
+		label={<Button disabled={this.state.loading} loading={this.state.loading} color='violet' icon='upload' size='mini' />}
+		labelPosition='left'
+		value={this.state.name}
+		onChange={event => {
+		  const ps = proString(event.target.value);
+		  this.setState({ name: ps })
+		}}
+		placeholder='filename.pdf'
+	      />
+	      <Input
+		type='file'
+		id='upload-picker'
+		onChange={() => this.fileHandler(event)}
+	      />
+	    </Form.Field>
+	  </Form>
+	</Card.Content>
       );
     } else {
       return null;

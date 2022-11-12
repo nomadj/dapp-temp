@@ -139,7 +139,7 @@ class CampaignShow extends Component {
       <Layout>
 	<Header />
         <h1>Contract Details</h1>
-        <Grid style={{marginTop: '10px'}} columns='equal'>
+        <Grid style={{marginTop: '10px'}} >
           <Grid.Row>
             <Grid.Column>
 	      <ContractShow
@@ -160,9 +160,7 @@ class CampaignShow extends Component {
 		mintData={this.state.mintData}
 	      />
             </Grid.Column>
-	    <Grid.Column>
-	      <Image src='eth.png' style={{ marginLeft: 100 }} /> 
-	    </Grid.Column>
+
           </Grid.Row>
         </Grid>
       </Layout>

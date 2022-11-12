@@ -24,13 +24,15 @@ export default class DownloadFiles extends Component {
 	return <FileRow name={obj[0]} uri={obj[1]} index={i} />
       });
       if (items.length > 0) {
-      return (
-	<div style={{marginTop: '10px'}}>
-	  <h2>File Downloads</h2>
-	  <Card.Group>
-	      {items}
-	    </Card.Group>
-	</div>
+	return (
+	  <Card.Content>
+	    <div style={{marginTop: '10px'}}>
+	      <h2>File Downloads</h2>
+	      <Card.Group>
+		  {items}
+	      </Card.Group>
+	    </div>
+	  </Card.Content>
       );
       } else {
 	return (
