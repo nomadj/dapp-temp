@@ -163,7 +163,6 @@ class CampaignShow extends Component {
     } else {
       return (
 	<Layout>
-	  <Header />
 	  <h1>{this.props.title}</h1>
 	  <Divider />
 	    <ContractShow

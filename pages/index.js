@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import 'semantic-ui-css/semantic.min.css'
-import { Button, Card, Divider } from 'semantic-ui-react'
+import { Button, Card, Divider, Container } from 'semantic-ui-react'
 import Layout from '../components/Layout'
 import web3 from '../web3'
 import IndexRow from '../components/IndexRow';
@@ -133,14 +133,22 @@ class Index extends React.Component {
       return <IndexRow key={index} name={obj.title} address={obj.address} account={this.state.account} image={obj.image} />
     });
     return (
-      <Layout>
+      <Container>
+	<Head title="Fastload">
+	  <title>READY. FASTLOAD</title>
+          <link rel="icon" href="/favicon.ico" />
+          <meta
+            name="description"
+            content="Mint your own NFTs"
+          />
+	</Head>     
 	<Header source={this.props.conObj} account={this.state.account}/>
 	<h1 style={{textAlign: 'center' }}>NFT Contract Index</h1>
 	<Divider />
 	<Card.Group itemsPerRow={2}>
 	  {items}
 	</Card.Group>
-      </Layout>
+      </Container>
     );
   }
 }

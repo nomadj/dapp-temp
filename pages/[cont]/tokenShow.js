@@ -43,7 +43,6 @@ export default class TokenShow extends Component {
     if (this.props.filetype === 'image/png') {
       return (
 	<Layout>
-	  <Header />
 	  <Card.Group itemsPerRow={3}>
 	    <Card color='olive'>
 	      <Image src={this.props.image} rounded />

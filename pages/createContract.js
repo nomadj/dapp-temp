@@ -193,7 +193,6 @@ class CreateContract extends Component {
   render() {
     return (
       <Layout>
-	<Header />
         <h3>Create your own ERC721 contract</h3>
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	  <Form.Group widths='equal'>

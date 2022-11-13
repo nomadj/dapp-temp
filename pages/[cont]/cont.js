@@ -3,7 +3,7 @@ import web3 from '../../web3';
 import Member from '../../components/members';
 import Layout from '../../components/Layout';
 import React, { useState, useEffect } from 'react';
-import { Card, Embed, Button, Menu, Grid, Popup, Divider } from 'semantic-ui-react';
+import { Card, Embed, Button, Menu, Grid, Popup, Divider, Image } from 'semantic-ui-react';
 import Link from 'next/link';
 import NFT from '../../components/NFT';
 import Header from '../../components/Header'
@@ -94,7 +94,6 @@ class MyContract extends React.Component {
     if (this.props.mintDisabled) {
       return (
 	<Layout>
-	  <Header />
 	  <h2>You have reached your mint allowance.
 	    <Link href='/'>
 	      <a color='olive' style={{ marginBottom: '10px' }} size='small'> Request More</a>
@@ -109,7 +108,6 @@ class MyContract extends React.Component {
     } else {
       return (
 	<Layout>
-	  <Header />
 	  <Card.Group itemsPerRow={4}>
 	    <Card>
 	      <Card.Content>

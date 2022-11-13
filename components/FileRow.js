@@ -7,7 +7,7 @@ import Link from 'next/link'
 export default class FileRow extends Component {
   render() {
     return (
-      <Card>
+      <Card color='olive'>
 	<Card.Content>
 	  <Link href={this.props.uri}>
 	    <Button floated='right' color='violet' size='mini' icon='download' />
