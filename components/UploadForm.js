@@ -4,7 +4,7 @@ import InfoMessage from './InfoMessage'
 import { create } from 'ipfs-http-client'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import web3 from '../web3'
-import { proString } from '../utils'
+import { proAlpha } from '../utils'
 import Router from 'next/router'
 
 export default class UploadForm extends Component {
@@ -61,12 +61,19 @@ export default class UploadForm extends Component {
     if (event.target.value.endsWith('.pdf') || event.target.value.endsWith('.py')) {
       this.setState({ url: URL.createObjectURL(event.target.files[0]) });
     } else {
-      this.setState({ errorMessage: "Unsupported File at This Time" });
+      this.setState({ errorMessage: "Select a different file. Only pdf format supported at this time." });
     }
   }
   onSubmit = async (pdf) => {
-    this.setState({ loading: true, errorMessage: '', successMessage: '', infoMessage: 'Adding to IPFS' });
-    await this.ipfsAdd(pdf);
+    try {
+      if (pdf.type != 'application/pdf') {
+	throw { message: 'Select a different file. Only pdf format supported at this time.' }
+      }
+      this.setState({ loading: true, errorMessage: '', successMessage: '', infoMessage: 'Adding to IPFS' });
+      await this.ipfsAdd(pdf);
+    } catch (error) {
+      this.setState({ infoMessage: '', errorMessage: error.message });
+    }
   }
   render() {
     if (this.props.isShowing) {
@@ -93,7 +100,7 @@ export default class UploadForm extends Component {
 		labelPosition='left'
 		value={this.state.name}
 		onChange={event => {
-		  const ps = proString(event.target.value);
+		  const ps = proAlpha(event.target.value);
 		  this.setState({ name: ps })
 		}}
 		placeholder='filename.pdf'

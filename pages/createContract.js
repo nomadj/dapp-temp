@@ -64,13 +64,20 @@ class CreateContract extends Component {
   }
 
   onSubmit = async (img) => {
+    try {
+      if (img.type !== 'image/png' && img.type !== 'image/jpeg') {
+	throw { message: 'Choose a different file. Only png and jpg format supported at this time.' };
+      }
     this.setState({ loading: true, errorMessage: '', success: false, infoMessage: 'Adding file to IPFS' });
     // const imageResize = await new ImageResize({
     //   format: 'png',
     //   height: '160'
     // });
-    // const newImage = await imageResize.play(img); 
-    await this.ipfsAdd(img);
+    // const newImage = await imageResize.play(img);
+      await this.ipfsAdd(img);
+    } catch (error) {
+      this.setState({ infoMessage: '', errorMessage: error.message });
+    }
     this.setState({ infoMessage: 'Interacting with the EVM' });
     try {
       const name = this.processName(this.state.name);
@@ -124,15 +131,15 @@ class CreateContract extends Component {
 	"description": `Token prime of ${this.state.name} contract`,
 	"attributes": [
 	  {
+	    "trait_type": "type",
+	    "value": "membership"
+	  },	  
+	  {
 	    "trait_type": "role",
 	    "value": "owner"
 	  },
 	  {
-	    "trait_type": "token type",
-	    "value": "contract membership"
-	  },
-	  {
-	    "trait_type": "aux uri",
+	    "trait_type": "aux",
 	    "value": ""
 	  }
 	]
@@ -254,10 +261,11 @@ class CreateContract extends Component {
    	      onChange={() => this.fileHandler(event)}
    	    />
    	  </Form.Field>
-          <Message error header="Oops!" content={this.state.errorMessage} />
+          <Message error color='purple' header='Error' content={this.state.errorMessage} />
 	  <Message
 	    success
-	    header='Success!'
+	    color='teal'
+	    header='Success'
 	    content={`Contract Created at ${this.state.contractAddress}`}
 	  />
 	  <InfoMessage
@@ -266,9 +274,9 @@ class CreateContract extends Component {
 	    content={this.state.infoMessage}
 	  />
 	  <Popup
-	    trigger={<Button type='submit' loading={this.state.loading} color='olive'>Create</Button>}
+	    trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} color='olive' icon='ethereum' />}
 	    location='top left'
-	    content="Clicking on 'Create' will mint you the 'token prime' and mark you as the owner of the contract. As the owner, you will be authorized to approve up to 200 token mintings. At that point you may choose to extend the contract's mint allowance."
+	    content="Click here to mint the token prime of your new contract. As the owner, you will be authorized to mint, and approve others to mint, up to 100 tokens. You may choose to extend the contract's mint allowance."
 	  />
         </Form>
       </Layout>

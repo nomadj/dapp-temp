@@ -4,6 +4,7 @@ import { Header as H } from 'semantic-ui-react';
 import Link from 'next/link';
 import 'semantic-ui-css/semantic.min.css';
 import SearchBar from '../components/SearchBar';
+import DynamicButton from '../components/DynamicButton';
 
 // export const Header = React.forwardRef((props, ref) => {
   // const HomeButton = React.forwardRef(({ href, onClick }, ref) => {
@@ -21,8 +22,7 @@ class Header extends React.Component {
       <Container style={{ marginTop: '10px', marginBottom: '15px'}}>
 	<Segment color='orange' inverted>
 	  <H as='h1' icon textAlign='center'>
-	    <Icon name='ethereum' />
-	    <H.Content>READY. FASTLOAD</H.Content>
+	    <H.Content><Image src='64kOrange.png' size='medium' centered /></H.Content>
 	  </H>
 	</Segment>
 	<Menu style={{ marginBottom: '10px' }}>

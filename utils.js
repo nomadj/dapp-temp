@@ -9,11 +9,29 @@ export const rmSpecChars = (str) => {
   return formattedStr;
 }
 
+export const rscUpload = (str) => {
+  const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|,<>\/?~]/
+  let formattedStr = str;
+  for (let i = 0; i < str.length; i++) {
+    if (specialChars.test(str[i]) === true) {
+      formattedStr = formattedStr.replace(str[i], '');
+    }
+  }
+  return formattedStr;
+}
+
 export const proString = (str) => {
   const lowercaseStr = str.toLowerCase();
   const trimStr = lowercaseStr.trim();
   const rmSpacesStr = trimStr.replaceAll(' ', '');
   const rmSpecCharsStr = rmSpecChars(rmSpacesStr);
+  return rmSpecCharsStr;
+}
+
+export const proAlpha = (str) => {
+  const trimStr = str.trim();
+  const rmSpacesStr = trimStr.replaceAll('  ', ' ');
+  const rmSpecCharsStr = rscUpload(rmSpacesStr);
   return rmSpecCharsStr;
 }
 

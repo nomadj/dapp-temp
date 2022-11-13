@@ -2,7 +2,7 @@ import Head from 'next/head'
 import Image from 'next/image'
 import Link from 'next/link'
 import 'semantic-ui-css/semantic.min.css'
-import { Button, Card } from 'semantic-ui-react'
+import { Button, Card, Divider } from 'semantic-ui-react'
 import Layout from '../components/Layout'
 import web3 from '../web3'
 import IndexRow from '../components/IndexRow';
@@ -135,7 +135,8 @@ class Index extends React.Component {
     return (
       <Layout>
 	<Header source={this.props.conObj} account={this.state.account}/>
-	<h1 style={{textAlign: 'center'}}>Welcome to the Decentralized NFT Network</h1>
+	<h1 style={{textAlign: 'center' }}>NFT Contract Index</h1>
+	<Divider />
 	<Card.Group itemsPerRow={2}>
 	  {items}
 	</Card.Group>

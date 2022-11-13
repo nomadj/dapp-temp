@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Card, Grid, Button, Container, Segment, Icon, Image } from 'semantic-ui-react';
+import { Card, Grid, Button, Container, Segment, Icon, Image, Divider } from 'semantic-ui-react';
 import Layout from '../components/Layout';
 import web3 from '../web3';
 import ContributeForm from '../components/ContributeForm';
@@ -64,51 +64,61 @@ class CampaignShow extends Component {
     isInteracting: false,
     infoMessage: '',
     txHash: '',
-    mintData: {}
+    mintData: {},
+    renderPage: false,
+    unsupported: false
   }
 
   async componentDidMount() {
     const accounts = await web3.eth.getAccounts();
     this.setState({ account: accounts[0] });
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-    const balanceOf = await contract.methods.balanceOf(accounts[0]).call();
-    const isPending = await contract.methods.isPending(accounts[0]).call();
-    const isApproved = await contract.methods.isApproved(accounts[0]).call();
-    const name = await contract.methods.approvedName(accounts[0]).call();
-    var tokenIds = [];
-    for (let i = 0; i < balanceOf; i++) {
-      const token = await contract.methods.tokenOfOwnerByIndex(accounts[0], i).call();
-      tokenIds.push(token);
-    }
-    let mintData = [];
-    for (let id of tokenIds) {
-      const data = await contract.methods.memberTokens(id).call();
-      mintData.push(data);
-    }
-    console.log('Mint Data: ', mintData[0]);
-    this.setState({ mintData: mintData });
-
-    if (balanceOf > 0 && this.props.owner !== accounts[0]) {
-      this.setState({ isHolder: true });
-    } else if (this.props.owner === accounts[0]) {
-      this.setState({ isOwner: true });
-    } else if (isPending) {
-      this.setState({ isPending: true });
-    } else if (isApproved) {
-      this.setState({ isApproved: true, userName: name });
-    } else {
-      this.setState({ isGuest: true });
-    }
-    
-    const tokenBalance = await contract.methods.balanceOf(accounts[0]).call();
-    if (tokenBalance > 0) {
-      this.setState({ isTokenHolder: true, address: this.props.address });
-    }
     try {
-    const requests = await contract.methods.getPendingClients().call({from: accounts[0]});
-      this.setState({ requestsCount: requests.length });
-    } catch {
-      this.setState({ requestsCount: 0 });
+      const balanceOf = await contract.methods.balanceOf(accounts[0]).call();
+
+
+
+      const isPending = await contract.methods.isPending(accounts[0]).call();
+      const isApproved = await contract.methods.isApproved(accounts[0]).call();
+      const name = await contract.methods.approvedName(accounts[0]).call();
+      var tokenIds = [];
+      for (let i = 0; i < balanceOf; i++) {
+	const token = await contract.methods.tokenOfOwnerByIndex(accounts[0], i).call();
+	tokenIds.push(token);
+      }
+      let mintData = [];
+      for (let id of tokenIds) {
+	const data = await contract.methods.memberTokens(id).call();
+	mintData.push(data);
+      }
+      console.log('Mint Data: ', mintData[0]);
+      this.setState({ mintData: mintData });
+
+      if (balanceOf > 0 && this.props.owner !== accounts[0]) {
+	this.setState({ isHolder: true });
+      } else if (this.props.owner === accounts[0]) {
+	this.setState({ isOwner: true });
+      } else if (isPending) {
+	this.setState({ isPending: true });
+      } else if (isApproved) {
+	this.setState({ isApproved: true, userName: name });
+      } else {
+	this.setState({ isGuest: true });
+      }
+
+      const tokenBalance = await contract.methods.balanceOf(accounts[0]).call();
+      if (tokenBalance > 0) {
+	this.setState({ isTokenHolder: true, address: this.props.address });
+      }
+      try {
+      const requests = await contract.methods.getPendingClients().call({from: accounts[0]});
+	this.setState({ requestsCount: requests.length });
+      } catch {
+	this.setState({ requestsCount: 0 });
+      }
+      this.setState({ renderPage: true });
+    } catch (error) {
+      this.setState({ unsupported: true, renderPage: true });
     }
   }
 
@@ -137,36 +147,45 @@ class CampaignShow extends Component {
   //  {this.renderCards()}
 
   render() {
-    return (
-      <Layout>
-	<Header />
-        <h1>{this.props.title}</h1>
-        <Grid style={{marginTop: '10px'}} >
-          <Grid.Row>
-            <Grid.Column>
-	      <ContractShow
-		name={this.props.name}
-		address={this.props.address}
-		image={this.props.image}
-		tokenId={this.props.tokenId}
-		tokenHolders={this.props.tokenHoldersCount}
-		isTokenHolder={this.state.isTokenHolder}
-		account={this.state.account}
-		requestsCount={this.state.requestsCount}
-		isOwner={this.state.isOwner}
-		isApproved={this.state.isApproved}
-		userName={this.state.userName}
-		metadata={this.props.metadata}
-		isPending={this.state.isPending}
-		fileStore={this.props.fileStore}
-		mintData={this.state.mintData}
-	      />
-            </Grid.Column>
-
-          </Grid.Row>
-        </Grid>
-      </Layout>
-    );
+    if (this.state.renderPage === false) {
+      return null;
+    } else if (typeof window === 'undefined' || typeof window.web3 === 'undefined' || this.state.unsupported) {
+      return (
+	<Layout>
+	  <Header />
+	  <h1>Welcome to the future. Start
+	    <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
+	      <a> here.</a>
+	    </Link>
+	  </h1>
+	</Layout>
+      );
+    } else {
+      return (
+	<Layout>
+	  <Header />
+	  <h1>{this.props.title}</h1>
+	  <Divider />
+	    <ContractShow
+	      name={this.props.name}
+	      address={this.props.address}
+	      image={this.props.image}
+	      tokenId={this.props.tokenId}
+	      tokenHolders={this.props.tokenHoldersCount}
+	      isTokenHolder={this.state.isTokenHolder}
+	      account={this.state.account}
+	      requestsCount={this.state.requestsCount}
+	      isOwner={this.state.isOwner}
+	      isApproved={this.state.isApproved}
+	      userName={this.state.userName}
+	      metadata={this.props.metadata}
+	      isPending={this.state.isPending}
+	      fileStore={this.props.fileStore}
+	      mintData={this.state.mintData}
+	    />
+	</Layout>
+      );
+    }
   }
 }
 

@@ -45,10 +45,10 @@ export default class TransferForm extends Component {
               />
             </Form.Field>}
 	  content="Enter the recipient's public address"
-	  position='bottom left'
+	  position='bottom'
         />	  	
-        <Message error header="Error" content={this.state.errorMessage} />
-	<Message success header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
+        <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	<Message success color='teal' header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
 	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
       </Form>
     );

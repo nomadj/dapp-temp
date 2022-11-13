@@ -1,4 +1,4 @@
-import { Card, Grid, Image } from 'semantic-ui-react';
+import { Card, Grid, Image, Container } from 'semantic-ui-react';
 import React, { Component } from 'react';
 import ContributeForm from './ContributeForm';
 import DownloadButton from './DownloadButton';
@@ -12,11 +12,12 @@ import DownloadFiles from './DownloadFiles';
 class ContractShow extends Component {
   render() {
     return (
-      <Card.Group> 
+      <Container>
+      <Card.Group style={{ marginTop: '10px' }}> 
 	<Grid columns='equal'>
 	  <Grid.Row>
 	    <Grid.Column style={{ marginLeft: '6px', overflowWrap: 'break-word'}}>
-	      <Card>
+	      <Card color='olive'>
 		<Image src={this.props.image} />
 		<Card.Content>
 		  <Card.Description>
@@ -35,7 +36,7 @@ class ContractShow extends Component {
 	      </Card>
 	    </Grid.Column>
 	    <Grid.Column>
-	      <Card>
+	      <Card color='olive'>
 		<Card.Content>
 		  <Card.Header>Tokens Minted</Card.Header>
 		  <Card.Meta>{this.props.tokenId}</Card.Meta>
@@ -49,11 +50,6 @@ class ContractShow extends Component {
 		<UploadForm
 		  isShowing={this.props.isOwner}
 		  address={this.props.address}
-		/>
-		<DownloadFiles
-		  address={this.props.address}
-		  fileStore={this.props.fileStore}
-		  isTokenHolder={this.props.isTokenHolder}
 		/>
 		<RequestForm
 		  isShowing={!this.props.isTokenHolder}
@@ -69,9 +65,19 @@ class ContractShow extends Component {
 		/>
 	      </Card>	      
 	    </Grid.Column>
+	    <Grid.Column>
+	      <Card color='olive'>
+		<DownloadFiles
+		  address={this.props.address}
+		  fileStore={this.props.fileStore}
+		  isTokenHolder={this.props.isTokenHolder}
+		/>
+	      </Card>
+	    </Grid.Column>
 	  </Grid.Row>
 	</Grid>
       </Card.Group>
+      </Container>
     );
   }
 }

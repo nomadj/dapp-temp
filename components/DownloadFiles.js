@@ -36,11 +36,17 @@ export default class DownloadFiles extends Component {
       );
       } else {
 	return (
-	  <h3 style={{ marginLeft: '10px'}}>no downloads available</h3>
+	  <Card.Content>
+	    <h3 style={{ marginLeft: '10px'}}>no downloads available</h3>
+	  </Card.Content>
 	);
       }
     } else {
-      return null;
+      return (
+	<Card.Content>
+	  <h3 style={{ marginLeft: '10px'}}>Request to join this contract</h3>
+	</Card.Content>	
+      );
     }
   }
 }

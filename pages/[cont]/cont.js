@@ -3,7 +3,7 @@ import web3 from '../../web3';
 import Member from '../../components/members';
 import Layout from '../../components/Layout';
 import React, { useState, useEffect } from 'react';
-import { Card, Embed, Button, Menu, Grid, Popup } from 'semantic-ui-react';
+import { Card, Embed, Button, Menu, Grid, Popup, Divider } from 'semantic-ui-react';
 import Link from 'next/link';
 import NFT from '../../components/NFT';
 import Header from '../../components/Header'
@@ -22,7 +22,6 @@ export async function getServerSideProps(props) {
   const contract = new web3.eth.Contract(Tambora.abi, address);
   // const tokenIds = await contract.methods.getOwnedTokens(account).call();
   const tokenBalance = await contract.methods.balanceOf(account).call();
-  console.log("Minted: ", minted, " Allowance: ", mintAllowance);
   var tokenIds = [];
   for (let i = 0; i < tokenBalance; i++) {
     const token = await contract.methods.tokenOfOwnerByIndex(account, i).call();
@@ -74,7 +73,8 @@ export async function getServerSideProps(props) {
       tokenIds,
       minted,
       mintAllowance,
-      mintId
+      mintId,
+      tokenIds
     },
   };
 }
@@ -95,50 +95,50 @@ class MyContract extends React.Component {
       return (
 	<Layout>
 	  <Header />
-	  <h1>You have reached your mint allowance. Request more.</h1>
-	<Card.Group>
-	  {items}
-	</Card.Group>
-      </Layout>
+	  <h2>You have reached your mint allowance.
+	    <Link href='/'>
+	      <a color='olive' style={{ marginBottom: '10px' }} size='small'> Request More</a>
+	    </Link>
+	  </h2>
+	  <Divider />
+	  <Card.Group itemsPerRow={4}>
+	    {items}
+	  </Card.Group>
+	</Layout>
       );
     } else {
       return (
 	<Layout>
 	  <Header />
-	  <Grid>
-	    <Grid.Row>
-	      <Card.Group>
-		<Card>
-		  <Card.Content>
-		    <Link href={{pathname: '/minty', query: [this.props.address, this.props.mintId]}}>
-			<DynamicButton
-			  color='olive'
-			  isShowing={this.props.isTokenHolder && !this.props.mintDisabled}
-			  icon='ethereum'
-			  marginBottom='10px'
-			  marginLeft='13px'
-			  floated='right'
-			  size='tiny'
-			/>
-		      </Link>
-		    <Card.Header>Minted</Card.Header>
-		    <Card.Meta>{this.props.minted}</Card.Meta>
-		  </Card.Content>
-		</Card>
-		<Card>
-		  <Card.Content>
-		    <Card.Header>Mint Allowance</Card.Header>
-		    <Card.Meta>{this.props.mintAllowance}</Card.Meta>
-		  </Card.Content>		  
-		</Card>
-	      </Card.Group>
-	    </Grid.Row>
-	    <Grid.Row>
-	      <Card.Group>
-		{items}
-	      </Card.Group>
-	    </Grid.Row>
-	  </Grid>
+	  <Card.Group itemsPerRow={4}>
+	    <Card>
+	      <Card.Content>
+		<Card.Header>Minted</Card.Header>
+		<a>{this.props.minted}</a>
+	      </Card.Content>
+	    </Card>
+	    <Card>
+	      <Card.Content>
+		<Link href={{pathname: '/minty', query: [this.props.address, this.props.mintId]}}>
+		  <DynamicButton
+		    color='olive'
+		    isShowing={this.props.isTokenHolder && !this.props.mintDisabled}
+		    icon='ethereum'
+		    marginBottom='10px'
+		    marginLeft='13px'
+		    floated='right'
+		    size='tiny'
+		  />
+		  </Link>
+		<Card.Header>Mint Allowance</Card.Header>
+		<a>{this.props.mintAllowance}</a>
+	      </Card.Content>		  
+	    </Card>
+	  </Card.Group>
+	  <Divider />
+	  <Card.Group itemsPerRow={4}>
+	    {items}
+	  </Card.Group>
 	</Layout>
       );
     }

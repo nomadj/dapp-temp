@@ -71,8 +71,15 @@ class MintForm extends Component {
   }
 
   onSubmit = async (img) => {
-    this.setState({ isLoading: true, success: false, errorMessage: '' });
-    await this.ipfsAdd(img);
+    try {
+      if (img.type !== 'image/png' && img.type !== 'video/mp4' && img.type !== 'image/jpeg') {
+	throw { message: 'Select a different file. Only png, jpg, and mp4 supported at this time.' }
+      }
+      this.setState({ isLoading: true, success: false, errorMessage: '' });
+      await this.ipfsAdd(img);
+    } catch (error) {
+      this.setState({ errorMessage: error.message });
+    }
   }
   
   ipfsAdd = async (file) => {
@@ -147,15 +154,15 @@ class MintForm extends Component {
 	"image": `ipfs://${cid}`,
 	"attributes": [
 	  {
-	    "trait_type": "role",
-	    "value": "owner"
+	    "trait_type": "type",
+	    "value": "career"
+	  },	  
+	  {
+	    "trait_type": "skill",
+	    "value": "musician"
 	  },
 	  {
-	    "trait_type": "token type",
-	    "value": this.state.tokenType
-	  },
-	  {
-	    "trait_type": "aux uri",
+	    "trait_type": "aux",
 	    "value": this.state.auxUri
 	  }
 	]
@@ -170,7 +177,7 @@ class MintForm extends Component {
   fileHandler = (event) => {
     event.preventDefault()
     this.setState({ isMp4: false, isPng: false, errorMessage: '', success: false, fileSize: '' });
-    if (event.target.value.endsWith('.png')) {
+    if (event.target.value.endsWith('.png') || event.target.value.endsWith('.jpg')) {
       
       this.setState({ url: URL.createObjectURL(event.target.files[0]), isPng: true, fileSize: event.target.files[0].size });
     } else if (event.target.value.endsWith('.mp4')) {

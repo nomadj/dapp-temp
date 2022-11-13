@@ -36,15 +36,15 @@ class RequestForm extends Component {
 	"description": `Membership token for client ${this.props.userName}`,
 	"attributes": [
 	  {
+	    "trait_type": "type",
+	    "value": "membership"
+	  },	  
+	  {
 	    "trait_type": "role",
 	    "value": "client"
 	  },
 	  {
-	    "trait_type": "token type",
-	    "value": "contract membership"
-	  },
-	  {
-	    "trait_type": "aux uri",
+	    "trait_type": "aux",
 	    "value": ""
 	  }
 	]
@@ -143,7 +143,7 @@ class RequestForm extends Component {
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	    <Message success color='teal' header="Success" content={this.state.successMessage} />
 	    <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
-	    <Button disabled={this.state.loading} color='olive' loading={this.state.loading}>Get Approved</Button>
+	    <Button disabled={this.state.loading} color='olive' loading={this.state.loading} icon='cubes' />
 	  </Form>
 	</Card.Content>
       );

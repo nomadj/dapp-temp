@@ -10,17 +10,17 @@ import web3 from '../web3'
 class IndexRow extends React.Component {
   render() {
     return (
-      <Card fluid color='olive' style={{ overflowWrap: 'break-word' }}>
-	<Card.Content>
-	  <Image src={this.props.image} floated='right' size='mini' rounded />
-	  <Card.Header>{this.props.name.replace(this.props.name.charAt(0), this.props.name.charAt(0).toUpperCase())}</Card.Header>
-	  <Card.Header>
-	    <Link href={{ pathname: `/${this.props.name}` }}>
-	      <a>{this.props.address}</a>
-	    </Link>
-	  </Card.Header>
-	</Card.Content>
-      </Card>
+      <Link href={{ pathname: `/${this.props.name}` }}>
+	<Card fluid color='olive' style={{ overflowWrap: 'break-word' }}>
+	  <Card.Content>
+	    <Image src={this.props.image} floated='right' size='mini' rounded />
+	    <Card.Header>{this.props.name.replace(this.props.name.charAt(0), this.props.name.charAt(0).toUpperCase())}</Card.Header>
+	    <Card.Meta>
+	      {this.props.address}
+	    </Card.Meta>
+	  </Card.Content>
+	</Card>
+      </Link>
     )
   }
 }
