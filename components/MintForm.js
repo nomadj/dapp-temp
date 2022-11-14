@@ -215,7 +215,7 @@ class MintForm extends Component {
 		<label>Owner</label>
 		<Input
 		  value={this.state.performer}
-		  onChange={event => this.setState({ performer: event.target.value })}
+		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
 		  placeholder="Alice Vanderblatt"
 		/>
 	      </Form.Field>

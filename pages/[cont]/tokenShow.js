@@ -80,14 +80,14 @@ export default class TokenShow extends Component {
     } else if (this.props.filetype === 'video/mp4') {
       return (
 	<Layout>
-	  <Header />
-	  <Card.Group itemsPerRow={4}>
+	  <Card.Group itemsPerRow={3}>
 	    <Card color='olive'>
 	      <Embed url={this.props.image} active={true} rounded />
 	    </Card>
 	    <Card color='olive'>
 	      <Card.Content>
-		<Card.Header style={{ marginTop: '5px'}}>{this.props.name}</Card.Header>
+		<Card.Header>Name</Card.Header>
+		<Card.Description style={{ marginTop: '5px'}}>{this.props.name}</Card.Description>
 	      </Card.Content>
 	      <Card.Content>
 		<Card.Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Card.Header>
@@ -106,12 +106,10 @@ export default class TokenShow extends Component {
 	      <Card.Content>
 		<Card.Header>{this.props.attrTrait3.replace(this.props.attrTrait3.charAt(0), this.props.attrTrait3.charAt(0).toUpperCase())}</Card.Header>
 		<Card.Description>{this.props.attrVal3}</Card.Description>
-	      </Card.Content>	      
-	    </Card>
-	    <Card color='olive'>
+	      </Card.Content>
 	      <Card.Content>
 		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
-	      </Card.Content>
+	      </Card.Content>	      
 	    </Card>
 	  </Card.Group>
 	</Layout>

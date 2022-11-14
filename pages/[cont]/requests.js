@@ -54,7 +54,6 @@ class Requests extends Component {
         <Table>
           <Table.Header>
             <Row>
-              <HeaderCell>ID</HeaderCell>
               <HeaderCell>Name</HeaderCell>
 	      <HeaderCell>Address</HeaderCell>
 	      <HeaderCell textAlign='right'></HeaderCell>

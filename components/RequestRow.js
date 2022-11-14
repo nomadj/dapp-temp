@@ -56,7 +56,6 @@ class RequestRow extends Component {
     const { id, request } = this.props;
     return (
       <Row disabled={false} positive={false} negative={false}>
-	<Cell>{id}</Cell>
 	<Cell>{request[0]}</Cell>
 	<Cell>{request[1]}</Cell>
 	<Cell>

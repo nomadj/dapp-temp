@@ -21,8 +21,7 @@ export const rscUpload = (str) => {
 }
 
 export const proString = (str) => {
-  const lowercaseStr = str.toLowerCase();
-  const trimStr = lowercaseStr.trim();
+  const trimStr = str.trim();
   const rmSpacesStr = trimStr.replaceAll(' ', '');
   const rmSpecCharsStr = rmSpecChars(rmSpacesStr);
   return rmSpecCharsStr;

@@ -21,6 +21,8 @@ export async function getServerSideProps(props) {
   const mintDisabled = Number(minted) >= Number(mintAllowance);
   const contract = new web3.eth.Contract(Tambora.abi, address);
   // const tokenIds = await contract.methods.getOwnedTokens(account).call();
+  const tokenOne = await contract.methods.tokenURI(1).call();
+  console.log("Token One: ", tokenOne);
   const tokenBalance = await contract.methods.balanceOf(account).call();
   var tokenIds = [];
   for (let i = 0; i < tokenBalance; i++) {
