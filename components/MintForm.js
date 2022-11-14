@@ -9,6 +9,7 @@ import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import ProgBar from '../components/ProgBar'
 import InfoMessage from '../components/InfoMessage'
 import Router from 'next/router'
+import { proAlphaSpaces } from '../utils'
 
 // 'https://fastload.infura-ipfs.io/ipfs/QmVbCAog9NFUMnuanNh76HkCQv6EoEaZ87E48Lbx23JYgr'
 class MultiCard extends Component {
@@ -188,58 +189,60 @@ class MintForm extends Component {
   }
 
   render() {
-    return (
-      <div>
-	<h3>Mint an NFT</h3>
-        <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
-	  <Form.Group widths='equal'>
+    if (this.props.contractType === 'musician') {
+      return (
+	<div>
+	  <h3>Mint an NFT</h3>
+	  <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
+	    <Form.Group widths='equal'>
+	      <Form.Field required>
+		<label>Name</label>
+		<Input
+		  value={this.state.name}
+		  onChange={event => this.setState({ name: proAlphaSpaces(event.target.value) })}
+		  placeholder='University Entrance Audition'
+		/>
+	      </Form.Field>
+	      <Form.Field required>
+		<label>Description</label>
+		<Input
+		  value={this.state.description}
+		  onChange={event => this.setState({ description: proAlphaSpaces(event.target.value) })}
+		  placeholder="Alice Vanderblatt performing classical guitar"
+		/>
+	      </Form.Field>
+	      <Form.Field required>
+		<label>Owner</label>
+		<Input
+		  value={this.state.performer}
+		  onChange={event => this.setState({ performer: event.target.value })}
+		  placeholder="Alice Vanderblatt"
+		/>
+	      </Form.Field>
+	    </Form.Group>
 	    <Form.Field required>
-	      <label>Name</label>
+	      <label>Image or Video</label>
 	      <Input
-		value={this.state.name}
-		onChange={event => this.setState({ name: event.target.value })}
-		placeholder='University Entrance Audition'
+		id="imageName"
+		type="file"
+		onChange={() => this.fileHandler(event)}
 	      />
 	    </Form.Field>
-	    <Form.Field required>
-	      <label>Description</label>
-	      <Input
-		value={this.state.description}
-		onChange={event => this.setState({ description: event.target.value })}
-		placeholder="Alice Vanderblatt performing classical guitar"
-	      />
-	    </Form.Field>
-	    <Form.Field required>
-	      <label>Owner</label>
-	      <Input
-		value={this.state.performer}
-		onChange={event => this.setState({ performer: event.target.value })}
-		placeholder="Alice Vanderblatt"
-	      />
-	    </Form.Field>
-	  </Form.Group>
-	  <Form.Field required>
-	    <label>Image or Video</label>
-	    <Input
-	      id="imageName"
-	      type="file"
-	      onChange={() => this.fileHandler(event)}
+	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	    <Message
+	      success
+	      color='teal'
+	      header='Success'
+	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
-	  </Form.Field>
-          <Message error color='purple' header="Error" content={this.state.errorMessage} />
-	  <Message
-	    success
-	    color='teal'
-	    header='Success'
-	    content={`Minted at transaction ${this.state.txHash}`}
-	  />
-	  <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />	  
-	  <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
-	  <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
-          <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large'/>
-        </Form>
-	</div>
-    );
+	    <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />	  
+	    <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
+	    <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
+	    <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large'/>
+	  </Form>
+	  </div>
+      );
+    }
   }
 }
 

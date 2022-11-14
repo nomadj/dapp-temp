@@ -35,6 +35,27 @@ export const proAlpha = (str) => {
   return rmSpecCharsStr;
 }
 
+export const proAlphaSpaces = (str) => {
+  var trimmed = str;
+  if (str[0] === ' ') {
+    trimmed = str.replace(str[0], '')
+  }
+  trimmed = trimmed.replace('  ', ' ');
+  const rmSpecCharsStr = rscCommas(trimmed);
+  return rmSpecCharsStr;  
+}
+
+export const rscCommas = (str) => {
+  const specialChars = /[`!@#$%^&*()_+\-=\[\]{};':"\\|<>\/?~]/
+  let formattedStr = str;
+  for (let i = 0; i < str.length; i++) {
+    if (specialChars.test(str[i]) === true) {
+      formattedStr = formattedStr.replace(str[i], '');
+    }
+  }
+  return formattedStr;  
+}
+
 export const floatsOnly = (str) => {
   let formattedStr = str;
   const validChars = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.']
