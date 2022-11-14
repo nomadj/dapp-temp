@@ -95,7 +95,9 @@ class CreateContract extends Component {
     }
     this.setState({ infoMessage: 'Interacting with the EVM' });
     try {
-      const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS);
+      const factoryAddress = process.env.FACTORY_ADDRESS;
+      console.log("Factory Address: ", factoryAddress)
+      const factory = await new web3.eth.Contract(TamboraFactory.abi, factoryAddress);
       const names = await factory.methods.getNames().call();
       for (var i = 0; i < names.length; i++) {
 	if (names[i] === this.state.name) {
