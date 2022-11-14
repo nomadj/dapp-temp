@@ -17,6 +17,7 @@ hardhat.config.js
 # next.js
 /.next/
 /out/
+next.config.js
 
 # production
 /build
