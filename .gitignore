@@ -9,7 +9,6 @@ package-lock.json
 # testing
 /coverage
 hardhat.config.js
-/artifacts
 /cache
 /scripts
 /test
