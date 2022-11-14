@@ -15,6 +15,19 @@ const options = [
   { key: 'm', text: 'Musician', value: 'musician' }
 ];
 
+export async function getServerSideProps() {
+  const factoryAddress = process.env.FACTORY_ADDRESS;
+  const projectSecret = process.env.PROJECT_SECRET;
+  const projectId = process.env.PROJECT_ID;
+  return {
+    props: {
+      factoryAddress,
+      projectSecret,
+      projectId
+    }
+  }
+}
+
 class CreateContract extends Component {
   state = {
     name: '',
@@ -95,9 +108,8 @@ class CreateContract extends Component {
     }
     this.setState({ infoMessage: 'Interacting with the EVM' });
     try {
-      const factoryAddress = process.env.FACTORY_ADDRESS;
-      console.log("Factory Address: ", factoryAddress)
-      const factory = await new web3.eth.Contract(TamboraFactory.abi, factoryAddress);
+      console.log("Factory Address: ", this.props.factoryAddress)
+      const factory = await new web3.eth.Contract(TamboraFactory.abi, this.props.factoryAddress);
       const names = await factory.methods.getNames().call();
       for (var i = 0; i < names.length; i++) {
 	if (names[i] === this.state.name) {
@@ -119,7 +131,7 @@ class CreateContract extends Component {
   };
 
   ipfsAdd = async (file) => {
-    const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
+    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
     const client = create({
       host: 'ipfs.infura.io',
@@ -168,7 +180,7 @@ class CreateContract extends Component {
 
   ipfsAddJSON = async (file) => {
     this.setState({ infoMessage: 'Adding metadata to IPFS' });
-    const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
+    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
     const client = create({
       host: 'ipfs.infura.io',
