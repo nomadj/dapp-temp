@@ -22,7 +22,7 @@ class Header extends React.Component {
       <Container style={{ marginTop: '10px', marginBottom: '15px'}}>
 	<Segment color='orange' inverted>
 	  <H as='h1' icon textAlign='center'>
-	    <H.Content><Image src='/64kOrange.png' size='medium' centered /></H.Content>
+	    <H.Content><Image src='/64kOrange.png' size='large' centered /></H.Content>
 	  </H>
 	</Segment>
 	<Menu style={{ marginBottom: '10px' }}>

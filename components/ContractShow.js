@@ -12,8 +12,7 @@ import DownloadFiles from './DownloadFiles';
 class ContractShow extends Component {
   render() {
     return (
-      <Container>
-      <Card.Group style={{ marginTop: '10px' }}> 
+      <Card.Group style={{ marginTop: '10px' }} > 
 	<Grid columns='equal'>
 	  <Grid.Row>
 	    <Grid.Column style={{ marginLeft: '6px', overflowWrap: 'break-word'}}>
@@ -77,8 +76,7 @@ class ContractShow extends Component {
 	  </Grid.Row>
 	</Grid>
       </Card.Group>
-      </Container>
     );
   }
 }
-      export default ContractShow;
+export default ContractShow;

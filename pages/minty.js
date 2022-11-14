@@ -25,7 +25,6 @@ class Mint extends Component {
   render() {
     return (
       <Layout>
-	<Header />
 	<MintForm address={this.props.address} mintId={this.props.mintId} contractName={this.props.contractName} />
       </Layout>
     );

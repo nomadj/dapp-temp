@@ -4,7 +4,7 @@ import web3 from '../web3'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import FileRow from '../components/FileRow'
 
-export default class DownloadFiles extends Component {
+class DownloadFiles extends Component {
   state = {
     activeIndex: 0
   }
@@ -21,7 +21,7 @@ export default class DownloadFiles extends Component {
     const { activeIndex } = this.state;
     if (this.props.isTokenHolder) {
       const items = this.props.fileStore.map((obj, i) => {
-	return <FileRow name={obj[0]} uri={obj[1]} index={i} />
+	return <FileRow name={obj[0]} uri={obj[1]} key={i} />
       });
       if (items.length > 0) {
 	return (
@@ -50,3 +50,5 @@ export default class DownloadFiles extends Component {
     }
   }
 }
+
+export default DownloadFiles;

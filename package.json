@@ -2,9 +2,9 @@
   "name": "dapp-temp",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "HTTPS=true next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "HTTPS=true next start",
     "lint": "next lint"
   },
   "dependencies": {

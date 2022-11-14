@@ -50,13 +50,13 @@ class Requests extends Component {
     const { Row, HeaderCell, Body } = Table;
     return (
       <Layout>
-	<Header />
         <h3>Requests</h3>
         <Table>
           <Table.Header>
             <Row>
               <HeaderCell>ID</HeaderCell>
               <HeaderCell>Name</HeaderCell>
+	      <HeaderCell>Address</HeaderCell>
 	      <HeaderCell textAlign='right'></HeaderCell>
               <HeaderCell textAlign='right'></HeaderCell>
 	      <HeaderCell />

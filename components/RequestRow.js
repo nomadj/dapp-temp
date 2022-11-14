@@ -58,6 +58,7 @@ class RequestRow extends Component {
       <Row disabled={false} positive={false} negative={false}>
 	<Cell>{id}</Cell>
 	<Cell>{request[0]}</Cell>
+	<Cell>{request[1]}</Cell>
 	<Cell>
 	  <SuccessMessage isShowing={this.state.success} header='Success' content={this.state.successMessage} />
 	  <ErrorMessage isShowing={this.state.error} header='Error' content={this.state.errorMessage} />

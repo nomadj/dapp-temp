@@ -7,7 +7,7 @@ import web3 from '../web3'
 import { proAlpha } from '../utils'
 import Router from 'next/router'
 
-export default class UploadForm extends Component {
+class UploadForm extends Component {
   state = {
     url: '',
     errorMessage: '',
@@ -119,3 +119,4 @@ export default class UploadForm extends Component {
     }
   }
 }
+export default UploadForm;

@@ -19,4 +19,4 @@ class TokenLink extends Component {
     }
   }
 }
-export default TokenLink
+export default TokenLink;

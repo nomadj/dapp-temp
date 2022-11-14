@@ -226,8 +226,6 @@ class MintForm extends Component {
 	      onChange={() => this.fileHandler(event)}
 	    />
 	  </Form.Field>
-	  <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
-	  <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
           <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	  <Message
 	    success
@@ -235,7 +233,9 @@ class MintForm extends Component {
 	    header='Success'
 	    content={`Minted at transaction ${this.state.txHash}`}
 	  />
-	  <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />
+	  <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />	  
+	  <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
+	  <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
           <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large'/>
         </Form>
 	</div>

@@ -9,6 +9,7 @@ import InfoMessage from '../components/InfoMessage';
 import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFactory.json';
 import { create } from 'ipfs-http-client';
 import ImageResize from 'image-resize';
+import { floatsOnly } from '../utils';
 
 const options = [
   { key: 'm', text: 'Musician', value: 'musician' }
@@ -56,11 +57,25 @@ class CreateContract extends Component {
   }
 
   processName = (name) => {
-    const lowercaseName = name.toLowerCase();
-    const trimName = lowercaseName.trim();
-    const rmSpacesName = trimName.replaceAll(' ', '');
+    const trimName = name.trim();
+    var rmSpacesName = trimName.replaceAll(' ', '');
+    if (rmSpacesName.length > 17) {
+      rmSpacesName = rmSpacesName.replace(rmSpacesName[17], '');
+    }
     const rmSpecCharsName = this.removeSpecialChars(rmSpacesName);
     return rmSpecCharsName;
+  }
+
+  processSymbol = (sym) => {
+    const trimSym = sym.trim();
+    var rmSpacesSym = trimSym.replaceAll(' ', '');
+    if (rmSpacesSym.length > 4) {
+      rmSpacesSym = rmSpacesSym.replace(rmSpacesSym[4], '');
+    }
+    const upperSym = rmSpacesSym.toUpperCase();
+    console.log("Upper Sym: ", upperSym);
+    const rmSpecCharsSym = this.removeSpecialChars(upperSym);
+    return rmSpecCharsSym;    
   }
 
   onSubmit = async (img) => {
@@ -80,8 +95,6 @@ class CreateContract extends Component {
     }
     this.setState({ infoMessage: 'Interacting with the EVM' });
     try {
-      const name = this.processName(this.state.name);
-      this.setState({ name: name });
       const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS);
       const names = await factory.methods.getNames().call();
       for (var i = 0; i < names.length; i++) {
@@ -204,7 +217,7 @@ class CreateContract extends Component {
               />
 	      <Input
 		value={this.state.name}
-		onChange={event => this.setState({ name: event.target.value })}
+		onChange={event => this.setState({ name: this.processName(event.target.value) })}
 		placeholder='myawesomecontract'
 	      />
 	    </Form.Field>
@@ -216,7 +229,7 @@ class CreateContract extends Component {
               />
 	      <Input
 		value={this.state.symbol}
-		onChange={event => this.setState({ symbol: event.target.value })}
+		onChange={event => this.setState({ symbol: this.processSymbol(event.target.value) })}
 		placeholder='MACT'
 	      />
 	    </Form.Field>
@@ -230,7 +243,7 @@ class CreateContract extends Component {
 		label='Ether'
 		labelPosition='right'
 		value={this.state.price}
-		onChange={event => this.setState({ price: event.target.value })}
+		onChange={event => this.setState({ price: floatsOnly(event.target.value) })}
 		placeholder="0.08"
 	      />
 	    </Form.Field>
