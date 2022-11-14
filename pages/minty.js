@@ -13,13 +13,17 @@ export async function getServerSideProps(props) {
   const contract = new web3.eth.Contract(Tambora.abi, address);
   const contractName = await contract.methods.name().call();
   const contractType = await contract.methods.contractType().call();
+  const projectId = process.env.PROJECT_ID;
+  const projectSecret = process.env.PROJECT_SECRET;
   
   return {
     props: {
       address,
       mintId,
       contractName,
-      contractType
+      contractType,
+      projectId,
+      projectSecret
     }
   }
 }
@@ -28,7 +32,7 @@ class Mint extends Component {
   render() {
     return (
       <Layout>
-	<MintForm contractType={this.props.contractType} address={this.props.address} mintId={this.props.mintId} contractName={this.props.contractName} />
+	<MintForm contractType={this.props.contractType} address={this.props.address} mintId={this.props.mintId} contractName={this.props.contractName} projectId={this.props.projectId} projectSecret={this.props.projectSecret} />
       </Layout>
     );
   }

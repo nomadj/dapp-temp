@@ -49,6 +49,8 @@ class ContractShow extends Component {
 		<UploadForm
 		  isShowing={this.props.isOwner}
 		  address={this.props.address}
+		  projectId={this.props.projectId}
+		  projectSecret={this.props.projectSecret}
 		/>
 		<RequestForm
 		  isShowing={!this.props.isTokenHolder}
@@ -61,6 +63,8 @@ class ContractShow extends Component {
 		  metadata={this.props.metadata}
 		  isPending={this.props.isPending}
 		  contractName={this.props.name}
+		  projectId={this.props.projectId}
+		  projectSecret={this.props.projectSecret}
 		/>
 	      </Card>	      
 	    </Grid.Column>

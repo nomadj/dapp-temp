@@ -85,7 +85,7 @@ class MintForm extends Component {
   
   ipfsAdd = async (file) => {
     this.setState({ isShowingProg: true, infoMessage: 'Interacting with Ethereum blockchain', infoMessage: 'Adding file to IPFS' });
-    const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
+    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
     const client = create({
       host: 'ipfs.infura.io',
@@ -106,7 +106,7 @@ class MintForm extends Component {
   }
 
   ipfsAddJSON = async (file) => {
-    const auth = 'Basic ' + Buffer.from(process.env.PROJECT_ID + ':' + process.env.PROJECT_SECRET).toString('base64');
+    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
     const client = create({
       host: 'ipfs.infura.io',

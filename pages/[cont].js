@@ -29,6 +29,8 @@ export async function getServerSideProps(props) {
   const req = await fetch(tokenURI.replace('ipfs://', baseURL));
   const metadata = await req.json();
   const image = metadata.image.replace('ipfs://', baseURL);
+  const projectId = process.env.PROJECT_ID;
+  const projectSecret = process.env.PROJECT_SECRET;
 
   return {
     props: {
@@ -40,7 +42,9 @@ export async function getServerSideProps(props) {
       metadata,
       fileStore,
       owner,
-      title
+      title,
+      projectId,
+      projectSecret
     }
   };
 }
@@ -180,6 +184,8 @@ class CampaignShow extends Component {
 	      isPending={this.state.isPending}
 	      fileStore={this.props.fileStore}
 	      mintData={this.state.mintData}
+	      projectId={this.props.projectId}
+	      projectSecret={this.props.projectSecret}
 	    />
 	</Layout>
       );
