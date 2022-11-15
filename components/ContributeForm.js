@@ -38,7 +38,7 @@ class ContributeForm extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px' }}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px', marginRight: '40px' }}>
         <Form.Field>
           <h2>Donate</h2>
           <Input

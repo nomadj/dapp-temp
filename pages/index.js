@@ -64,30 +64,6 @@ export async function getServerSideProps() {
   );
   } catch { console.log("No Token Prime Minted") }
 
-
-  // for (let i = 0; i < names.length; i++) {
-  //   const contract = new web3.eth.Contract(abi, contracts[i]);
-  //   contract.methods.tokenURI(0).call().then(uri => {
-  //     const formattedURI = uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
-  //     fetch(formattedURI).then(res => {
-  // 	res.json().then(data => {
-  // 	  const image = data.image.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
-  // 	  console.log(image);
-  // 	  images.push(image);
-  // 	}).catch(error => {
-  // 	  console.log("Error parsing");
-  // 	  images.push(defaultImage);
-  // 	})
-  //     }).catch(error => {
-  // 	console.log("Error fetching");
-  // 	images.push(defaultImage);
-  //     })
-  //   }).catch(error => {
-  //     console.log("Error calling contract");
-  //     images.push(defaultImage);
-  //   })
-  // };
-
   const conObj = contracts.map((x, i) => {
     if (typeof images !== 'undefined') {
       return {"title": names[i].slice(0, 17), "address": x, "image": images[i], "description": `${x.slice(0, 17)}...`};

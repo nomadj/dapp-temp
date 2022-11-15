@@ -85,6 +85,7 @@ class UploadForm extends Component {
 	    }}
 	    error={!!this.state.errorMessage}
 	    success={!!this.state.successMessage}
+	    style={{ marginRight: '40px' }}
 	  >
 	    <h2>Upload File</h2>
 	    <Form.Field style={{ marginBottom: '10px' }} >

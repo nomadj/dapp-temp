@@ -20,9 +20,6 @@ export async function getServerSideProps(props) {
   const mintId = props.query['4'];
   const mintDisabled = Number(minted) >= Number(mintAllowance);
   const contract = new web3.eth.Contract(Tambora.abi, address);
-  // const tokenIds = await contract.methods.getOwnedTokens(account).call();
-  const tokenOne = await contract.methods.tokenURI(1).call();
-  console.log("Token One: ", tokenOne);
   const tokenBalance = await contract.methods.balanceOf(account).call();
   var tokenIds = [];
   for (let i = 0; i < tokenBalance; i++) {
@@ -45,21 +42,18 @@ export async function getServerSideProps(props) {
       return res.json();
     })
   );
-  console.log("Data Array: ", dataArray);
   const images = dataArray.map(data => {
     return data.image.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
   });
   const tokenNames = dataArray.map(data => {
     return data.name;
   });
-  console.log("Token Names: ", tokenNames);
   var types = [];
   for (let i = 0; i < images.length; i++) {
     const req = await fetch(images[i], {method: 'HEAD'});
-    types.push(req.headers.get('content-type'));
+    const type = req.headers.get('content-type');
+    types.push(type.slice(type.indexOf('/')).replace('/', ''));
   }
-
-  console.log("Mint Disabled: ", mintDisabled);
   
   return {
     props: {
@@ -136,7 +130,7 @@ class MyContract extends React.Component {
 	    </Card>
 	  </Card.Group>
 	  <Divider />
-	  <Card.Group itemsPerRow={4}>
+	  <Card.Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
 	    {items}
 	  </Card.Group>
 	</Layout>

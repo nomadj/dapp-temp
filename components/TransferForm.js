@@ -32,7 +32,7 @@ export default class TransferForm extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginLeft: `${this.props.marginLeft}px`, marginTop: '10px' }}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px', marginRight: '30px' }}>
 	<Popup
 	  trigger={
 	    <Form.Field>

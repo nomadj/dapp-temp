@@ -31,6 +31,8 @@ export async function getServerSideProps(props) {
   const image = metadata.image.replace('ipfs://', baseURL);
   const projectId = process.env.PROJECT_ID;
   const projectSecret = process.env.PROJECT_SECRET;
+  const tokenData = await contract.methods.allTokens(0).call();
+  const date = new Date(tokenData.timeStamp * 1000);
 
   return {
     props: {
@@ -95,7 +97,6 @@ class CampaignShow extends Component {
 	const data = await contract.methods.memberTokens(id).call();
 	mintData.push(data);
       }
-      console.log('Mint Data: ', mintData[0]);
       this.setState({ mintData: mintData });
 
       if (balanceOf > 0 && this.props.owner !== accounts[0]) {

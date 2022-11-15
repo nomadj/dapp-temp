@@ -6,7 +6,7 @@ import { Card, Image, Embed, Grid } from 'semantic-ui-react'
 class NFT extends React.Component {
   render() {
     const { name, description, image, attributes } = this.props.meta;
-    if (this.props.type === 'image/png' || this.props.type === 'image/jpeg') {
+    if (this.props.type === 'png' || this.props.type === 'image/jpeg') {
       return (
 	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, name, description, image, this.props.type, attributes[0].trait_type, attributes[0].value, attributes[1].trait_type, attributes[1].value, attributes[2].trait_type, attributes[2].value, this.props.tokenId]}} >
 	  <Card color='olive'>
@@ -19,7 +19,7 @@ class NFT extends React.Component {
 	  </Card>
 	</Link>
       );
-    } else if (this.props.type === 'video/mp4') {
+    } else if (this.props.type === 'mp4') {
       return (
 	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, name, description, image, this.props.type, attributes[0].trait_type, attributes[0].value, attributes[1].trait_type, attributes[1].value, attributes[2].trait_type, attributes[2].value, this.props.tokenId]}} >
 	  <Card color='olive'>
