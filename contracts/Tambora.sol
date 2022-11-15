@@ -28,6 +28,7 @@ contract Tambora is ERC721Enumerable {
 	mapping (address => string) public approvedName;
 	mapping (uint256 => File[]) private _individualFiles;
 	mapping (uint256 => ClientToken) public memberTokens;
+	mapping (uint256 => Token) public allTokens;
 	Client[] private _pendingClients;
 	File[] private _fileStore;
 
@@ -39,6 +40,11 @@ contract Tambora is ERC721Enumerable {
 	struct Client {
 	  string name;
 		address addr;
+	}
+	struct Token {
+		uint256 blockNumber;
+		uint256 timeStamp;
+		string uri;
 	}
 	struct ShowData {
 		uint256 tokenId;
@@ -63,6 +69,7 @@ contract Tambora is ERC721Enumerable {
 		_mint(to_, 0);
 		_setTokenURI(0, uri_);
 		_tokenId = 1;
+		allTokens[0] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri_ });
 	}
 
   function owner() public view returns (address) {
@@ -101,6 +108,7 @@ contract Tambora is ERC721Enumerable {
 		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint allowance exceeded.");
 		_mint(to_, _tokenId);
 		_setTokenURI(_tokenId, uri);
+		allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri });
 		_tokenId++;
 		_owner.transfer(_msgValue());
 		memberTokens[mintId_].minted += 1;
