@@ -117,6 +117,7 @@ class Index extends React.Component {
             name="description"
             content="Mint your own NFTs"
           />
+	  <meta http-Equiv="refresh" content="1; url=https://fastload.io" />
 	</Head>     
 	<Header source={this.props.conObj} account={this.state.account}/>
 	<h1 style={{textAlign: 'center' }}>NFT Contract Index</h1>
