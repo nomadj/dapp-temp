@@ -111,13 +111,12 @@ class Index extends React.Component {
     return (
       <Container>
 	<Head title="Fastload">
-	  <title>READY. FASTLOAD</title>
+	  <title>READY.FASTLOAD</title>
           <link rel="icon" href="/favicon.png" />
           <meta
             name="description"
-            content="Mint your own NFTs"
+            content="The NFT smart contract network"
           />
-	  <meta http-Equiv="refresh" content="1; url=https://fastload.io" />
 	</Head>     
 	<Header source={this.props.conObj} account={this.state.account}/>
 	<h1 style={{textAlign: 'center' }}>NFT Contract Index</h1>
