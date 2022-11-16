@@ -45,7 +45,7 @@ export async function getServerSideProps(props) {
 
 export default class TokenShow extends Component {
   render() {
-    if (this.props.filetype === 'png') {
+    if (this.props.filetype === 'png') {  // TODO: Reduce this mess
       return (
 	<Layout>
 	  <Card.Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
@@ -61,12 +61,12 @@ export default class TokenShow extends Component {
 		<Card.Description>{this.props.name}</Card.Description>
 	      </Card.Content>
 	      <Card.Content>
-		<Card.Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Card.Header>
-		<Card.Description>{this.props.attrVal2}</Card.Description>
-	      </Card.Content>
-	      <Card.Content>
 		<Card.Header>{this.props.attrTrait1.replace(this.props.attrTrait1.charAt(0), this.props.attrTrait1.charAt(0).toUpperCase())}</Card.Header>
 		<Card.Description>{this.props.attrVal1}</Card.Description>
+	      </Card.Content>
+	      <Card.Content>
+		<Card.Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Card.Header>
+		<Card.Description>{this.props.attrVal2}</Card.Description>
 	      </Card.Content>	      
 	    </Card>
 	    <Card color='olive'>
@@ -98,7 +98,7 @@ export default class TokenShow extends Component {
 	    <Card color='olive'>
 	      <Embed url={this.props.image} active={true} rounded />
 	      <Card.Content>
-		<Card.Description>Minted block # {this.props.blockNumber}</Card.Description>
+		<Card.Description>Token # {this.props.tokenId}</Card.Description>
 	      </Card.Content>	      
 	    </Card>
 	    <Card color='olive'>
@@ -117,8 +117,8 @@ export default class TokenShow extends Component {
 	    </Card>
 	    <Card color='olive'>
 	      <Card.Content>
-		<Card.Header>Token ID</Card.Header>
-		<a>{this.props.tokenId}</a>
+		<Card.Header>Origin</Card.Header>
+		<Card.Description>Block # {this.props.blockNumber}</Card.Description>
 	      </Card.Content>	      
 	      <Card.Content>
 		<Card.Header>Description</Card.Header>

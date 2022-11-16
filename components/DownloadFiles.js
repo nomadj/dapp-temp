@@ -4,7 +4,7 @@ import web3 from '../web3'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import FileRow from '../components/FileRow'
 
-class DownloadFiles extends Component {
+class DownloadFiles extends Component {   // TODO: Implement downloader
   state = {
     activeIndex: 0
   }
