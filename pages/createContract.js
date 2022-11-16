@@ -300,7 +300,7 @@ class CreateContract extends Component {
 	    content={this.state.infoMessage}
 	  />
 	  <Popup
-	    trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} color='olive' icon='ethereum' />}
+	    trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} color='olive' icon='ethereum' style={{ marginBottom: '10px' }}/>}
 	    location='top left'
 	    content="Click here to mint the token prime of your new contract. As the owner, you will be authorized to mint, and approve others to mint, up to 100 tokens. You may choose to extend the contract's mint allowance."
 	  />

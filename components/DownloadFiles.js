@@ -6,7 +6,8 @@ import FileRow from '../components/FileRow'
 
 class DownloadFiles extends Component {   // TODO: Implement downloader
   state = {
-    activeIndex: 0
+    activeIndex: 0,
+    infoMessage: ''
   }
   
   handleClick = (e, titleProps) => {
