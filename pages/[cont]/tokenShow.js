@@ -22,6 +22,7 @@ export async function getServerSideProps(props) {
   const tokenId = props.query['11'];
   const contract = new web3.eth.Contract(Tambora.abi, addr);
   const tokenData = await contract.methods.allTokens(tokenId).call();
+  console.log("Token Data: ", tokenData);
   const blockNumber = tokenData.blockNumber;
  
   return {

@@ -146,6 +146,7 @@ contract Tambora is ERC721Enumerable {
 		memberTokens[_tokenId] = ClientToken({ minted: 1, mintAllowance: 5, mintId: _tokenId });
 		_mint(_msgSender(), _tokenId);
 		_setTokenURI(_tokenId, uri);
+		allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri});
 		_tokenId++;
 		_owner.transfer(_msgValue());
 		delete isApproved[_msgSender()];
