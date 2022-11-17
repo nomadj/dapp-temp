@@ -44,4 +44,14 @@ contract TamboraFactory {
 	function _msgValue() internal view returns (uint256) {
 		return msg.value;
 	}
+	function removeContract(uint256 index) public {
+		require(_msgSender() == owner());
+		names[index] = names[names.length - 1];
+		names.pop();
+		_contracts[index] = _contracts[_contracts.length - 1];
+		_contracts.pop();
+	}
+	function _owner() private view returns (address) {
+		return _owner;
+	}
 }

@@ -77,6 +77,7 @@ class CampaignShow extends Component {
 
   async componentDidMount() {
     const accounts = await web3.eth.getAccounts();
+    const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
     this.setState({ account: accounts[0] });
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
     try {

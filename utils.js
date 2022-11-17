@@ -27,6 +27,17 @@ export const proString = (str) => {
   return rmSpecCharsStr;
 }
 
+export const proAlphaLower = (str) => {
+  var trimmed = str;
+  if (str[0] === ' ') {
+    trimmed = str.replace(str[0], '')
+  }
+  trimmed = trimmed.replace('  ', ' ');
+  const lowered = trimmed.toLowerCase();
+  const rmSpecCharsStr = rmSpecChars(trimmed);
+  return rmSpecCharsStr;  
+}
+
 export const proAlpha = (str) => {
   const trimStr = str.trim();
   const rmSpacesStr = trimStr.replaceAll('  ', ' ');

@@ -9,7 +9,7 @@ import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import ProgBar from '../components/ProgBar'
 import InfoMessage from '../components/InfoMessage'
 import Router from 'next/router'
-import { proAlphaSpaces, proAlphaLower } from '../utils'
+import { proAlphaSpaces } from '../utils'
 
 class MultiCard extends Component {
   render() {
@@ -25,6 +25,7 @@ class MultiCard extends Component {
 	</Card>
       )
     } else if (this.props.isPng) {
+      console.log("PNG")
       return (
 	<Card>
 	  <Image src={this.props.url} wrapped ui={false} />
@@ -62,11 +63,7 @@ class MintForm extends Component {
     infoMessage: '',
     txHash: '',
     uri: '',
-    auxUri: '',
-    attributes: [],
-    traitType: '',
-    value: '',
-    buttonDisabled: false
+    auxUri: ''
   }
 
   onSubmit = async (img) => {
@@ -186,27 +183,8 @@ class MintForm extends Component {
     }
   }
 
-  addAttribute = () => {
-    this.setState({ attributes: [...this.state.attributes, { traitType: this.state.traitType, value: this.state.value }], buttonDisabled: true });
-    setTimeout(() => this.setState({ buttonDisabled: false, traitType: '', value: '' }), );
-  }
-
-  renderAttributes = () => {
-    return this.state.attributes.map((attribute, index) => {
-      return (
-	<Card>
-	  <Card.Content>
-	    <Button color='purple' floated='right' size='mini' icon='x' />
-	    <Card.Header>{attribute.traitType}</Card.Header>
-	    <Card.Description>{attribute.value}</Card.Description>
-	  </Card.Content>
-	</Card>
-      );
-    });
-  }
-
   render() {
-    if (this.props.contractType === 'custom') {
+    if (this.props.contractType === 'musician') {
       return (
 	<div>
 	  <h3>Mint an NFT</h3>
@@ -257,75 +235,7 @@ class MintForm extends Component {
 	    <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
 	    <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large'/>
 	  </Form>
-	</div>
-      );
-    } else if (this.props.contractType === 'musician') {
-      return (
-	<div>
-	  <h3>Mint an NFT</h3>
-	  <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
-	    <Form.Group widths='equal'>
-	      <Form.Field required>
-		<label>Name</label>
-		<Input
-		  value={this.state.name}
-		  onChange={event => this.setState({ name: proAlphaSpaces(event.target.value) })}
-		  placeholder='University Entrance Audition'
-		/>
-	      </Form.Field>
-	      <Form.Field required>
-		<label>Description</label>
-		<Input
-		  value={this.state.description}
-		  onChange={event => this.setState({ description: proAlphaSpaces(event.target.value) })}
-		  placeholder="Alice Vanderblatt performing classical guitar"
-		/>
-	      </Form.Field>
-	      <Form.Field required>
-		<label>Owner</label>
-		<Input
-		  value={this.state.performer}
-		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
-		  placeholder="Alice Vanderblatt"
-		/>
-	      </Form.Field>
-	    </Form.Group>
-	    <Form.Field required>
-	      <label>Image or Video</label>
-	      <Input
-		id="imageName"
-		type="file"
-		onChange={() => this.fileHandler(event)}
-	      />
-	    </Form.Field>
-	    <Form.Group widths='equal'>
-	      <Form.Field>
-		<Input
-		  value={this.state.traitType}
-		  onChange={event => this.setState({ traitType: event.target.value })}
-		/>
-	      </Form.Field>
-	      <Form.Field>
-		<Input
-		  value={this.state.value}
-		  onChange={event => this.setState({ value: event.target.value })}
-		/>
-	      </Form.Field>
-	      <Button disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>
-	    </Form.Group>
-	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
-	    <Message
-	      success
-	      color='teal'
-	      header='Success'
-	      content={`Minted at transaction ${this.state.txHash}`}
-	    />
-	    <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />	  
-	    <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
-	    <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
-	    <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large' />
-	  </Form>
-	</div>	
+	  </div>
       );
     }
   }

@@ -182,4 +182,9 @@ contract Tambora is ERC721Enumerable {
 	function addIndividualFile(string memory uri_, string memory name_, uint256 mintId_) public onlyOwner {
 		_individualFiles[mintId_].push(File({name: name_, uri: uri_}));
 	}
+
+	function getIndividualFiles(uint256 id_) public view returns (File[] memory) {
+		require(balanceOf(_msgSender()) > 0);
+		return _individualFiles[id_];
+	}
 }

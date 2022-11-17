@@ -50,11 +50,11 @@ class CreateContract extends Component {
   fileHandler = (event) => {
     event.preventDefault()
     this.setState({ isMp4: false, isPng: false, errorMessage: '', success: false });
-    if (event.target.value.endsWith('.png')) {
-      console.log('PNG DETECTED');
+    if (event.target.value.endsWith('.png') || event.target.value.endsWith('.jpg')) {
+
       this.setState({ url: URL.createObjectURL(event.target.files[0]) });
     } else {
-      this.setState({ errorMessage: "Unsupported File at This Time" });
+      this.setState({ errorMessage: "File suffix does not match .png or .jpg and may not work. Ignore this warning if you are sure the file type is png or jpg." });
     }
   }
 
@@ -250,7 +250,7 @@ class CreateContract extends Component {
 	    <Form.Field>
 	      <Popup
 		trigger={<label>Price</label>}
-		content='Enter the amount, in ether, you would like to charge your clients. For the amount specified, clients will be given approval to mint 5 NFT tokens from your contract.'
+		content='Enter the amount, in ether, you would like to charge your clients. For the amount specified, clients will be given approval to mint 5 NFT tokens from your contract. Making this 0 will provide free tokens to your clients, ideal for a student/teacher relationship.'
 		position='top left'
               />
 	      <Input
