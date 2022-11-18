@@ -1,6 +1,6 @@
 import { create } from 'ipfs-http-client'
 import Layout from '../components/Layout'
-import { Transition, Message, Image, Card, Embed, Input, Form, Button, Progress } from 'semantic-ui-react'
+import { Divier, Message, Image, Card, Embed, Input, Form, Button, Progress } from 'semantic-ui-react'
 import { Component, useState } from 'react'
 import Header from '../components/Header'
 import web3 from '../web3'
@@ -190,13 +190,19 @@ class MintForm extends Component {
     this.setState({ attributes: [...this.state.attributes, { traitType: this.state.traitType, value: this.state.value }], buttonDisabled: true });
     setTimeout(() => this.setState({ buttonDisabled: false, traitType: '', value: '' }), );
   }
+  deleteAttr = (index) => {
+    this.setState({ attrButtonDisabled: true });
+    let attrs = this.state.attributes;
+    attrs.splice(index, 1);
+    this.setState({ attributes: attrs, attrButtonDisabled: false });
+  }
 
   renderAttributes = () => {
     return this.state.attributes.map((attribute, index) => {
       return (
 	<Card>
 	  <Card.Content>
-	    <Button color='purple' floated='right' size='mini' icon='x' />
+	    <Button disabled={this.state.attrButtonDisabled} onClick={() => this.deleteAttr(index)} color='purple' floated='right' size='mini' icon='x' type='button'/>
 	    <Card.Header>{attribute.traitType}</Card.Header>
 	    <Card.Description>{attribute.value}</Card.Description>
 	  </Card.Content>
@@ -290,6 +296,7 @@ class MintForm extends Component {
 		/>
 	      </Form.Field>
 	    </Form.Group>
+	    <Form.Group> 
 	    <Form.Field required>
 	      <label>Image or Video</label>
 	      <Input
@@ -298,20 +305,31 @@ class MintForm extends Component {
 		onChange={() => this.fileHandler(event)}
 	      />
 	    </Form.Field>
-	    <Form.Group widths='equal'>
+	    </Form.Group>
+	    <div>
+	      <Form.Group>
+		<Card.Group>
+		  {this.renderAttributes()}
+		</Card.Group>
+	      </Form.Group>
+	    </div>
+	    <b>Add Attributes</b>
+	    <Form.Group widths='equal' style={{ marginTop: '5px' }}>
 	      <Form.Field>
 		<Input
 		  value={this.state.traitType}
 		  onChange={event => this.setState({ traitType: event.target.value })}
+		  placeholder='superpower'
 		/>
 	      </Form.Field>
 	      <Form.Field>
 		<Input
 		  value={this.state.value}
 		  onChange={event => this.setState({ value: event.target.value })}
+		  placeholder='xray vision'
 		/>
 	      </Form.Field>
-	      <Button disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>
+	      <Button color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>
 	    </Form.Group>
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	    <Message
@@ -320,12 +338,32 @@ class MintForm extends Component {
 	      header='Success'
 	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
-	    <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />	  
-	    <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
-	    <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
-	    <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large' />
+	    <InfoMessage
+	      isShowing={this.state.isLoading}
+	      header="Please Wait"
+	      content={this.state.infoMessage}
+	    />	  
+	    <ProgBar
+	      isShowing={this.state.isShowingProg}
+	      percent={this.state.progPct}
+	      color='orange'
+	    />
+	    <MultiCard
+	      isMp4={this.state.isMp4}
+	      isPng={this.state.isPng}
+	      url={this.state.url}
+	    />
+	    <Button
+	      disabled={this.state.isLoading}
+	      type='submit'
+	      loading={this.state.isLoading}
+	      content='Mint'
+	      color='orange'
+	      size='large'
+	      style={{ marginBottom: '10px' }}
+	    />
 	  </Form>
-	</div>	
+	</div>
       );
     }
   }
