@@ -45,6 +45,9 @@ export async function getServerSideProps(props) {
 }
 
 export default class TokenShow extends Component {
+  componentDidMount() {
+
+  }
   render() {
     if (this.props.filetype === 'png') {  // TODO: Reduce this mess
       return (

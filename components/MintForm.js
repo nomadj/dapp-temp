@@ -64,7 +64,7 @@ class MintForm extends Component {
     uri: '',
     auxUri: '',
     attributes: [],
-    traitType: '',
+    trait_type: '',
     value: '',
     buttonDisabled: false
   }
@@ -96,7 +96,7 @@ class MintForm extends Component {
     try {
       const added = await client.add(file, { progress: prog  => this.setState({ progPct: ((prog / this.state.fileSize) * 100) })});
       this.setState({ isShowingProg: false, infoMessage: '' });
-      await this.createMeta(added.path);
+      this.state.contractType === 'musician' ? await this.createMeta(added.path) : await this.createCustomMeta(added.path);
     } catch (event) {
       console.log(event);
       this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, isShowingProg: false, infoMessage: '' });
@@ -116,6 +116,7 @@ class MintForm extends Component {
     })
     try {
       const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      console.log(`https://fastload.infura-ipfs.io/ipfs/${added.path}`);
       await this.mintNFT(added.path);
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false });
@@ -142,6 +143,21 @@ class MintForm extends Component {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       console.log(contract.events);
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' })
+    }
+  }
+
+  createCustomMeta = async (cid) => {
+    try {
+      const metadata = {
+	name: this.state.name,
+	description: this.state.description,
+	image: `ipfs://${cid}`,
+	attributes: this.state.attributes
+      }
+      const data = JSON.stringify(metadata);
+      this.ipfsAddJSON(data);
+    } catch (error) {
+      this.setState({ errorMessage: error.message });
     }
   }
 
@@ -187,14 +203,16 @@ class MintForm extends Component {
   }
 
   addAttribute = () => {
-    this.setState({ attributes: [...this.state.attributes, { traitType: this.state.traitType, value: this.state.value }], buttonDisabled: true });
-    setTimeout(() => this.setState({ buttonDisabled: false, traitType: '', value: '' }), );
+    this.setState({ attributes: [...this.state.attributes, { trait_type: this.state.trait_type, value: this.state.value }], buttonDisabled: true });
+    setTimeout(() => this.setState({ buttonDisabled: false, trait_type: '', value: '' }), );
+    console.log("Attributes: ", this.state.attributes);
   }
   deleteAttr = (index) => {
     this.setState({ attrButtonDisabled: true });
     let attrs = this.state.attributes;
     attrs.splice(index, 1);
     this.setState({ attributes: attrs, attrButtonDisabled: false });
+    console.log("Attributes: ", this.state.attributes);
   }
 
   renderAttributes = () => {
@@ -203,7 +221,7 @@ class MintForm extends Component {
 	<Card>
 	  <Card.Content>
 	    <Button disabled={this.state.attrButtonDisabled} onClick={() => this.deleteAttr(index)} color='purple' floated='right' size='mini' icon='x' type='button'/>
-	    <Card.Header>{attribute.traitType}</Card.Header>
+	    <Card.Header>{attribute.trait_type}</Card.Header>
 	    <Card.Description>{attribute.value}</Card.Description>
 	  </Card.Content>
 	</Card>
@@ -296,18 +314,18 @@ class MintForm extends Component {
 		/>
 	      </Form.Field>
 	    </Form.Group>
-	    <Form.Group> 
-	    <Form.Field required>
-	      <label>Image or Video</label>
-	      <Input
-		id="imageName"
-		type="file"
-		onChange={() => this.fileHandler(event)}
-	      />
-	    </Form.Field>
+	    <Form.Group style={{ marginBottom: '10px'}}> 
+	      <Form.Field required>
+		<label>Image or Video</label>
+		<Input
+		  id="imageName"
+		  type="file"
+		  onChange={() => this.fileHandler(event)}
+		/>
+	      </Form.Field>
 	    </Form.Group>
 	    <div>
-	      <Form.Group>
+	      <Form.Group style={{ marginLeft: '5px'}}>
 		<Card.Group>
 		  {this.renderAttributes()}
 		</Card.Group>
@@ -317,8 +335,8 @@ class MintForm extends Component {
 	    <Form.Group widths='equal' style={{ marginTop: '5px' }}>
 	      <Form.Field>
 		<Input
-		  value={this.state.traitType}
-		  onChange={event => this.setState({ traitType: event.target.value })}
+		  value={this.state.trait_type}
+		  onChange={event => this.setState({ trait_type: event.target.value })}
 		  placeholder='superpower'
 		/>
 	      </Form.Field>
@@ -327,9 +345,10 @@ class MintForm extends Component {
 		  value={this.state.value}
 		  onChange={event => this.setState({ value: event.target.value })}
 		  placeholder='xray vision'
+		  label={<Button floated='right' color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
+		  labelPosition='right'
 		/>
 	      </Form.Field>
-	      <Button color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>
 	    </Form.Group>
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	    <Message

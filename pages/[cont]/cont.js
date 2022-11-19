@@ -42,6 +42,7 @@ export async function getServerSideProps(props) {
       return res.json();
     })
   );
+  console.log('Data Array: ', typeof dataArray);
   const images = dataArray.map(data => {
     return data.image.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
   });
