@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { Card, Image, Embed, Button, Grid } from 'semantic-ui-react'
+import { Card, Image, Embed, Button, Grid, Divider } from 'semantic-ui-react'
 import Layout from '../../components/Layout'
-import Header from '../../components/Header'
 import TransferForm from '../../components/TransferForm'
 import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
 import web3 from '../../web3'
+import Link from 'next/link'
 
 export async function getServerSideProps(props) {
   const contractName = props.query['cont'];
@@ -21,10 +21,13 @@ export async function getServerSideProps(props) {
   const attrVal3 = props.query['10'];
   const tokenId = props.query['11'];
   const contract = new web3.eth.Contract(Tambora.abi, addr);
-  const tokenData = await contract.methods.allTokens(tokenId).call();
-  console.log("Token Data: ", tokenData);
+  const tokenData = await contract.methods.getTokenData(tokenId).call();
   const blockNumber = tokenData.blockNumber;
- 
+  const uri = tokenData.uri;
+  const metadata = await fetch(uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'));
+  const data = await metadata.json();
+  const attributes = data.attributes;
+  
   return {
     props: {
       name,
@@ -39,106 +42,122 @@ export async function getServerSideProps(props) {
       filetype,
       tokenId,
       addr,
-      blockNumber
+      blockNumber,
+      attributes,
+      uri
     }
   }
 }
 
 export default class TokenShow extends Component {
-  componentDidMount() {
-
+  renderAttributes = () => {
+    const { Header, Content, Description } = Card;
+    const attributes = this.props.attributes.map((attr, i) => {
+      return (
+	<Card color='violet' key={i}>
+	  <Content>
+	  <Header>{attr.trait_type}</Header>
+	    <Description>{attr.value}</Description>
+	  </Content>
+	</Card>
+      );
+    });
+    return attributes;
   }
   render() {
+    const { Group, Content, Header, Description } = Card;
     if (this.props.filetype === 'png') {  // TODO: Reduce this mess
       return (
 	<Layout>
-	  <Card.Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
+	  <Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
 	    <Card color='olive'>
 	      <Image src={this.props.image} rounded />
-	      <Card.Content>
-		<Card.Description>Token # {this.props.tokenId}</Card.Description>
-	      </Card.Content>
+	      <Content>
+		<Description>Token # {this.props.tokenId}</Description>
+	      </Content>
 	    </Card>
 	    <Card color='olive'>
-	      <Card.Content>
-		<Card.Header>Name</Card.Header>
-		<Card.Description>{this.props.name}</Card.Description>
-	      </Card.Content>
-	      <Card.Content>
-		<Card.Header>{this.props.attrTrait1.replace(this.props.attrTrait1.charAt(0), this.props.attrTrait1.charAt(0).toUpperCase())}</Card.Header>
-		<Card.Description>{this.props.attrVal1}</Card.Description>
-	      </Card.Content>
-	      <Card.Content>
-		<Card.Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Card.Header>
-		<Card.Description>{this.props.attrVal2}</Card.Description>
-	      </Card.Content>	      
+	      <Content>
+		<Header>Name</Header>
+		<Description>{this.props.name}</Description>
+	      </Content>
+	      <Content>
+		<Header>Origin</Header>
+		<Description>Block # {this.props.blockNumber}</Description>
+	      </Content>	      
 	    </Card>
 	    <Card color='olive'>
-	      <Card.Content>
-		<Card.Header>Origin</Card.Header>
-		<Card.Description>Block # {this.props.blockNumber}</Card.Description>
-	      </Card.Content>	      
-	      <Card.Content>
-		<Card.Header>Description</Card.Header>
-		<Card.Description>{this.props.description}</Card.Description>
-	      </Card.Content>
-	      <Card.Content>
-		<Card.Header>{this.props.attrTrait3.replace(this.props.attrTrait3.charAt(0), this.props.attrTrait3.charAt(0).toUpperCase())}</Card.Header>
-		<Card.Description>{this.props.attrVal3}</Card.Description>
-	      </Card.Content>
+	      <Content>
+		<Header>Description</Header>
+		<Description>{this.props.description}</Description>
+	      </Content>
+	      <Content>
+		<Header>URI</Header>
+		<Link href={`https://fastload.infura-ipfs.io/ipfs/${this.props.uri.replace('ipfs://', '')}`}>
+		  <a>{this.props.uri}</a>
+		</Link>
+	      </Content>
 	    </Card>
 	    <Card color='olive'>
-	      <Card.Content>
+	      <Content>
 		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
-	      </Card.Content>
+	      </Content>
 	    </Card>
-	  </Card.Group>
+	  </Group>
+	  <Group itemsPerRow={4}>
+	    {this.renderAttributes()}
+	  </Group>
 	</Layout>
       );
     } else if (this.props.filetype === 'mp4') {
       return (
 	<Layout>
-	  <Card.Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
+	  <Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
 	    <Card color='olive'>
 	      <Embed url={this.props.image} active={true} rounded />
-	      <Card.Content>
-		<Card.Description>Token # {this.props.tokenId}</Card.Description>
-	      </Card.Content>	      
+	      <Content>
+		<Description>Token # {this.props.tokenId}</Description>
+	      </Content>	      
 	    </Card>
 	    <Card color='olive'>
-	      <Card.Content>
-		<Card.Header>Name</Card.Header>
-		<Card.Description style={{ marginTop: '5px'}}>{this.props.name}</Card.Description>
-	      </Card.Content>
-	      <Card.Content>
-		<Card.Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Card.Header>
-		<Card.Description>{this.props.attrVal2}</Card.Description>
-	      </Card.Content>
-	      <Card.Content>
-		<Card.Header>{this.props.attrTrait1.replace(this.props.attrTrait1.charAt(0), this.props.attrTrait1.charAt(0).toUpperCase())}</Card.Header>
-		<Card.Description>{this.props.attrVal1}</Card.Description>
-	      </Card.Content>      	      
+	      <Content>
+		<Header>Name</Header>
+		<Description style={{ marginTop: '5px'}}>{this.props.name}</Description>
+	      </Content>
+	      <Content>
+		<Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Header>
+		<Description>{this.props.attrVal2}</Description>
+	      </Content>
+	      <Content>
+		<Header>{this.props.attrTrait1.replace(this.props.attrTrait1.charAt(0), this.props.attrTrait1.charAt(0).toUpperCase())}</Header>
+		<Description>{this.props.attrVal1}</Description>
+	      </Content>      	      
 	    </Card>
 	    <Card color='olive'>
-	      <Card.Content>
-		<Card.Header>Origin</Card.Header>
-		<Card.Description>Block # {this.props.blockNumber}</Card.Description>
-	      </Card.Content>	      
-	      <Card.Content>
-		<Card.Header>Description</Card.Header>
-		<Card.Description>{this.props.description}</Card.Description>
-	      </Card.Content>
-	      <Card.Content>
-		<Card.Header>{this.props.attrTrait3.replace(this.props.attrTrait3.charAt(0), this.props.attrTrait3.charAt(0).toUpperCase())}</Card.Header>
-		<Card.Description>{this.props.attrVal3}</Card.Description>
-	      </Card.Content>
+	      <Content>
+		<Header>Origin</Header>
+		<Description>Block # {this.props.blockNumber}</Description>
+	      </Content>	      
+	      <Content>
+		<Header>Description</Header>
+		<Description>{this.props.description}</Description>
+	      </Content>
+	      <Content>
+		<Header>{this.props.attrTrait3.replace(this.props.attrTrait3.charAt(0), this.props.attrTrait3.charAt(0).toUpperCase())}</Header>
+		<Description>{this.props.attrVal3}</Description>
+	      </Content>
 	    </Card>
 	    <Card color='olive'>
-	      <Card.Content>
+	      <Content>
 		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
-	      </Card.Content>	      	      
+	      </Content>	      	      
 	    </Card>
-	  </Card.Group>
+	    <Card color='olive'>
+	      <Content>
+		
+	      </Content>
+	    </Card>
+	  </Group>
 	</Layout>
       );
     }

@@ -65,6 +65,7 @@ class ContractShow extends Component {
 		  contractName={this.props.name}
 		  projectId={this.props.projectId}
 		  projectSecret={this.props.projectSecret}
+		  price={this.props.price}
 		/>
 	      </Card>	      
 	    </Grid.Column>

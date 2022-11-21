@@ -72,7 +72,8 @@ class RequestForm extends Component {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       this.setState({ isInteracting: true, infoMessage: 'Interacting with the Ethereum Blockchain' });
-      const tx = await contract.methods.finalizeClient(`ipfs://${added.path}`).send({ from: accounts[0] });
+      console.log("Price: ", this.props.price);
+      const tx = await contract.methods.finalizeClient(`ipfs://${added.path}`).send({ from: accounts[0], value: this.props.price });
       this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       setTimeout(() => {
 	Router.reload(window.location.pathname)
@@ -87,7 +88,7 @@ class RequestForm extends Component {
     try {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-    const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0]});
+      const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0], value: this.props.price});
       this.setState({ success: true });
       // const pusher = async () => {
       // 	console.log('Minted successfully at: ', tx.transactionHash)

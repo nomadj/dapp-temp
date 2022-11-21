@@ -114,21 +114,25 @@ class MyContract extends React.Component {
 	    </Card>
 	    <Card>
 	      <Card.Content>
+		<Card.Header>Allowance</Card.Header>
+		<a>{this.props.mintAllowance}</a>
+	      </Card.Content>		  
+	    </Card>
+
+
 		<Link href={{pathname: '/minty', query: [this.props.address, this.props.mintId]}}>
 		  <DynamicButton
 		    color='olive'
 		    isShowing={this.props.isTokenHolder && !this.props.mintDisabled}
-		    icon='ethereum'
-		    marginBottom='10px'
+		    content='Mint'
+		    marginBottom='12px'
 		    marginLeft='13px'
-		    floated='right'
+		    marginTop='12px'
 		    size='tiny'
 		  />
-		  </Link>
-		<Card.Header>Mint Allowance</Card.Header>
-		<a>{this.props.mintAllowance}</a>
-	      </Card.Content>		  
-	    </Card>
+		  </Link>		
+
+
 	  </Card.Group>
 	  <Divider />
 	  <Card.Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>

@@ -51,7 +51,7 @@ contract TamboraFactory {
 		_contracts[index] = _contracts[_contracts.length - 1];
 		_contracts.pop();
 	}
-	function _owner() private view returns (address) {
+	function owner() private view returns (address) {
 		return _owner;
 	}
 }

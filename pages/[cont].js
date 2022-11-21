@@ -31,8 +31,9 @@ export async function getServerSideProps(props) {
   const image = metadata.image.replace('ipfs://', baseURL);
   const projectId = process.env.PROJECT_ID;
   const projectSecret = process.env.PROJECT_SECRET;
-  const tokenData = await contract.methods.allTokens(0).call();
+  const tokenData = await contract.methods.getTokenData(0).call();
   const date = new Date(tokenData.timeStamp * 1000);
+  const price = await contract.methods.price().call();
 
   return {
     props: {
@@ -46,7 +47,8 @@ export async function getServerSideProps(props) {
       owner,
       title,
       projectId,
-      projectSecret
+      projectSecret,
+      price
     }
   };
 }
@@ -188,6 +190,7 @@ class CampaignShow extends Component {
 	      mintData={this.state.mintData}
 	      projectId={this.props.projectId}
 	      projectSecret={this.props.projectSecret}
+	      price={this.props.price}
 	    />
 	</Layout>
       );

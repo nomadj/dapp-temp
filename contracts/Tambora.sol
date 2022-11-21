@@ -28,7 +28,7 @@ contract Tambora is ERC721Enumerable {
 	mapping (address => string) public approvedName;
 	mapping (uint256 => File[]) private _individualFiles;
 	mapping (uint256 => ClientToken) public memberTokens;
-	mapping (uint256 => Token) public allTokens;
+	mapping (uint256 => Token) private _allTokens;
 	Client[] private _pendingClients;
 	File[] private _fileStore;
 
@@ -69,7 +69,7 @@ contract Tambora is ERC721Enumerable {
 		_mint(to_, 0);
 		_setTokenURI(0, uri_);
 		_tokenId = 1;
-		allTokens[0] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri_ });
+		_allTokens[0] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri_ });
 	}
 
   function owner() public view returns (address) {
@@ -108,7 +108,7 @@ contract Tambora is ERC721Enumerable {
 		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint allowance exceeded.");
 		_mint(to_, _tokenId);
 		_setTokenURI(_tokenId, uri);
-		allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri });
+		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri });
 		_tokenId++;
 		_owner.transfer(_msgValue());
 		memberTokens[mintId_].minted += 1;
@@ -146,7 +146,7 @@ contract Tambora is ERC721Enumerable {
 		memberTokens[_tokenId] = ClientToken({ minted: 1, mintAllowance: 5, mintId: _tokenId });
 		_mint(_msgSender(), _tokenId);
 		_setTokenURI(_tokenId, uri);
-		allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri});
+		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri});
 		_tokenId++;
 		_owner.transfer(_msgValue());
 		delete isApproved[_msgSender()];
@@ -186,5 +186,9 @@ contract Tambora is ERC721Enumerable {
 	function getIndividualFiles(uint256 id_) public view returns (File[] memory) {
 		require(balanceOf(_msgSender()) > 0);
 		return _individualFiles[id_];
+	}
+
+	function getTokenData(uint256 id_) public view returns (Token memory) {
+		return _allTokens[id_];
 	}
 }

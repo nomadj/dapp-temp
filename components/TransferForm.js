@@ -36,7 +36,7 @@ export default class TransferForm extends Component {
 	<Popup
 	  trigger={
 	    <Form.Field>
-              <h2>Transfer This Token</h2>
+              <h2>Transfer</h2>
               <Input
 		value={this.state.to}
 		onChange={event => this.setState({ to: event.target.value })}
@@ -45,7 +45,7 @@ export default class TransferForm extends Component {
               />
             </Form.Field>}
 	  content="Enter the recipient's public address"
-	  position='bottom'
+	  position='bottom center'
         />	  	
         <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	<Message success color='teal' header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />

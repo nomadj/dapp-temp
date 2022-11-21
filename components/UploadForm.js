@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Input, Message, Button, Container, Card } from 'semantic-ui-react'
+import { Form, Input, Message, Button, Container, Card, Divider } from 'semantic-ui-react'
 import InfoMessage from './InfoMessage'
 import { create } from 'ipfs-http-client'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
@@ -106,6 +106,7 @@ class UploadForm extends Component {
 		}}
 		placeholder='filename.pdf'
 	      />
+	      <Divider />
 	      <Input
 		type='file'
 		id='upload-picker'
