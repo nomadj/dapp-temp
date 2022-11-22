@@ -128,7 +128,7 @@ class MintForm extends Component {
     try {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-      const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId).send({from: accounts[0]});
+      const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId).send({from: accounts[0], value: this.props.price});
       this.setState({ success: true });
       // const pusher = async () => {
       // 	console.log('Minted successfully at: ', tx.transactionHash)
