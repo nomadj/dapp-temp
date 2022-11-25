@@ -8,7 +8,7 @@ class NFT extends React.Component {
     const { name, description, image, attributes } = this.props.meta;
     if (this.props.type === 'png' || this.props.type === 'image/jpeg') {
       return (
-	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, name, description, image, this.props.type, attributes[0].trait_type, attributes[0].value, attributes[1].trait_type, attributes[1].value, attributes[2].trait_type, attributes[2].value, this.props.tokenId]}} >
+	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
 	  <Card color='olive'>
 	    <Image src={this.props.url} wrapped ui={false} />
 	    <Card.Content>
@@ -21,7 +21,7 @@ class NFT extends React.Component {
       );
     } else if (this.props.type === 'mp4') {
       return (
-	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, name, description, image, this.props.type, attributes[0].trait_type, attributes[0].value, attributes[1].trait_type, attributes[1].value, attributes[2].trait_type, attributes[2].value, this.props.tokenId]}} >
+	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
 	  <Card color='olive'>
 	    <Card.Content>
 	      <Embed url={this.props.url} active={true} />

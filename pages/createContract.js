@@ -12,7 +12,9 @@ import ImageResize from 'image-resize';
 import { floatsOnly } from '../utils';
 
 const options = [
-  { key: 'm', text: 'Musician', value: 'musician' }
+  { key: 'm', text: 'Musician', value: 'musician' },
+  { key: 'c', text: 'Custom', value: 'custom' },
+  { key: 'f', text: 'Data Storage', value: 'data' }
 ];
 
 export async function getServerSideProps() {
@@ -42,19 +44,37 @@ class CreateContract extends Component {
     auxUri: '',
     uri: '',
     url: '',
-    contractAddress: ''
+    contractAddress: '',
+    extUrl: ''
   };
 
-  handleChange = (e, { value }) => this.setState({ contractType: value })
+  handleChange = (e, { value }) => this.setState({ contractType: value });
+  handleExtFileChange = (event) => {
+    this.setState({ errorMessage: '', infoMessage: '', success: false });
+    try {
+    const { type } = event.target.files[0];
+    if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
+      console.log("File type supported: ", type);
+      this.setState({ extUrl: URL.createObjectURL(event.target.files[0]) });
+    } else {
+      this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
+    }
+    } catch (error) {
+      console.log("No file selected");
+    }
+  }
 
   fileHandler = (event) => {
     event.preventDefault()
+    try {
     this.setState({ isMp4: false, isPng: false, errorMessage: '', success: false });
-    if (event.target.value.endsWith('.png') || event.target.value.endsWith('.jpg')) {
-
+    if (event.target.files[0].type === 'image/png' || event.target.files[0].type === 'image/jpeg') {
       this.setState({ url: URL.createObjectURL(event.target.files[0]) });
     } else {
-      this.setState({ errorMessage: "File suffix does not match .png or .jpg and may not work. Ignore this warning if you are sure the file type is png or jpg." });
+      throw { message: "Only jpg and png file types compatible at this time." };
+    }
+    } catch (error) {
+      this.setState({ errorMessage: error.message });
     }
   }
 
@@ -86,29 +106,31 @@ class CreateContract extends Component {
       rmSpacesSym = rmSpacesSym.replace(rmSpacesSym[4], '');
     }
     const upperSym = rmSpacesSym.toUpperCase();
-    console.log("Upper Sym: ", upperSym);
     const rmSpecCharsSym = this.removeSpecialChars(upperSym);
     return rmSpecCharsSym;    
   }
 
   onSubmit = async (img) => {
+    const { name, symbol, contractType} = this.state;
+    if (this.state.price === '') {
+      this.setState({ price: '0'});
+    } else if (this.state.extUrl !== '') {      
+      await this.ipfsAddExt(document.getElementById("file-picker").files[0]);
+    }
     try {
       if (img.type !== 'image/png' && img.type !== 'image/jpeg') {
 	throw { message: 'Choose a different file. Only png and jpg format supported at this time.' };
+      } else if (name === '' || symbol === '' || contractType === '') {
+	throw { message: 'Please fill out all required fields.' };
       }
-    this.setState({ loading: true, errorMessage: '', success: false, infoMessage: 'Adding file to IPFS' });
+	this.setState({ loading: true, errorMessage: '', success: false, infoMessage: 'Adding file to IPFS' });
     // const imageResize = await new ImageResize({
     //   format: 'png',
     //   height: '160'
     // });
     // const newImage = await imageResize.play(img);
       await this.ipfsAdd(img);
-    } catch (error) {
-      this.setState({ infoMessage: '', errorMessage: error.message });
-    }
-    this.setState({ infoMessage: 'Interacting with the EVM' });
-    try {
-      console.log("Factory Address: ", this.props.factoryAddress)
+      this.setState({ infoMessage: 'Interacting with the EVM' });
       const factory = await new web3.eth.Contract(TamboraFactory.abi, this.props.factoryAddress);
       const names = await factory.methods.getNames().call();
       for (var i = 0; i < names.length; i++) {
@@ -124,10 +146,16 @@ class CreateContract extends Component {
 	const eventLog = tx.events['Deployed'].returnValues.contractAddr;
 	Router.push({pathname: '/', query: [eventLog]});
       }
-      setTimeout(pusher, 3000);
-    } catch (err) {
-      this.setState({ errorMessage: err.message, loading: false, infoMessage: '' });
-      }
+      setTimeout(pusher, 3000);      
+    } catch (error) {
+      this.setState({ infoMessage: '', errorMessage: error.message, loading: false });
+    }
+
+    // try {
+
+    // } catch (err) {
+    //   this.setState({ errorMessage: err.message, loading: false, infoMessage: '' });
+    //   }
   };
 
   ipfsAdd = async (file) => {
@@ -149,6 +177,27 @@ class CreateContract extends Component {
     }
   }
 
+  ipfsAddExt = async (file) => {
+    this.setState({ infoMessage: 'Adding aux file to IPFS.' });
+    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
+
+    const client = create({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https',
+      headers: {
+	authorization: auth
+      }
+    })
+    try {
+      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      this.setState({ extUrl: `ipfs://${added.path}` });
+    } catch (error) {
+      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+    }
+  }  
+
+
   createMeta = async (cid) => {
     this.setState({ infoMessage: 'Creating metadata' });
     try {
@@ -156,6 +205,7 @@ class CreateContract extends Component {
 	"name": this.state.name,
 	"image": `ipfs://${cid}`,
 	"description": `Token prime of ${this.state.name} contract`,
+	"external_url": this.state.extUrl,
 	"attributes": [
 	  {
 	    "trait_type": "type",
@@ -164,10 +214,6 @@ class CreateContract extends Component {
 	  {
 	    "trait_type": "role",
 	    "value": "owner"
-	  },
-	  {
-	    "trait_type": "aux",
-	    "value": ""
 	  }
 	]
       };
@@ -193,9 +239,8 @@ class CreateContract extends Component {
     try {
       const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
       this.setState({ uri: added.path });
-    } catch (event) {
-      console.log(event);
-      this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, infoMessage: '' });
+    } catch (error) {
+      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
     }
   }
 
@@ -223,7 +268,7 @@ class CreateContract extends Component {
         <h3>Create your own ERC721 contract</h3>
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	  <Form.Group widths='equal'>
-	    <Form.Field>
+	    <Form.Field required>
 	      <Popup
 		trigger={<label>Name</label>}
 		content='Enter a name for your contract. Use only lowercase letters.'
@@ -235,7 +280,7 @@ class CreateContract extends Component {
 		placeholder='myawesomecontract'
 	      />
 	    </Form.Field>
-	    <Form.Field>
+	    <Form.Field required>
 	      <Popup
 		trigger={<label>Symbol</label>}
 		content='Symbols are all in caps and 3-4 characters long'
@@ -249,7 +294,7 @@ class CreateContract extends Component {
 	    </Form.Field>
 	    <Form.Field>
 	      <Popup
-		trigger={<label>Price</label>}
+		trigger={<label>Price (optional)</label>}
 		content='Enter the amount, in ether, you would like to charge your clients. For the amount specified, clients will be given approval to mint 5 NFT tokens from your contract. Making this 0 will provide free tokens to your clients, ideal for a student/teacher relationship.'
 		position='top left'
               />
@@ -264,6 +309,7 @@ class CreateContract extends Component {
 	    <Popup
 	      trigger={
 		<Form.Field
+		  required
 		  control={Select}
 		  label='Type'
 		  options={options}
@@ -275,11 +321,12 @@ class CreateContract extends Component {
 	      position='top left'
 	    />
 	  </Form.Group>
-	  <Form.Field>
+	  <Form.Group>
+	  <Form.Field required>
 	    <Popup
 	      trigger={<label>Image</label>}
 	      position='top left'
-	      content="Choose a .png file to represent your contract. Each of your clients will be minted a token containing this image."
+	      content="Choose an image file to represent your contract. Each of your clients will be minted a token containing this image. PNG and JPG supported at this time."
 	    />
    	    <Input
    	      id="image-picker"
@@ -287,6 +334,19 @@ class CreateContract extends Component {
    	      onChange={() => this.fileHandler(event)}
    	    />
    	  </Form.Field>
+	  <Form.Field>
+	    <Popup
+	      trigger={<label>Ext File (optional)</label>}
+	      position='top left'
+	      content="Choose a file to be uploaded when the contract is created. The file location will be added to the metadata of the token prime."
+	    />
+   	    <Input
+   	      id="file-picker"
+   	      type="file"
+   	      onChange={() => this.handleExtFileChange(event)}
+   	    />
+   	  </Form.Field>	    
+	  </Form.Group> 
           <Message error color='purple' header='Error' content={this.state.errorMessage} />
 	  <Message
 	    success

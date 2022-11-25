@@ -205,14 +205,12 @@ class MintForm extends Component {
   addAttribute = () => {
     this.setState({ attributes: [...this.state.attributes, { trait_type: this.state.trait_type, value: this.state.value }], buttonDisabled: true });
     setTimeout(() => this.setState({ buttonDisabled: false, trait_type: '', value: '' }), );
-    console.log("Attributes: ", this.state.attributes);
   }
   deleteAttr = (index) => {
     this.setState({ attrButtonDisabled: true });
     let attrs = this.state.attributes;
     attrs.splice(index, 1);
     this.setState({ attributes: attrs, attrButtonDisabled: false });
-    console.log("Attributes: ", this.state.attributes);
   }
 
   renderAttributes = () => {
@@ -230,7 +228,7 @@ class MintForm extends Component {
   }
 
   render() {
-    if (this.props.contractType === 'custom') {
+    if (this.props.contractType === 'musician') {
       return (
 	<div>
 	  <h3>Mint an NFT</h3>
@@ -253,7 +251,7 @@ class MintForm extends Component {
 		/>
 	      </Form.Field>
 	      <Form.Field required>
-		<label>Owner</label>
+		<label>Performer</label>
 		<Input
 		  value={this.state.performer}
 		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
@@ -279,11 +277,11 @@ class MintForm extends Component {
 	    <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />	  
 	    <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
 	    <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
-	    <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large'/>
+	    <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large' style={{ marginBottom: '10px' }}/>
 	  </Form>
 	</div>
       );
-    } else if (this.props.contractType === 'musician') {
+    } else if (this.props.contractType === 'custom') {
       return (
 	<div>
 	  <h3>Mint an NFT</h3>
@@ -294,7 +292,7 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.name}
 		  onChange={event => this.setState({ name: proAlphaSpaces(event.target.value) })}
-		  placeholder='University Entrance Audition'
+		  placeholder='Superman'
 		/>
 	      </Form.Field>
 	      <Form.Field required>
@@ -302,15 +300,15 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.description}
 		  onChange={event => this.setState({ description: proAlphaSpaces(event.target.value) })}
-		  placeholder="Alice Vanderblatt performing classical guitar"
+		  placeholder='The man of steel, aka Clark Kent'
 		/>
 	      </Form.Field>
 	      <Form.Field required>
-		<label>Owner</label>
+		<label>Creator</label>
 		<Input
 		  value={this.state.performer}
 		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
-		  placeholder="Alice Vanderblatt"
+		  placeholder='Joe Shuster and Jerry Siegel'
 		/>
 	      </Form.Field>
 	    </Form.Group>

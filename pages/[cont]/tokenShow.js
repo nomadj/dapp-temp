@@ -5,21 +5,13 @@ import TransferForm from '../../components/TransferForm'
 import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
 import web3 from '../../web3'
 import Link from 'next/link'
+import DynamicButton from '../../components/DynamicButton'
 
 export async function getServerSideProps(props) {
-  const contractName = props.query['cont'];
+  // const contractName = props.query['cont'];
   const addr = props.query['0'];
-  const name = props.query['1'];
-  const description = props.query['2'];
-  const image = props.query['3'].replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
-  const filetype = props.query['4'];
-  const attrTrait1 = props.query['5'];
-  const attrVal1 = props.query['6'];
-  const attrTrait2 = props.query['7'];
-  const attrVal2 = props.query['8'];
-  const attrTrait3 = props.query['9'];
-  const attrVal3 = props.query['10'];
-  const tokenId = props.query['11'];
+  const filetype = props.query['1'];
+  const tokenId = props.query['2'];
   const contract = new web3.eth.Contract(Tambora.abi, addr);
   const tokenData = await contract.methods.getTokenData(tokenId).call();
   const blockNumber = tokenData.blockNumber;
@@ -27,29 +19,41 @@ export async function getServerSideProps(props) {
   const metadata = await fetch(uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'));
   const data = await metadata.json();
   const attributes = data.attributes;
+  const image = data.image.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
+  const name = data.name;
+  const description = data.description;
+  const extUrl = data.external_url;
   
   return {
     props: {
       name,
       description,
       image,
-      attrTrait1,
-      attrVal1,
-      attrTrait2,
-      attrVal2,
-      attrTrait3,
-      attrVal3,
       filetype,
       tokenId,
       addr,
       blockNumber,
       attributes,
-      uri
+      uri,
+      extUrl
     }
   }
 }
 
 export default class TokenShow extends Component {
+  async downloadFile(url, fileName) {
+
+    const res = await fetch(url, { method: 'get', mode: 'cors', referrerPolicy: 'no-referrer' })
+    const blob = await res.blob()
+    const aElement = document.createElement('a');
+    aElement.setAttribute('download', fileName);
+    const href = URL.createObjectURL(blob);
+    aElement.href = href;
+    aElement.setAttribute('target', '_blank');
+    aElement.click();
+    URL.revokeObjectURL(href);
+    this.setState({ loading: false });
+  }   
   renderAttributes = () => {
     const { Header, Content, Description } = Card;
     const attributes = this.props.attributes.map((attr, i) => {
@@ -66,12 +70,57 @@ export default class TokenShow extends Component {
   }
   render() {
     const { Group, Content, Header, Description } = Card;
-    if (this.props.filetype === 'png') {  // TODO: Reduce this mess
+    if (this.props.filetype === 'png' || this.props.filetype === 'jpeg') {  // TODO: Reduce this mess
       return (
 	<Layout>
 	  <Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
 	    <Card color='olive'>
 	      <Image src={this.props.image} rounded />
+	      <Content>
+		<Description>Token # {this.props.tokenId}</Description>
+	      </Content>
+	    </Card>
+	    <Card color='olive'>
+	      <Content>
+		<Header>Name</Header>
+		<Description>{this.props.name}</Description>
+	      </Content>
+	      <Content>
+		<Header>Origin</Header>
+		<Description>Block # {this.props.blockNumber}</Description>
+	      </Content>
+	      <Content>
+		<DynamicButton color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.extUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.extUrl !== '' || this.props.extUrl !== 'undefined'} icon='download' />
+		<Header>Aux File</Header>		
+	      </Content>
+	    </Card>
+	    <Card color='olive'>
+	      <Content>
+		<Header>Description</Header>
+		<Description>{this.props.description}</Description>
+	      </Content>
+	      <Content>
+		<DynamicButton isShowing={true} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', '') + 'URI')} icon='download' />
+		<Header>Metadata</Header>		
+	      </Content>
+	    </Card>
+	    <Card color='olive'>
+	      <Content>
+		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
+	      </Content>
+	    </Card>
+	  </Group>
+	  <Group itemsPerRow={4}>
+	    {this.renderAttributes()}
+	  </Group>
+	</Layout>
+      );
+    } else if (this.props.filetype === 'mp4') {
+      return (
+	<Layout>
+	  <Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
+	    <Card color='olive'>
+	      <Embed url={this.props.image} active={true} rounded />
 	      <Content>
 		<Description>Token # {this.props.tokenId}</Description>
 	      </Content>
@@ -106,57 +155,6 @@ export default class TokenShow extends Component {
 	  </Group>
 	  <Group itemsPerRow={4}>
 	    {this.renderAttributes()}
-	  </Group>
-	</Layout>
-      );
-    } else if (this.props.filetype === 'mp4') {
-      return (
-	<Layout>
-	  <Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
-	    <Card color='olive'>
-	      <Embed url={this.props.image} active={true} rounded />
-	      <Content>
-		<Description>Token # {this.props.tokenId}</Description>
-	      </Content>	      
-	    </Card>
-	    <Card color='olive'>
-	      <Content>
-		<Header>Name</Header>
-		<Description style={{ marginTop: '5px'}}>{this.props.name}</Description>
-	      </Content>
-	      <Content>
-		<Header>{this.props.attrTrait2.replace(this.props.attrTrait2.charAt(0), this.props.attrTrait2.charAt(0).toUpperCase())}</Header>
-		<Description>{this.props.attrVal2}</Description>
-	      </Content>
-	      <Content>
-		<Header>{this.props.attrTrait1.replace(this.props.attrTrait1.charAt(0), this.props.attrTrait1.charAt(0).toUpperCase())}</Header>
-		<Description>{this.props.attrVal1}</Description>
-	      </Content>      	      
-	    </Card>
-	    <Card color='olive'>
-	      <Content>
-		<Header>Origin</Header>
-		<Description>Block # {this.props.blockNumber}</Description>
-	      </Content>	      
-	      <Content>
-		<Header>Description</Header>
-		<Description>{this.props.description}</Description>
-	      </Content>
-	      <Content>
-		<Header>{this.props.attrTrait3.replace(this.props.attrTrait3.charAt(0), this.props.attrTrait3.charAt(0).toUpperCase())}</Header>
-		<Description>{this.props.attrVal3}</Description>
-	      </Content>
-	    </Card>
-	    <Card color='olive'>
-	      <Content>
-		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
-	      </Content>	      	      
-	    </Card>
-	    <Card color='olive'>
-	      <Content>
-		
-	      </Content>
-	    </Card>
 	  </Group>
 	</Layout>
       );
