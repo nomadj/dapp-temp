@@ -66,13 +66,32 @@ class MintForm extends Component {
     attributes: [],
     trait_type: '',
     value: '',
-    buttonDisabled: false
+    buttonDisabled: false,
+    extUrl: ''
   }
+  handleExtFileChange = (event) => {
+    this.setState({ errorMessage: '', infoMessage: '', success: false });
+    try {
+      const { type } = event.target.files[0];
+      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
+	this.setState({ extUrl: URL.createObjectURL(event.target.files[0]) });
+      } else {
+	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
+      }
+    } catch (error) {
+      console.log("No file selected");
+    }
+  }  
 
   onSubmit = async (img) => {
+    const { name, description, performer, extUrl } = this.state;
     try {
       if (img.type !== 'image/png' && img.type !== 'video/mp4' && img.type !== 'image/jpeg') {
 	throw { message: 'Select a different file. Only png, jpg, and mp4 supported at this time.' }
+      } else if (this.state.extUrl !== '') {
+	await this.ipfsAddExt(document.getElementById('file-picker').files[0]);
+      } else if (name === '' || description === '' || performer === '' || extUrl ==='') {
+	throw { message: 'Please enter all required fields' }
       }
       this.setState({ isLoading: true, success: false, errorMessage: '' });
       await this.ipfsAdd(img);
@@ -82,7 +101,7 @@ class MintForm extends Component {
   }
   
   ipfsAdd = async (file) => {
-    this.setState({ isShowingProg: true, infoMessage: 'Interacting with Ethereum blockchain', infoMessage: 'Adding file to IPFS' });
+    this.setState({ isShowingProg: true, infoMessage: 'Adding file to IPFS' });
     const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
     const client = create({
@@ -98,7 +117,6 @@ class MintForm extends Component {
       this.setState({ isShowingProg: false, infoMessage: '' });
       this.state.contractType === 'musician' ? await this.createMeta(added.path) : await this.createCustomMeta(added.path);
     } catch (event) {
-      console.log(event);
       this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, isShowingProg: false, infoMessage: '' });
     }
   }
@@ -116,12 +134,31 @@ class MintForm extends Component {
     })
     try {
       const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
-      console.log(`https://fastload.infura-ipfs.io/ipfs/${added.path}`);
       await this.mintNFT(added.path);
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false });
     }
   }
+
+  ipfsAddExt = async (file) => {
+    this.setState({ infoMessage: 'Adding aux file to IPFS.' });
+    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
+
+    const client = create({
+      host: 'ipfs.infura.io',
+      port: 5001,
+      protocol: 'https',
+      headers: {
+	authorization: auth
+      }
+    })
+    try {
+      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      this.setState({ extUrl: `ipfs://${added.path}` });
+    } catch (error) {
+      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+    }
+  }    
 
   mintNFT = async (cid) => {
     this.setState({ isInteracting: true, infoMessage: 'Interacting with the EVM' });
@@ -130,18 +167,10 @@ class MintForm extends Component {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId).send({from: accounts[0], value: this.props.price});
       this.setState({ success: true });
-      // const pusher = async () => {
-      // 	console.log('Minted successfully at: ', tx.transactionHash)
-      // 	Router.push({pathname: '/', query: [tx.transactionHash]});
-      // }
-      // setTimeout(pusher, 3000);
-      console.log('Minted successfully at: ', tx.transactionHash);
       this.setState({ isLoading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       setTimeout(() => Router.push({ pathname: `/${this.props.contractName}` }), 3000);
-      // return tx.transactionHash;
     } catch (error){
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-      console.log(contract.events);
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' })
     }
   }
@@ -152,6 +181,7 @@ class MintForm extends Component {
 	name: this.state.name,
 	description: this.state.description,
 	image: `ipfs://${cid}`,
+	external_url: this.state.extUrl,
 	attributes: this.state.attributes
       }
       const data = JSON.stringify(metadata);
@@ -167,6 +197,7 @@ class MintForm extends Component {
 	"name": this.state.name,
 	"description": this.state.description,
 	"image": `ipfs://${cid}`,
+	"external_url": this.state.extUrl,
 	"attributes": [
 	  {
 	    "trait_type": "type",
@@ -239,7 +270,7 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.name}
 		  onChange={event => this.setState({ name: proAlphaSpaces(event.target.value) })}
-		  placeholder='University Entrance Audition'
+		  placeholder="Prelude a l'apres-midi d'un Faune"
 		/>
 	      </Form.Field>
 	      <Form.Field required>
@@ -247,7 +278,7 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.description}
 		  onChange={event => this.setState({ description: proAlphaSpaces(event.target.value) })}
-		  placeholder="Alice Vanderblatt performing classical guitar"
+		  placeholder="University entrance audition for flute performance."
 		/>
 	      </Form.Field>
 	      <Form.Field required>
@@ -255,7 +286,7 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.performer}
 		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
-		  placeholder="Alice Vanderblatt"
+		  placeholder="Alice Brown"
 		/>
 	      </Form.Field>
 	    </Form.Group>
@@ -381,6 +412,115 @@ class MintForm extends Component {
 	    />
 	  </Form>
 	</div>
+      );
+    } else if (this.props.contractType === 'data') {
+      return (
+	<div>
+	  <h3>Mint an NFT</h3>
+	  <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
+	    <Form.Group widths='equal'>
+	      <Form.Field required>
+		<label>Name</label>
+		<Input
+		  value={this.state.name}
+		  onChange={event => this.setState({ name: proAlphaSpaces(event.target.value) })}
+		  placeholder='Medical Records'
+		/>
+	      </Form.Field>
+	      <Form.Field required>
+		<label>Description</label>
+		<Input
+		  value={this.state.description}
+		  onChange={event => this.setState({ description: proAlphaSpaces(event.target.value) })}
+		  placeholder='Medical records for Bob Fox'
+		/>
+	      </Form.Field>
+	      <Form.Field required>
+		<label>Creator</label>
+		<Input
+		  value={this.state.performer}
+		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
+		  placeholder='Dr. Vera Sharpe'
+		/>
+	      </Form.Field>
+	    </Form.Group>
+	    <Form.Group style={{ marginBottom: '10px', marginTop: '5px' }} widths='equal' > 
+	      <Form.Field required>
+		<label>Image or Video</label>
+		<Input
+		  id="imageName"
+		  type="file"
+		  onChange={() => this.fileHandler(event)}
+		/>
+	      </Form.Field>
+	      <Form.Field required>
+		<label>Aux File</label>
+		<Input
+		  id="file-picker"
+		  type="file"
+		  onChange={() => this.handleExtFileChange(event)}
+		/>		
+	      </Form.Field>
+	    </Form.Group>
+	    <div>
+	      <Form.Group style={{ marginLeft: '5px'}}>
+		<Card.Group>
+		  {this.renderAttributes()}
+		</Card.Group>
+	      </Form.Group>
+	    </div>
+	    <b>Add Attributes</b>
+	    <Form.Group widths='equal' style={{ marginTop: '5px' }}>
+	      <Form.Field>
+		<Input
+		  value={this.state.trait_type}
+		  onChange={event => this.setState({ trait_type: event.target.value })}
+		  placeholder='lab work'
+		/>
+	      </Form.Field>
+	      <Form.Field>
+		<Input
+		  value={this.state.value}
+		  onChange={event => this.setState({ value: event.target.value })}
+		  placeholder='blood screening'
+		  label={<Button floated='right' color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
+		  labelPosition='right'
+		/>
+	      </Form.Field>
+	    </Form.Group>
+	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	    <Message
+	      success
+	      color='teal'
+	      header='Success'
+	      content={`Minted at transaction ${this.state.txHash}`}
+	    />
+	    <InfoMessage
+	      isShowing={this.state.isLoading}
+	      header="Please Wait"
+	      content={this.state.infoMessage}
+	    />	  
+	    <ProgBar
+	      isShowing={this.state.isShowingProg}
+	      percent={this.state.progPct}
+	      color='orange'
+	    />
+	    <MultiCard
+	      isMp4={this.state.isMp4}
+	      isPng={this.state.isPng}
+	      url={this.state.url}
+	    />
+	    <Button
+	      disabled={this.state.isLoading}
+	      type='submit'
+	      loading={this.state.isLoading}
+	      content='Mint'
+	      color='orange'
+	      size='large'
+	      style={{ marginBottom: '10px' }}
+	    />
+	  </Form>
+	</div>	
       );
     }
   }

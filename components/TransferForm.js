@@ -32,7 +32,10 @@ export default class TransferForm extends Component {
 
   render() {
     return (
-      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px', marginRight: '30px' }}>
+      <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px'}}>
+        <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	<Message success color='teal' header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
+	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />	
 	<Popup
 	  trigger={
 	    <Form.Field>
@@ -40,16 +43,13 @@ export default class TransferForm extends Component {
               <Input
 		value={this.state.to}
 		onChange={event => this.setState({ to: event.target.value })}
-		placeholder="0x00000000000000000007"
+		placeholder="0x00000000000000000008"
 		label={<Button disabled={this.state.loading} color='orange' loading={this.state.loading} icon='ethereum' />}
               />
             </Form.Field>}
 	  content="Enter the recipient's public address"
 	  position='bottom center'
         />	  	
-        <Message error color='purple' header="Error" content={this.state.errorMessage} />
-	<Message success color='teal' header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
-	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
       </Form>
     );
   }

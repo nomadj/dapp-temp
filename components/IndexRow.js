@@ -4,9 +4,6 @@ import React from 'react'
 import { Card, Image, Embed } from 'semantic-ui-react'
 import web3 from '../web3'
 
-// <Image src={image} wrapped ui={false} />
-// <Embed url='https://fastload.infura-ipfs.io/ipfs/QmbNWEoXzrTPSEBfHusErD9jxmtwSvgAFivK5zgMoM6smM' active={true} />
-
 class IndexRow extends React.Component {
   render() {
     return (

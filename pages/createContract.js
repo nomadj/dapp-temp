@@ -52,13 +52,12 @@ class CreateContract extends Component {
   handleExtFileChange = (event) => {
     this.setState({ errorMessage: '', infoMessage: '', success: false });
     try {
-    const { type } = event.target.files[0];
-    if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
-      console.log("File type supported: ", type);
-      this.setState({ extUrl: URL.createObjectURL(event.target.files[0]) });
-    } else {
-      this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
-    }
+      const { type } = event.target.files[0];
+      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
+	this.setState({ extUrl: URL.createObjectURL(event.target.files[0]) });
+      } else {
+	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
+      }
     } catch (error) {
       console.log("No file selected");
     }
@@ -111,6 +110,7 @@ class CreateContract extends Component {
   }
 
   onSubmit = async (img) => {
+    console.log("EXTURL: ", this.state.extUrl)
     const { name, symbol, contractType} = this.state;
     if (this.state.price === '') {
       this.setState({ price: '0'});
@@ -124,13 +124,13 @@ class CreateContract extends Component {
 	throw { message: 'Please fill out all required fields.' };
       }
 	this.setState({ loading: true, errorMessage: '', success: false, infoMessage: 'Adding file to IPFS' });
-    // const imageResize = await new ImageResize({
-    //   format: 'png',
-    //   height: '160'
-    // });
-    // const newImage = await imageResize.play(img);
+      // const imageResize = await new ImageResize({
+      // 	format: 'png',
+      // 	height: '160'
+      // });
+      // const newImage = await imageResize.play(img.target.files[0]);
       await this.ipfsAdd(img);
-      this.setState({ infoMessage: 'Interacting with the EVM' });
+      this.setState({ infoMessage: 'Creating new contract' });
       const factory = await new web3.eth.Contract(TamboraFactory.abi, this.props.factoryAddress);
       const names = await factory.methods.getNames().call();
       for (var i = 0; i < names.length; i++) {
@@ -250,12 +250,6 @@ class CreateContract extends Component {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0]});
       this.setState({ success: true });
-      // const pusher = async () => {
-      // 	console.log('Minted successfully at: ', tx.transactionHash)
-      // 	Router.push({pathname: '/', query: [tx.transactionHash]});
-      // }
-      // setTimeout(pusher, 3000);
-      console.log('Minted successfully at: ', tx.transactionHash);
       this.setState({ isLoading: false, success: true });
     } catch (error){
       this.setState({ errorMessage: error, infoMessage: '' })
@@ -271,13 +265,13 @@ class CreateContract extends Component {
 	    <Form.Field required>
 	      <Popup
 		trigger={<label>Name</label>}
-		content='Enter a name for your contract. Use only lowercase letters.'
+		content='Enter a name for your contract.'
 		position='top left'
               />
 	      <Input
 		value={this.state.name}
 		onChange={event => this.setState({ name: this.processName(event.target.value) })}
-		placeholder='myawesomecontract'
+		placeholder='BrokeApeClubHouse'
 	      />
 	    </Form.Field>
 	    <Form.Field required>
@@ -289,7 +283,7 @@ class CreateContract extends Component {
 	      <Input
 		value={this.state.symbol}
 		onChange={event => this.setState({ symbol: this.processSymbol(event.target.value) })}
-		placeholder='MACT'
+		placeholder='BACH'
 	      />
 	    </Form.Field>
 	    <Form.Field>
@@ -306,22 +300,16 @@ class CreateContract extends Component {
 		placeholder="0.08"
 	      />
 	    </Form.Field>
-	    <Popup
-	      trigger={
-		<Form.Field
-		  required
-		  control={Select}
-		  label='Type'
-		  options={options}
-		  placeholder='Type'
-		  onChange={this.handleChange}
-		/>
-	      }
-	      content='We are working hard to expand this list to meet the needs of society'
-	      position='top left'
+	    <Form.Field
+	      required
+	      control={Select}
+	      label='Type'
+	      options={options}
+	      placeholder='Type'
+	      onChange={this.handleChange}
 	    />
 	  </Form.Group>
-	  <Form.Group>
+	  <Form.Group widths='equal'>
 	  <Form.Field required>
 	    <Popup
 	      trigger={<label>Image</label>}
