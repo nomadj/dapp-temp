@@ -128,7 +128,7 @@ class MyContract extends React.Component {
 		marginTop='12px'
 		size='tiny'
 	      />
-	    </Link>		
+	    </Link>	
 	  </Card.Group>
 	  <Divider />
 	  <Card.Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>

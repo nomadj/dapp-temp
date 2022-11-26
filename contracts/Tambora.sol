@@ -29,6 +29,7 @@ contract Tambora is ERC721Enumerable {
 	mapping (uint256 => File[]) private _individualFiles;
 	mapping (uint256 => ClientToken) public memberTokens;
 	mapping (uint256 => Token) private _allTokens;
+	mapping (address => File[]) private _requestedFiles;
 	Client[] private _pendingClients;
 	File[] private _fileStore;
 
@@ -87,7 +88,6 @@ contract Tambora is ERC721Enumerable {
 
 	function tokenURI(uint256 tokenId_) public view override returns (string memory) {
 		require(_exists(tokenId_), "ERC721Metadata: URI query for nonexistent token");
-
 		string memory _tokenURI = _tokenURIs[tokenId_];
 		string memory base = _baseURI();
 
@@ -102,7 +102,7 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function mint(address to_, string memory uri, uint256 mintId_) public payable {
-		// require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
+		require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
 		require(_tokenId < 100, "Mint failed: Tokens are sold out.");
 		require(ownerOf(mintId_) == _msgSender());
 		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint allowance exceeded.");
@@ -184,11 +184,21 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function getIndividualFiles(uint256 id_) public view returns (File[] memory) {
-		require(balanceOf(_msgSender()) > 0);
+		require(balanceOf(_msgSender()) > 0, "You must be a token holder.");
 		return _individualFiles[id_];
 	}
 
 	function getTokenData(uint256 id_) public view returns (Token memory) {
 		return _allTokens[id_];
+	}
+
+	function addRequestedFiles(address requester_, uint256 mintId_, string memory uri_, string memory name_) public {
+		require(ownerOf(mintId_) == _msgSender(), "You must be a contract member.");
+		_requestedFiles[requester_].push(File({ name: name_, uri: uri_ }));
+	}
+
+	function getRequestedFiles() public view returns (File[] memory) {
+		require(_requestedFiles[_msgSender()].length > 0, "You have not been approved for the requested action.");
+		return _requestedFiles[_msgSender()];
 	}
 }
