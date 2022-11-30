@@ -89,6 +89,7 @@ class MintForm extends Component {
       if (img.type !== 'image/png' && img.type !== 'video/mp4' && img.type !== 'image/jpeg') {
 	throw { message: 'Select a different file. Only png, jpg, and mp4 supported at this time.' }
       } else if (this.state.extUrl !== '') {
+	this.setState({ isLoading: true, success: false, errorMessage: '', infoMessage: 'Pinning content to IPFS' });
 	await this.ipfsAddExt(document.getElementById('file-picker').files[0]);
       } else if (name === '' || description === '' || performer === '' || extUrl ==='') {
 	throw { message: 'Please enter all required fields' }
@@ -247,9 +248,9 @@ class MintForm extends Component {
   renderAttributes = () => {
     return this.state.attributes.map((attribute, index) => {
       return (
-	<Card>
+	<Card key={index}>
 	  <Card.Content>
-	    <Button disabled={this.state.attrButtonDisabled} onClick={() => this.deleteAttr(index)} color='purple' floated='right' size='mini' icon='x' type='button'/>
+	    <Button disabled={this.state.attrButtonDisabled} onClick={() => this.deleteAttr(index)} color='purple' floated='right' size='mini' icon='x' type='button' />
 	    <Card.Header>{attribute.trait_type}</Card.Header>
 	    <Card.Description>{attribute.value}</Card.Description>
 	  </Card.Content>
@@ -286,7 +287,7 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.performer}
 		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
-		  placeholder="Alice Brown"
+		  placeholder="Polly Peachum"
 		/>
 	      </Form.Field>
 	    </Form.Group>
@@ -424,7 +425,7 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.name}
 		  onChange={event => this.setState({ name: proAlphaSpaces(event.target.value) })}
-		  placeholder='Medical Records'
+		  placeholder='Blood Work'
 		/>
 	      </Form.Field>
 	      <Form.Field required>
@@ -432,7 +433,7 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.description}
 		  onChange={event => this.setState({ description: proAlphaSpaces(event.target.value) })}
-		  placeholder='Medical records for Bob Fox'
+		  placeholder='Test administered in San Francisco, CA by Dr. Vera Sharpe on January 20th, 2022. Analysis performed by Quest Diagnostics, 450 Sutter St. Unit 2540, San Francisco, CA 94108.'
 		/>
 	      </Form.Field>
 	      <Form.Field required>
@@ -440,7 +441,7 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.performer}
 		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
-		  placeholder='Dr. Vera Sharpe'
+		  placeholder='Suky Tawdry'
 		/>
 	      </Form.Field>
 	    </Form.Group>
@@ -475,14 +476,14 @@ class MintForm extends Component {
 		<Input
 		  value={this.state.trait_type}
 		  onChange={event => this.setState({ trait_type: event.target.value })}
-		  placeholder='lab work'
+		  placeholder='medical'
 		/>
 	      </Form.Field>
 	      <Form.Field>
 		<Input
 		  value={this.state.value}
 		  onChange={event => this.setState({ value: event.target.value })}
-		  placeholder='blood screening'
+		  placeholder='lab results'
 		  label={<Button floated='right' color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
 		  labelPosition='right'
 		/>

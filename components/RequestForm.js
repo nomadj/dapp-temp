@@ -132,12 +132,11 @@ class RequestForm extends Component {
 	    <Form.Group>
 	      <Form.Field required>
 		<h2>Get approved</h2>
+		<label>Name</label>
 		<Input
 		  value={this.state.name}
 		  onChange={event => this.setState({ name: proString(event.target.value) })}
-		  label="name"
-		  labelPosition="right"
-		  placeholder="Criminy Jicket"
+		  placeholder="JennyDiver"
 		/>
 	      </Form.Field>
 	    </Form.Group>

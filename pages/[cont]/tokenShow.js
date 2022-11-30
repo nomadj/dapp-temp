@@ -6,6 +6,7 @@ import Tambora from '../../artifacts/contracts/Tambora.sol/Tambora.json'
 import web3 from '../../web3'
 import Link from 'next/link'
 import DynamicButton from '../../components/DynamicButton'
+import InfoMessage from '../../components/InfoMessage'
 
 export async function getServerSideProps(props) {
   // const contractName = props.query['cont'];
@@ -42,8 +43,14 @@ export async function getServerSideProps(props) {
 }
 
 export default class TokenShow extends Component {
-  async downloadFile(url, fileName) {
 
+  state = {
+    loading: false,
+    infoMessage: ''
+  }
+  
+  async downloadFile(url, fileName) {
+    this.setState({ loading: true, infoMessage: 'File will be located in your Downloads folder.' });
     const res = await fetch(url, { method: 'get', mode: 'cors', referrerPolicy: 'no-referrer' })
     const blob = await res.blob()
     const aElement = document.createElement('a');
@@ -53,6 +60,7 @@ export default class TokenShow extends Component {
     aElement.setAttribute('target', '_blank');
     aElement.click();
     URL.revokeObjectURL(href);
+    setTimeout(() => this.setState({ infoMessage: '' }), 5000);
     this.setState({ loading: false });
   }   
   renderAttributes = () => {
@@ -91,6 +99,49 @@ export default class TokenShow extends Component {
 		<Description>Block # {this.props.blockNumber}</Description>
 	      </Content>
 	      <Content>
+		<DynamicButton disabled={this.state.loading} loading={this.state.loading} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.extUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.extUrl !== ''} icon='download' />
+		<Header>Aux File</Header>		
+	      </Content>
+	      <Content>
+		<DynamicButton disabled={this.state.loading} loading={this.state.loading} isShowing={true} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', '') + 'URI')} icon='download' />
+		<Header>Metadata</Header>		
+	      </Content>	      
+	    </Card>
+	    <Card color='olive'>
+	      <Content>
+		<Header>Description</Header>
+		<Description>{this.props.description}</Description>
+	      </Content>
+	    </Card>
+	  </Group>
+	  <InfoMessage isShowing={!!this.state.infoMessage} header='Downloading...' content={this.state.infoMessage} />
+	  <Group itemsPerRow={4}>
+	    {this.renderAttributes()}
+	  </Group>
+	  <TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
+	  <Divider />
+	</Layout>
+      );
+    } else if (this.props.filetype === 'mp4') {
+      return (
+	<Layout>
+	  <Group itemsPerRow={3} style={{ overflowWrap: 'anywhere' }}>
+	    <Card color='olive'>
+	      <Embed url={this.props.image} active={true} rounded />
+	      <Content>
+		<Description>Token # {this.props.tokenId}</Description>
+	      </Content>
+	    </Card>
+	    <Card color='olive'>
+	      <Content>
+		<Header>Name</Header>
+		<Description>{this.props.name}</Description>
+	      </Content>
+	      <Content>
+		<Header>Origin</Header>
+		<Description>Block # {this.props.blockNumber}</Description>
+	      </Content>
+	      <Content>
 		<DynamicButton color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.extUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.extUrl !== ''} icon='download' />
 		<Header>Aux File</Header>		
 	      </Content>
@@ -111,49 +162,6 @@ export default class TokenShow extends Component {
 	  </Group>
 	  <TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
 	  <Divider />
-	</Layout>
-      );
-    } else if (this.props.filetype === 'mp4') {
-      return (
-	<Layout>
-	  <Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
-	    <Card color='olive'>
-	      <Embed url={this.props.image} active={true} rounded />
-	      <Content>
-		<Description>Token # {this.props.tokenId}</Description>
-	      </Content>
-	    </Card>
-	    <Card color='olive'>
-	      <Content>
-		<Header>Name</Header>
-		<Description>{this.props.name}</Description>
-	      </Content>
-	      <Content>
-		<Header>Origin</Header>
-		<Description>Block # {this.props.blockNumber}</Description>
-	      </Content>	      
-	    </Card>
-	    <Card color='olive'>
-	      <Content>
-		<Header>Description</Header>
-		<Description>{this.props.description}</Description>
-	      </Content>
-	      <Content>
-		<Header>URI</Header>
-		<Link href={`https://fastload.infura-ipfs.io/ipfs/${this.props.uri.replace('ipfs://', '')}`}>
-		  <a>{this.props.uri}</a>
-		</Link>
-	      </Content>
-	    </Card>
-	    <Card color='olive'>
-	      <Content>
-	      </Content>
-	    </Card>
-	  </Group>
-	  <TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
-	  <Group itemsPerRow={4}>
-	    {this.renderAttributes()}
-	  </Group>
 	</Layout>
       );
     }

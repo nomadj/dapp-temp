@@ -13,6 +13,7 @@ import RequestForm from '../components/RequestForm'
 import DynamicButton from '../components/DynamicButton'
 
 export async function getServerSideProps(props) {
+  
   const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
   const address = await factory.methods.getContractAddress(props.query['cont']).call();
   const name = props.query['cont'];
@@ -26,8 +27,14 @@ export async function getServerSideProps(props) {
   const contractType = showData.contractType;
   const baseURL = 'https://fastload.infura-ipfs.io/ipfs/'
   const tokenURI = showData.tokenURI;
-  const req = await fetch(tokenURI.replace('ipfs://', baseURL));
-  const metadata = await req.json();
+  try {
+    const req = await fetch(tokenURI.replace('ipfs://', baseURL));
+    var metadata = await req.json();
+  } catch (error) {
+    console.log(error.message);
+    const req = await fetch(tokenURI.replace('ipfs://', baseURL));
+    var metadata = await req.json();
+  }
   const image = metadata.image.replace('ipfs://', baseURL);
   const projectId = process.env.PROJECT_ID;
   const projectSecret = process.env.PROJECT_SECRET;
