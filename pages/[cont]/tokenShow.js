@@ -24,7 +24,7 @@ export async function getServerSideProps(props) {
   const name = data.name;
   const description = data.description;
   console.log("EXTURL: ", data)
-  const extUrl = data.external_url;
+  const extUrl = data.external_url || "";
   
   return {
     props: {
@@ -51,8 +51,8 @@ export default class TokenShow extends Component {
   
   async downloadFile(url, fileName) {
     this.setState({ loading: true, infoMessage: 'File will be located in your Downloads folder.' });
-    const res = await fetch(url, { method: 'get', mode: 'cors', referrerPolicy: 'no-referrer' })
-    const blob = await res.blob()
+    const res = await fetch(url, { method: 'get', mode: 'cors', referrerPolicy: 'no-referrer' });
+    const blob = await res.blob();
     const aElement = document.createElement('a');
     aElement.setAttribute('download', fileName);
     const href = URL.createObjectURL(blob);
@@ -103,7 +103,7 @@ export default class TokenShow extends Component {
 		<Header>Aux File</Header>		
 	      </Content>
 	      <Content>
-		<DynamicButton disabled={this.state.loading} loading={this.state.loading} isShowing={true} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', '') + 'URI')} icon='download' />
+		<DynamicButton disabled={this.state.loading} isShowing={true} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', '') + 'URI')} icon='download' />
 		<Header>Metadata</Header>		
 	      </Content>	      
 	    </Card>

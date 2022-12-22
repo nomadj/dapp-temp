@@ -30,6 +30,7 @@ contract Tambora is ERC721Enumerable {
 	mapping (uint256 => ClientToken) public memberTokens;
 	mapping (uint256 => Token) private _allTokens;
 	mapping (address => File[]) private _requestedFiles;
+	mapping (uint256 => bool) private _mintIncreaseRequests;
 	Client[] private _pendingClients;
 	File[] private _fileStore;
 
@@ -165,6 +166,11 @@ contract Tambora is ERC721Enumerable {
 	function getFileStore() public view returns (File[] memory) {
 		require(balanceOf(_msgSender()) > 0);
 		return _fileStore;
+	}
+
+	function requestMintIncrease(uint256 mintId_) public {
+		require(ownerOf(mintId_) == _msgSender());
+		_mintIncreaseRequests[mintId_] = false;
 	}
 
 	function increaseClientMintAllowance(uint256 mintId_) public payable onlyOwner {

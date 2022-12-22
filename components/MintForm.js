@@ -302,7 +302,7 @@ class MintForm extends Component {
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	    <Message
 	      success
-	      color='teal'
+	      color='orange'
 	      header='Success'
 	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
