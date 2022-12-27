@@ -47,8 +47,8 @@ export default class TransferForm extends Component {
 		label={<Button disabled={this.state.loading} color='orange' loading={this.state.loading} icon='ethereum' />}
               />
             </Form.Field>}
-	  content="Enter the recipient's public address"
-	  position='bottom center'
+	  content="Enter the recipient's public address. If you wish to preserve the remaining mintings on a member token, transfer to an Ethereum address which does not hold any tokens on this contract."
+	  position='bottom left'
         />	  	
       </Form>
     );

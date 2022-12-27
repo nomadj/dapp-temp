@@ -20,7 +20,7 @@ class DownloadFiles extends Component {   // TODO: Implement downloader
   
   render() {
     const { activeIndex } = this.state;
-    if (this.props.isTokenHolder) {
+    if (this.props.isTokenHolder || this.props.isOwner) {
       const items = this.props.fileStore.map((obj, i) => {
 	return <FileRow name={obj[0]} uri={obj[1]} key={i} />
       });

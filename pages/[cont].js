@@ -102,6 +102,9 @@ class CampaignShow extends Component {
 	const token = await contract.methods.tokenOfOwnerByIndex(accounts[0], i).call();
 	tokenIds.push(token);
       }
+      if (this.props.owner === accounts[0] && balanceOf === '0') {
+	tokenIds.push(0);
+      }
       let mintData = [];
       for (let id of tokenIds) {
 	const data = await contract.methods.memberTokens(id).call();

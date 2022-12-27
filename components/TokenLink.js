@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 
 class TokenLink extends Component {
   render() {
-    if (this.props.isTokenHolder) {
+    if (this.props.isTokenHolder || this.props.isOwner) {
       return (
 	<Link
 	  href={{

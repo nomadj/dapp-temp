@@ -42,7 +42,6 @@ export async function getServerSideProps(props) {
       return res.json();
     })
   );
-  console.log('Data Array: ', typeof dataArray);
   const images = dataArray.map(data => {
     return data.image.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
   });
@@ -77,7 +76,7 @@ export async function getServerSideProps(props) {
 }
 
 class MyContract extends React.Component {
-  state = { address: ''};
+  state = { address: '' };
   
   async componentDidMount() {
     let accounts = await web3.eth.getAccounts();
@@ -96,6 +95,7 @@ class MyContract extends React.Component {
 	      <a color='olive' style={{ marginBottom: '10px' }} size='small'> Request More</a>
 	    </Link>
 	  </h2>
+	  <h3>If this is incorrect, transfer your membership token to an unused Ethereum address.</h3>
 	  <Divider />
 	  <Card.Group itemsPerRow={4}>
 	    {items}

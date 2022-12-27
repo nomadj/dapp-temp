@@ -110,7 +110,6 @@ class CreateContract extends Component {
   }
 
   onSubmit = async (img) => {
-    console.log("EXTURL: ", this.state.extUrl)
     const { name, symbol, contractType} = this.state;
     if (this.state.price === '') {
       this.setState({ price: '0'});
@@ -170,7 +169,7 @@ class CreateContract extends Component {
       }
     })
     try {
-      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      const added = await client.add(file);
       await this.createMeta(added.path);
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
@@ -190,7 +189,7 @@ class CreateContract extends Component {
       }
     })
     try {
-      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      const added = await client.add(file);
       this.setState({ extUrl: `ipfs://${added.path}` });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
@@ -237,7 +236,7 @@ class CreateContract extends Component {
       }
     })
     try {
-      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      const added = await client.add(file);
       this.setState({ uri: added.path });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });

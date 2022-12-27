@@ -91,7 +91,7 @@ class MintForm extends Component {
       } else if (this.state.extUrl !== '') {
 	this.setState({ isLoading: true, success: false, errorMessage: '', infoMessage: 'Pinning content to IPFS' });
 	await this.ipfsAddExt(document.getElementById('file-picker').files[0]);
-      } else if (name === '' || description === '' || performer === '' || extUrl ==='') {
+      } else if (name === '' || description === '' || performer === '') {
 	throw { message: 'Please enter all required fields' }
       }
       this.setState({ isLoading: true, success: false, errorMessage: '' });
@@ -134,7 +134,8 @@ class MintForm extends Component {
       }
     })
     try {
-      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      // const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      const added = await client.add(file);
       await this.mintNFT(added.path);
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false });
@@ -154,7 +155,8 @@ class MintForm extends Component {
       }
     })
     try {
-      const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      //const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+      const added = await client.add(file);
       this.setState({ extUrl: `ipfs://${added.path}` });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
@@ -291,14 +293,24 @@ class MintForm extends Component {
 		/>
 	      </Form.Field>
 	    </Form.Group>
-	    <Form.Field required>
-	      <label>Image or Video</label>
-	      <Input
-		id="imageName"
-		type="file"
-		onChange={() => this.fileHandler(event)}
-	      />
-	    </Form.Field>
+	    <Form.Group style={{ marginBottom: '10px', marginTop: '5px' }} widths='equal' > 
+	      <Form.Field required>
+		<label>Image or Video</label>
+		<Input
+		  id="imageName"
+		  type="file"
+		  onChange={() => this.fileHandler(event)}
+		/>
+	      </Form.Field>
+	      <Form.Field>
+		<label>Aux File</label>
+		<Input
+		  id="file-picker"
+		  type="file"
+		  onChange={() => this.handleExtFileChange(event)}
+		/>		
+	      </Form.Field>	      
+	    </Form.Group>
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	    <Message
 	      success
@@ -344,7 +356,7 @@ class MintForm extends Component {
 		/>
 	      </Form.Field>
 	    </Form.Group>
-	    <Form.Group style={{ marginBottom: '10px'}}> 
+	    <Form.Group style={{ marginBottom: '10px', marginTop: '5px' }} widths='equal' > 
 	      <Form.Field required>
 		<label>Image or Video</label>
 		<Input
@@ -353,6 +365,14 @@ class MintForm extends Component {
 		  onChange={() => this.fileHandler(event)}
 		/>
 	      </Form.Field>
+	      <Form.Field>
+		<label>Aux File</label>
+		<Input
+		  id="file-picker"
+		  type="file"
+		  onChange={() => this.handleExtFileChange(event)}
+		/>		
+	      </Form.Field>	      
 	    </Form.Group>
 	    <div>
 	      <Form.Group style={{ marginLeft: '5px'}}>

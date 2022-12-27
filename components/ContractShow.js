@@ -26,6 +26,7 @@ class ContractShow extends Component {
 		      account={this.props.account}
 		      name={this.props.name}
 		      mintData={this.props.mintData}
+		      isOwner={this.props.isOwner}
 		    />
 		  </Card.Description>
 		  <ContributeForm
@@ -66,6 +67,7 @@ class ContractShow extends Component {
 		  projectId={this.props.projectId}
 		  projectSecret={this.props.projectSecret}
 		  price={this.props.price}
+		  isOwner={this.props.isOwner}
 		/>
 	      </Card>	      
 	    </Grid.Column>
@@ -75,6 +77,7 @@ class ContractShow extends Component {
 		  address={this.props.address}
 		  fileStore={this.props.fileStore}
 		  isTokenHolder={this.props.isTokenHolder}
+		  isOwner={this.props.isOwner}
 		/>
 	      </Card>
 	    </Grid.Column>
