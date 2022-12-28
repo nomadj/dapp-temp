@@ -13,13 +13,15 @@ import { proAlphaSpaces } from '../utils'
 
 class CustomMintForm extends Component {
   render() {
-    <Card>
-      <Card.Content>
-	<Button disabled={this.props.disabled} color='purple' floated='right' size='mini' icon='x' onClick={this.props.onClick} />
-	<Card.Header>{this.props.traitType}</Card.Header>
-	<Card.Description>{this.props.value}</Card.Description>
-      </Card.Content>
-    </Card>    
+    return (
+      <Card>
+	<Card.Content>
+	  <Button disabled={this.props.disabled} color='purple' floated='right' size='mini' icon='x' onClick={this.props.onClick} />
+	  <Card.Header>{this.props.traitType}</Card.Header>
+	  <Card.Description>{this.props.value}</Card.Description>
+	</Card.Content>
+      </Card>
+    );
   }
 }
 
