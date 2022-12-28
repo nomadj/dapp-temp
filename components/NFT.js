@@ -10,7 +10,7 @@ class NFT extends React.Component {
       return (
 	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
 	  <Card color='olive'>
-	    <Image src={this.props.url} wrapped ui={false} />
+	    <Image src={this.props.url} alt='/64kOrange.png' wrapped ui={false} />
 	    <Card.Content>
 	      <Card.Header>{this.props.name}</Card.Header>
 	      <a># {this.props.tokenId}</a>

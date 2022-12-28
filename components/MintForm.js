@@ -27,7 +27,7 @@ class MultiCard extends Component {
     } else if (this.props.isPng) {
       return (
 	<Card>
-	  <Image src={this.props.url} wrapped ui={false} />
+	  <Image src={this.props.url} alt='/64kOrange.png' wrapped ui={false} />
 	  <Card.Content>
 	    <Card.Header>
 	      {this.props.name}

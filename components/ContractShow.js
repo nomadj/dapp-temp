@@ -17,7 +17,7 @@ class ContractShow extends Component {
 	  <Grid.Row>
 	    <Grid.Column style={{ marginLeft: '6px', overflowWrap: 'break-word'}}>
 	      <Card color='olive'>
-		<Image src={this.props.image} />
+		<Image src={this.props.image} alt='/64kOrange.png' />
 		<Card.Content>
 		  <Card.Description>
 		    <TokenLink

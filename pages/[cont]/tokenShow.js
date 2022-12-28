@@ -84,7 +84,7 @@ export default class TokenShow extends Component {
 	<Layout>
 	  <Group itemsPerRow={3} style={{ overflowWrap: 'anywhere' }}>
 	    <Card color='olive'>
-	      <Image src={this.props.image} rounded />
+	      <Image src={this.props.image} alt='/64kOrange.png' rounded />
 	      <Content>
 		<Description>Token # {this.props.tokenId}</Description>
 	      </Content>
