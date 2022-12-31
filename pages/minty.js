@@ -17,6 +17,7 @@ export async function getServerSideProps(props) {
   const projectId = process.env.PROJECT_ID;
   const projectSecret = process.env.PROJECT_SECRET;
   
+  
   return {
     props: {
       address,

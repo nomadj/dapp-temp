@@ -42,10 +42,6 @@ class RequestForm extends Component {
 	  {
 	    "trait_type": "role",
 	    "value": "client"
-	  },
-	  {
-	    "trait_type": "aux",
-	    "value": ""
 	  }
 	]
       };

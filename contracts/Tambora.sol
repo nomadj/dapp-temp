@@ -30,7 +30,7 @@ contract Tambora is ERC721Enumerable {
 	mapping (uint256 => ClientToken) public memberTokens;
 	mapping (uint256 => Token) private _allTokens;
 	mapping (address => File[]) private _requestedFiles;
-	mapping (uint256 => bool) private _mintIncreaseRequests;
+	Client[] private _mintIncreaseRequests;
 	Client[] private _pendingClients;
 	File[] private _fileStore;
 
@@ -168,19 +168,27 @@ contract Tambora is ERC721Enumerable {
 		return _fileStore;
 	}
 
-	function requestMintIncrease(uint256 mintId_) public {
+	function requestMintIncrease(uint256 mintId_, string memory name_) public {
 		require(ownerOf(mintId_) == _msgSender());
-		_mintIncreaseRequests[mintId_] = false;
+		Client memory client = Client({ name: name_, addr: _msgSender() });
+		_mintIncreaseRequests.push(client);
 	}
 
-	function increaseClientMintAllowance(uint256 mintId_) public payable onlyOwner {
+	function approveMintIncrease(uint256 mintId_, uint256 index_) public onlyOwner {
 		require(_allottedAmount < _mintAllowance, "This contract has reached it's mint allowance.");
 		memberTokens[mintId_].mintAllowance += 5;
 		_allottedAmount += 5;
+		_mintIncreaseRequests[index_] = _mintIncreaseRequests[_mintIncreaseRequests.length - 1];
+		_mintIncreaseRequests.pop();
+	}
+
+	function denyMintIncrease(uint256 index_) public onlyOwner {
+		_mintIncreaseRequests[index_] = _mintIncreaseRequests[_mintIncreaseRequests.length - 1];
+		_mintIncreaseRequests.pop();
 	}
 
 	function increaseContractMintAllowance() public payable onlyOwner {
-		require(_msgValue() >= 0.04 ether, "This transaction requires 0.04 ether");
+		require(_msgValue() >= 0.05 ether, "This transaction requires 0.05 ether");
 		_mintAllowance += 100;
 		_factoryOwner.transfer(_msgValue());
 	}

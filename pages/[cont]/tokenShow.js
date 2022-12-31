@@ -24,7 +24,7 @@ export async function getServerSideProps(props) {
   const name = data.name;
   const description = data.description;
   console.log("EXTURL: ", data)
-  const extUrl = data.external_url || "";
+  const animUrl = data.animation_url || "";
   
   return {
     props: {
@@ -37,7 +37,7 @@ export async function getServerSideProps(props) {
       blockNumber,
       attributes,
       uri,
-      extUrl
+      animUrl
     }
   }
 }
@@ -99,7 +99,7 @@ export default class TokenShow extends Component {
 		<Description>Block # {this.props.blockNumber}</Description>
 	      </Content>
 	      <Content>
-		<DynamicButton disabled={this.state.loading} loading={this.state.loading} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.extUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.extUrl !== ''} icon='download' />
+		<DynamicButton disabled={this.state.loading} loading={this.state.loading} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.animUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.animUrl !== ''} icon='download' />
 		<Header>Aux File</Header>		
 	      </Content>
 	      <Content>
@@ -142,7 +142,7 @@ export default class TokenShow extends Component {
 		<Description>Block # {this.props.blockNumber}</Description>
 	      </Content>
 	      <Content>
-		<DynamicButton color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.extUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.extUrl !== ''} icon='download' />
+		<DynamicButton color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.animUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.animUrl !== ''} icon='download' />
 		<Header>Aux File</Header>		
 	      </Content>
 	      <Content>

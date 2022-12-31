@@ -16,7 +16,7 @@ contract TamboraFactory {
 	}
 	
 	function deployTambora(string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_) public payable {
-		// require(_msgValue() >= 0.05 ether);
+		require(_msgValue() >= 0.05 ether);
 		require(address(getContractAddress(name)) == address(0), "Name already exists");
 		Tambora newContract = new Tambora(_msgSender(), name, symbol, price_, contractType_, to_, uri_, _owner);
 		_contracts.push(newContract);

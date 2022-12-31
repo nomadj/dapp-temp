@@ -14,7 +14,8 @@ import { floatsOnly } from '../utils';
 const options = [
   { key: 'm', text: 'Musician', value: 'musician' },
   { key: 'c', text: 'Custom', value: 'custom' },
-  { key: 'f', text: 'Data Storage', value: 'data' }
+  { key: 'd', text: 'Data Storage', value: 'data' },
+  { key: 'g', text: 'Gaming', value: 'gaming' }
 ];
 
 export async function getServerSideProps() {
@@ -45,7 +46,7 @@ class CreateContract extends Component {
     uri: '',
     url: '',
     contractAddress: '',
-    extUrl: ''
+    animUrl: ''
   };
 
   handleChange = (e, { value }) => this.setState({ contractType: value });
@@ -54,7 +55,7 @@ class CreateContract extends Component {
     try {
       const { type } = event.target.files[0];
       if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
-	this.setState({ extUrl: URL.createObjectURL(event.target.files[0]) });
+	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
       } else {
 	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
       }
@@ -113,7 +114,7 @@ class CreateContract extends Component {
     const { name, symbol, contractType} = this.state;
     if (this.state.price === '') {
       this.setState({ price: '0'});
-    } else if (this.state.extUrl !== '') {      
+    } else if (this.state.animUrl !== '') {      
       await this.ipfsAddExt(document.getElementById("file-picker").files[0]);
     }
     try {
@@ -138,7 +139,7 @@ class CreateContract extends Component {
 	}
       }
       const accounts = await web3.eth.getAccounts();
-      const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`).send({from: accounts[0]});
+      const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`).send({from: accounts[0], value: web3.utils.toWei('0.05') });
       this.setState({ infoMessage: '', success: true, loading: false, contractAddress: tx.events['Deployed'].returnValues.contractAddr });
       async function pusher() {
 	const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
@@ -190,7 +191,7 @@ class CreateContract extends Component {
     })
     try {
       const added = await client.add(file);
-      this.setState({ extUrl: `ipfs://${added.path}` });
+      this.setState({ animUrl: `ipfs://${added.path}` });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
     }
@@ -204,7 +205,7 @@ class CreateContract extends Component {
 	"name": this.state.name,
 	"image": `ipfs://${cid}`,
 	"description": `Token prime of ${this.state.name} contract`,
-	"external_url": this.state.extUrl,
+	"animation_url": this.state.animUrl,
 	"attributes": [
 	  {
 	    "trait_type": "type",

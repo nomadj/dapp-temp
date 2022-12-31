@@ -26,7 +26,7 @@ export default function Mint() {
       console.log("PNG")
       return (
       <Card>
-	<Image src={props.url} wrapped ui={false} />
+	<Image src={props.url} wrapped ui={false} alt='/64kOrange.png' />
 	<Card.Content>
 	  <Card.Header>
 	    {props.name}

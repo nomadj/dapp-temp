@@ -67,14 +67,15 @@ class MintForm extends Component {
     trait_type: '',
     value: '',
     buttonDisabled: false,
-    extUrl: ''
+    animUrl: ''
   }
   handleExtFileChange = (event) => {
     this.setState({ errorMessage: '', infoMessage: '', success: false });
     try {
       const { type } = event.target.files[0];
-      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
-	this.setState({ extUrl: URL.createObjectURL(event.target.files[0]) });
+      console.log('Type: ', type);
+      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text' || type === '') {
+	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
       } else {
 	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
       }
@@ -84,11 +85,11 @@ class MintForm extends Component {
   }  
 
   onSubmit = async (img) => {
-    const { name, description, performer, extUrl } = this.state;
+    const { name, description, performer, animUrl } = this.state;
     try {
       if (img.type !== 'image/png' && img.type !== 'video/mp4' && img.type !== 'image/jpeg') {
 	throw { message: 'Select a different file. Only png, jpg, and mp4 supported at this time.' }
-      } else if (this.state.extUrl !== '') {
+      } else if (this.state.animUrl !== '') {
 	this.setState({ isLoading: true, success: false, errorMessage: '', infoMessage: 'Pinning content to IPFS' });
 	await this.ipfsAddExt(document.getElementById('file-picker').files[0]);
       } else if (name === '' || description === '' || performer === '') {
@@ -114,7 +115,7 @@ class MintForm extends Component {
       }
     })
     try {
-      const added = await client.add(file, { progress: prog  => this.setState({ progPct: ((prog / this.state.fileSize) * 100) })});
+      const added = await client.add(file, { progress: prog  => this.setState({ progPct: ((prog / this.state.fileSize) * 100) })}, { pin: true });
       this.setState({ isShowingProg: false, infoMessage: '' });
       this.state.contractType === 'musician' ? await this.createMeta(added.path) : await this.createCustomMeta(added.path);
     } catch (event) {
@@ -157,7 +158,7 @@ class MintForm extends Component {
     try {
       //const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
       const added = await client.add(file);
-      this.setState({ extUrl: `ipfs://${added.path}` });
+      this.setState({ animUrl: `ipfs://${added.path}` });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
     }
@@ -184,7 +185,7 @@ class MintForm extends Component {
 	name: this.state.name,
 	description: this.state.description,
 	image: `ipfs://${cid}`,
-	external_url: this.state.extUrl,
+	animation_url: this.state.animUrl,
 	attributes: this.state.attributes
       }
       const data = JSON.stringify(metadata);
@@ -200,7 +201,7 @@ class MintForm extends Component {
 	"name": this.state.name,
 	"description": this.state.description,
 	"image": `ipfs://${cid}`,
-	"external_url": this.state.extUrl,
+	"animation_url": this.state.animUrl,
 	"attributes": [
 	  {
 	    "trait_type": "type",
@@ -403,7 +404,7 @@ class MintForm extends Component {
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	    <Message
 	      success
-	      color='teal'
+	      color='orange'
 	      header='Success'
 	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
@@ -512,7 +513,7 @@ class MintForm extends Component {
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	    <Message
 	      success
-	      color='teal'
+	      color='orange'
 	      header='Success'
 	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
@@ -542,6 +543,115 @@ class MintForm extends Component {
 	    />
 	  </Form>
 	</div>	
+      );
+    } else if (this.props.contractType === 'gaming') {
+      return (
+	<div>
+	  <h3>Mint an NFT</h3>
+	  <Form onSubmit={ event => {this.onSubmit(document.getElementById("imageName").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
+	    <Form.Group widths='equal'>
+	      <Form.Field required>
+		<label>Name</label>
+		<Input
+		  value={this.state.name}
+		  onChange={event => this.setState({ name: proAlphaSpaces(event.target.value) })}
+		  placeholder='enchanted sword'
+		/>
+	      </Form.Field>
+	      <Form.Field required>
+		<label>Description</label>
+		<Input
+		  value={this.state.description}
+		  onChange={event => this.setState({ description: proAlphaSpaces(event.target.value) })}
+		  placeholder='Sword extension with magical properties'
+		/>
+	      </Form.Field>
+	      <Form.Field required>
+		<label>Creator</label>
+		<Input
+		  value={this.state.performer}
+		  onChange={event => this.setState({ performer: proAlphaSpaces(event.target.value) })}
+		  placeholder='Jane Smith'
+		/>
+	      </Form.Field>
+	    </Form.Group>
+	    <Form.Group style={{ marginBottom: '10px', marginTop: '5px' }} widths='equal' > 
+	      <Form.Field required>
+		<label>Image or Video</label>
+		<Input
+		  id="imageName"
+		  type="file"
+		  onChange={() => this.fileHandler(event)}
+		/>
+	      </Form.Field>
+	      <Form.Field>
+		<label>Aux File</label>
+		<Input
+		  id="file-picker"
+		  type="file"
+		  onChange={() => this.handleExtFileChange(event)}
+		/>		
+	      </Form.Field>	      
+	    </Form.Group>
+	    <div>
+	      <Form.Group style={{ marginLeft: '5px'}}>
+		<Card.Group>
+		  {this.renderAttributes()}
+		</Card.Group>
+	      </Form.Group>
+	    </div>
+	    <b>Add Attributes</b>
+	    <Form.Group widths='equal' style={{ marginTop: '5px' }}>
+	      <Form.Field>
+		<Input
+		  value={this.state.trait_type}
+		  onChange={event => this.setState({ trait_type: event.target.value })}
+		  placeholder='magic'
+		/>
+	      </Form.Field>
+	      <Form.Field>
+		<Input
+		  value={this.state.value}
+		  onChange={event => this.setState({ value: event.target.value })}
+		  placeholder='healing'
+		  label={<Button floated='right' color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
+		  labelPosition='right'
+		/>
+	      </Form.Field>
+	    </Form.Group>
+	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	    <Message
+	      success
+	      color='orange'
+	      header='Success'
+	      content={`Minted at transaction ${this.state.txHash}`}
+	    />
+	    <InfoMessage
+	      isShowing={this.state.isLoading}
+	      header="Please Wait"
+	      content={this.state.infoMessage}
+	    />	  
+	    <ProgBar
+	      isShowing={this.state.isShowingProg}
+	      percent={this.state.progPct}
+	      color='orange'
+	    />
+	    <MultiCard
+	      isMp4={this.state.isMp4}
+	      isPng={this.state.isPng}
+	      url={this.state.url}
+	    />
+	    <Button
+	      disabled={this.state.isLoading}
+	      type='submit'
+	      loading={this.state.isLoading}
+	      content='Mint'
+	      color='orange'
+	      size='large'
+	      style={{ marginBottom: '10px' }}
+	    />
+	  </Form>
+	</div>
       );
     }
   }
