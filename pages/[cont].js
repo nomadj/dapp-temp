@@ -90,10 +90,24 @@ class CampaignShow extends Component {
     this.setState({ account: accounts[0] });
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
     try {
+      // Testing //
+      //////
+      // await contract.methods.approveMintIncrease(0).send({ from: accounts[0] });
+      // await contract.methods.increaseContractMintAllowance().send({ from: accounts[0], value: web3.utils.toWei('0.05') });
+      // await contract.methods.requestMintIncrease(1, "Bob").send({ from: accounts[0] });
+      // await contract.methods.finalizeMintIncrease(1).send({ from: accounts[0] });
+      // const mintRequests = await contract.methods.getMintRequests().call({ from: accounts[0] });
+      // try {
+      // 	for (let i = 0; i < mintRequests.length; i++) {
+      // 	  console.log("Mint Request Name: ", mintRequests[i].name);
+      // 	}
+      // } catch {
+      // 	console.log("No Requests");
+      // }
+      // const contractAllowance = await contract.methods.mintAllowance().call();
+      // console.log("Contract Allowance: ", contractAllowance);      
+      //////
       const balanceOf = await contract.methods.balanceOf(accounts[0]).call();
-
-
-
       const isPending = await contract.methods.isPending(accounts[0]).call();
       const isApproved = await contract.methods.isApproved(accounts[0]).call();
       const name = await contract.methods.approvedName(accounts[0]).call();

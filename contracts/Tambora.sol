@@ -19,8 +19,8 @@ contract Tambora is ERC721Enumerable {
 	address payable private _owner;
 	uint256 private _tokenId;	
 	uint256 public price;
-	uint256 private _mintAllowance;
-	uint256 private _allottedAmount;
+	uint256 public mintAllowance;
+	uint256 public allottedAmount;
 	string public contractType;
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => bool) public isPending;
@@ -30,6 +30,7 @@ contract Tambora is ERC721Enumerable {
 	mapping (uint256 => ClientToken) public memberTokens;
 	mapping (uint256 => Token) private _allTokens;
 	mapping (address => File[]) private _requestedFiles;
+	mapping (address => bool) private _mintIncreaseApproved;
 	Client[] private _mintIncreaseRequests;
 	Client[] private _pendingClients;
 	File[] private _fileStore;
@@ -66,7 +67,8 @@ contract Tambora is ERC721Enumerable {
 		_factoryOwner = payable(factoryOwner_);
 		price = price_;
 		contractType = contractType_;
-		_allottedAmount = 10;
+		allottedAmount = 10;
+		mintAllowance = 10; // Change this value to 90
 		memberTokens[0] = ClientToken({ minted: 1, mintAllowance: 10, mintId: 0 });
 		_mint(to_, 0);
 		_setTokenURI(0, uri_);
@@ -131,6 +133,7 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function approveOrDenyClient(uint256 index, bool decision) public onlyOwner {
+		require(mintAllowance >= 5);
 		Client memory client = _pendingClients[index];
 		if (decision) {
 			isApproved[client.addr] = true;
@@ -144,12 +147,14 @@ contract Tambora is ERC721Enumerable {
 
 	function finalizeClient(string memory uri) public payable {
 		require(isApproved[_msgSender()], "Client has not been approved.");
+		require(mintAllowance >= 5);
 		memberTokens[_tokenId] = ClientToken({ minted: 1, mintAllowance: 5, mintId: _tokenId });
 		_mint(_msgSender(), _tokenId);
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri});
 		_tokenId++;
 		_owner.transfer(_msgValue());
+		mintAllowance -= 5;
 		delete isApproved[_msgSender()];
 		delete approvedName[_msgSender()];
 	}
@@ -174,12 +179,24 @@ contract Tambora is ERC721Enumerable {
 		_mintIncreaseRequests.push(client);
 	}
 
-	function approveMintIncrease(uint256 mintId_, uint256 index_) public onlyOwner {
-		require(_allottedAmount < _mintAllowance, "This contract has reached it's mint allowance.");
-		memberTokens[mintId_].mintAllowance += 5;
-		_allottedAmount += 5;
+	function getMintRequests() public view onlyOwner returns (Client[] memory) {
+		return _mintIncreaseRequests;
+	}
+
+	function approveMintIncrease(uint256 index_) public onlyOwner {
+		require(allottedAmount < mintAllowance, "This contract has reached it's mint allowance.");
+		_mintIncreaseApproved[_mintIncreaseRequests[index_].addr] = true;
 		_mintIncreaseRequests[index_] = _mintIncreaseRequests[_mintIncreaseRequests.length - 1];
-		_mintIncreaseRequests.pop();
+		_mintIncreaseRequests.pop();				
+	}
+
+	function finalizeMintIncrease(uint256 mintId_) public payable {
+		require(_mintIncreaseApproved[_msgSender()] == true, "You are not approved.");
+		require(_msgValue() >= price);
+		memberTokens[mintId_].mintAllowance += 5;
+		allottedAmount += 5;
+		mintAllowance -= 5;
+		_owner.transfer(_msgValue());
 	}
 
 	function denyMintIncrease(uint256 index_) public onlyOwner {
@@ -189,7 +206,7 @@ contract Tambora is ERC721Enumerable {
 
 	function increaseContractMintAllowance() public payable onlyOwner {
 		require(_msgValue() >= 0.05 ether, "This transaction requires 0.05 ether");
-		_mintAllowance += 100;
+		mintAllowance += 10; // Change this value to 100
 		_factoryOwner.transfer(_msgValue());
 	}
 
