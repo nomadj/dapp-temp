@@ -15,7 +15,7 @@ class Layout extends React.Component {
     <Container>
       <Head title="Fastload">
 	<title>READY. FASTLOAD</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type='image/x-icon' href="/favicon.png" />
         <meta
           name="description"
           content="Mint your own NFTs"
