@@ -1,14 +1,13 @@
 // SPDX-License-Identifier: Pytheorus
 pragma solidity ^0.8.7;
 
-/* import "https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/token/ERC721/ERC721.sol"; */
-// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract Tambora is ERC721Enumerable {
 	using Strings for uint256;
 	event Request(Client indexed clientData);
 	event Response(Client indexed clientData, bool indexed res);
+	event FileAdded(string indexed name);
 
 	modifier onlyOwner() {
 		_checkOwner();
@@ -68,7 +67,7 @@ contract Tambora is ERC721Enumerable {
 		price = price_;
 		contractType = contractType_;
 		allottedAmount = 10;
-		mintAllowance = 10; // Change this value to 90
+		mintAllowance = 90; 
 		memberTokens[0] = ClientToken({ minted: 1, mintAllowance: 10, mintId: 0 });
 		_mint(to_, 0);
 		_setTokenURI(0, uri_);
@@ -166,6 +165,7 @@ contract Tambora is ERC721Enumerable {
 	function addFileLocation(string memory name_, string memory uri_) public onlyOwner {
 		File memory fileObj = File({ name: name_, uri: uri_});
 		_fileStore.push(fileObj);
+		emit FileAdded(name_);
 	}
 
 	function getFileStore() public view returns (File[] memory) {
@@ -177,6 +177,7 @@ contract Tambora is ERC721Enumerable {
 		require(ownerOf(mintId_) == _msgSender());
 		Client memory client = Client({ name: name_, addr: _msgSender() });
 		_mintIncreaseRequests.push(client);
+		emit Request(client);
 	}
 
 	function getMintRequests() public view onlyOwner returns (Client[] memory) {
@@ -206,7 +207,7 @@ contract Tambora is ERC721Enumerable {
 
 	function increaseContractMintAllowance() public payable onlyOwner {
 		require(_msgValue() >= 0.05 ether, "This transaction requires 0.05 ether");
-		mintAllowance += 10; // Change this value to 100
+		mintAllowance += 100; 
 		_factoryOwner.transfer(_msgValue());
 	}
 

@@ -1,7 +1,7 @@
 import { create } from 'ipfs-http-client'
 import Layout from '../components/Layout'
-import { Divier, Message, Image, Card, Embed, Input, Form, Button, Progress } from 'semantic-ui-react'
-import { Component, useState, useRef } from 'react'
+import { Divier, Message, Image, Card, Embed, Input, Form, Button, Progress, Icon } from 'semantic-ui-react'
+import { Component, useState } from 'react'
 import Header from '../components/Header'
 import web3 from '../web3'
 import copy from 'copy-to-clipboard'
@@ -271,7 +271,7 @@ class MintForm extends Component {
 	    <Form.Group widths='equal'>
 	      <Form.Field required>
 		<label>Name</label>
-		<Input webkitdirectory directory multiple
+		<Input 
 		  value={this.state.name}
 		  onChange={event => this.setState({ name: proAlphaSpaces(event.target.value) })}
 		  placeholder="Prelude a l'apres-midi d'un Faune"
@@ -587,11 +587,12 @@ class MintForm extends Component {
 	      <Form.Field>
 		<label>Aux File</label>
 		<Input
+		  multiple
 		  id="file-picker"
 		  type="file"
 		  onChange={() => this.handleExtFileChange(event)}
 		/>		
-	      </Form.Field>	      
+	      </Form.Field>
 	    </Form.Group>
 	    <div>
 	      <Form.Group style={{ marginLeft: '5px'}}>
