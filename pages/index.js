@@ -12,6 +12,11 @@ import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFac
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 
 export async function getServerSideProps() {
+  // app.get('/', function(req, res, next) {
+  //   if (req.protocol == 'http') {
+  //     res.redirect('https://' + req.get('host') + req.originalUrl);
+  //   }
+  // });
   const address = process.env.FACTORY_ADDRESS; // goerli
   // const address = '0x6996fe8fd3a5ddd9abe0e500c9b064c4e4e5b396'; // mainnet
   const factoryContract = new web3.eth.Contract(TamboraFactory.abi, address);

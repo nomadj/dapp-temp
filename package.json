@@ -3,7 +3,7 @@
   "private": true,
   "scripts": {
     "dev": "HTTPS=true next dev",
-    "build": "next build",
+    "build": "HTTPS=true next build",
     "start": "HTTPS=true next start",
     "lint": "next lint"
   },
