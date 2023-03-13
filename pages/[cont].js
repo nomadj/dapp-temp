@@ -181,16 +181,6 @@ class CampaignShow extends Component {
   render() {
     if (this.state.renderPage === false) {
       return null;
-    } else if (typeof window === 'undefined' || typeof window.web3 === 'undefined' || this.state.unsupported) {
-      return (
-	<Layout>
-	  <h1>Welcome to the future. Start
-	    <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
-	      <a> here.</a>
-	    </Link>
-	  </h1>
-	</Layout>
-      );
     } else {
       return (
 	<Layout>
