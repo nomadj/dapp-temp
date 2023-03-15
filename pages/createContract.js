@@ -289,7 +289,7 @@ class CreateContract extends Component {
 	    <Form.Field>
 	      <Popup
 		trigger={<label>Price (optional)</label>}
-		content='Enter the amount, in ether, you would like to charge your clients. For the amount specified, clients will be given approval to mint 5 NFT tokens from your contract. Making this 0 will provide free tokens to your clients, ideal for a student/teacher relationship.'
+		content='Enter the price, in ether, for client membership. Each approved client will be minted a membership token, which authorizes them to mint 4 more tokens off of your contract, each for this price. Clients may request approval for 5 more when they reach their allotted amount. The price can be zero. The contract owner (you) will be authorized for 10 total tokens. The owner will be charged the price to mint each token, but immediately refunded after minting is complete.'
 		position='top left'
               />
 	      <Input
@@ -297,7 +297,7 @@ class CreateContract extends Component {
 		labelPosition='right'
 		value={this.state.price}
 		onChange={event => this.setState({ price: floatsOnly(event.target.value) })}
-		placeholder="0.08"
+		placeholder="0.04"
 	      />
 	    </Form.Field>
 	    <Form.Field
@@ -350,7 +350,7 @@ class CreateContract extends Component {
 	  <Popup
 	    trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} color='olive' icon='ethereum' style={{ marginBottom: '10px' }}/>}
 	    location='top left'
-	    content="Click here to mint the token prime of your new contract. As the owner, you will be authorized to mint, and approve others to mint, up to 100 tokens. You may choose to extend the contract's mint allowance."
+	    content="Click here to deploy your new contract. As the owner, you will be authorized to mint, and approve others to mint, up to 100 tokens off of the contract."
 	  />
         </Form>
       </Layout>
