@@ -46,7 +46,7 @@ class ContributeForm extends Component {
             onChange={event => this.setState({ value: floatsOnly(event.target.value) })}
 	    placeholder="0.08"
 	    action={{
-	      color: 'teal',
+	      style: { backgroundColor: 'rgb(72,0,72)', color: '#fff' }, 
 
 	      icon: 'ethereum'
 	    }}
