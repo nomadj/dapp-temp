@@ -20,15 +20,13 @@ class Header extends React.Component {
   render() {
     return (
       <Container style={{ marginTop: '10px', marginBottom: '15px'}}>
-	<Segment color='blue' inverted>
 	  <H as='h1' icon textAlign='center'>
-	    <H.Content><Image src='/64kRainbow.png' alt='/64kOrange.png' size='large' centered /></H.Content>
+	    <H.Content><Image src='/forte.jpg' alt='Nope' rounded centered style={{ width: 1800, border: '30px solid rgba(72,0,72,1)' }} /></H.Content>
 	  </H>
-	</Segment>
 	<Menu style={{ marginBottom: '10px' }}>
 	  <Menu.Item>
 	    <Link href="/">
-	      <Button color='yellow' icon='home' />
+	      <Button icon='home' style= {{ backgroundColor: 'rgba(242,233,219)', color: 'black' }} />
 	    </Link>
 	  </Menu.Item>
 	  <Menu.Item>
@@ -37,7 +35,7 @@ class Header extends React.Component {
 	  <Menu.Menu position='right'>
 	    <Menu.Item>
 	      <Link href="/createContract">
-		<Button color='yellow' icon='add circle' />
+	      <Button icon='add' style= {{ backgroundColor: 'rgba(242,233,219)', color: 'black' }} />		
 	      </Link>
 	    </Menu.Item>
 	  </Menu.Menu>
