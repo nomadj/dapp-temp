@@ -125,6 +125,13 @@ class Index extends React.Component {
 	</Head>     
 	<Header source={this.props.conObj} account={this.state.account}/>
 	<h1 style={{textAlign: 'center' }}>NFT Contract Index</h1>
+	<p style={{textAlign: 'center' }}>
+	  Chrome with
+	  <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
+	    <a> Metamask </a>
+	  </Link>
+	  only at this time
+	</p>	
 	<Divider />
 	<Card.Group itemsPerRow={2}>
 	  {items}
