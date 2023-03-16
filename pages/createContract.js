@@ -32,6 +32,11 @@ export async function getServerSideProps() {
 }
 
 class CreateContract extends Component {
+ constructor(props) {
+    super(props);
+    this.myRef = React.createRef();
+ }
+  
   state = {
     name: '',
     symbol: '',
@@ -258,7 +263,7 @@ class CreateContract extends Component {
 
   render() {
     return (
-      <Layout>
+      <Layout ref={this.myRef}>
         <h3>Create your own ERC721 contract</h3>
         <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	  <Form.Group widths='equal'>
