@@ -155,10 +155,10 @@ class RequestForm extends Component {
 		<DynamicButton
 		  disabled={this.state.loading}
 		  loading={this.state.loading}
-		  color='violet'
 		  icon="birthday"
 		  isShowing={this.props.isApproved}
 		  onClick={this.createMeta}
+		  style={{ backgroundColor: 'rgb(72,0,72)', color: 'white' }}
 		/>
 	      </div>
 	    }
