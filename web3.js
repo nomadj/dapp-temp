@@ -9,8 +9,6 @@ if (typeof window !== 'undefined' && typeof window.web3 !== 'undefined') {
   // window.ethereum.enable();
     window.ethereum.request({ method: 'eth_requestAccounts' });
   } catch(error) {
-    web3 = new Web3(window.ethereum);
-    window.ethereum.enable();
     console.log(error);
   }
 } else {
