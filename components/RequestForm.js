@@ -138,7 +138,7 @@ class RequestForm extends Component {
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
 	    <Message success color='teal' header="Success" content={this.state.successMessage} />
 	    <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
-	    <Button disabled={this.state.loading} color='olive' loading={this.state.loading} content='Request' />
+	    <Button disabled={this.state.loading} loading={this.state.loading} content='Request' style={{ backgroundColor: 'rgb(72,0,72)', color: 'white' }} />
 	  </Form>
 	</Card.Content>
       );
