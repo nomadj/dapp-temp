@@ -249,17 +249,17 @@ class CreateContract extends Component {
     }
   }
 
-  mintNFT = async (cid) => {
-    try {
-      const accounts = await web3.eth.getAccounts();
-      const contract = new web3.eth.Contract(TamboraFactory.abi, this.props.address);
-      const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0]});
-      this.setState({ success: true });
-      this.setState({ isLoading: false, success: true });
-    } catch (error){
-      this.setState({ errorMessage: error, infoMessage: '' })
-    }
-  }
+  // mintNFT = async (cid) => {
+  //   try {
+  //     const accounts = await web3.eth.getAccounts();
+  //     const contract = new web3.eth.Contract(TamboraFactory.abi, this.props.address);
+  //     const tx = await contract.methods.deployTambora(accounts[0], `ipfs://${cid}`).send({from: accounts[0]});
+  //     this.setState({ success: true });
+  //     this.setState({ isLoading: false, success: true });
+  //   } catch (error){
+  //     this.setState({ errorMessage: error, infoMessage: '' })
+  //   }
+  // }
 
   render() {
     return (
