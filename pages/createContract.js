@@ -155,6 +155,7 @@ class CreateContract extends Component {
 	    }
 	  } catch (error) {
 	    this.setState({ errorMessage: error.message, infoMessage: '', loading: false });
+	    return;
 	  }
 	}
       });      
