@@ -144,6 +144,20 @@ class CreateContract extends Component {
 	}
       }
       const accounts = await web3.eth.getAccounts();
+      await web3.eth.getBalance(accounts[0], (error, balance) => {
+	if (error) {
+	  console.log('Error:', error);
+	} else {
+	  try {
+	    const bal = web3.utils.fromWei(balance, 'ether');
+	    if (parseFloat(bal) < 0.05) {
+	      throw { message: 'Insufficient balance. 0.05 ETH is required to initiate this transaction.' };
+	    }
+	  } catch (error) {
+	    this.setState({ errorMessage: error.message, infoMessage: '', loading: false });
+	  }
+	}
+      });      
       const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`).send({from: accounts[0], value: web3.utils.toWei('0.05') });
       this.setState({ infoMessage: '', success: true, loading: false, contractAddress: tx.events['Deployed'].returnValues.contractAddr });
       async function pusher() {
