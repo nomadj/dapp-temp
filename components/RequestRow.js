@@ -65,12 +65,12 @@ class RequestRow extends Component {
 	</Cell>
 	<Cell textAlign='right'>
 	  {request.isApproved ? null : (
-	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.isLoading} style={{ backgroundColor: 'rgb(50,128,175)', color: 'white' }} onClick={this.onApprove}>Approve</Button>
+	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.isLoading} style={{ backgroundColor: 'rgb(0,100,0)', color: 'white' }} onClick={this.onApprove}>Approve</Button>
 	  )}
 	</Cell>
 	<Cell textAlign='right' width={1}>
-	  {request.isApproved ? null : (
-	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.denyLoading} style={{ backgroundColor: 'rgb(72,0,72)', color: 'white' }} onClick={this.onDeny}>Deny</Button>
+	  {request.isnApproved ? null : (
+	    <Button disabled={this.state.isLoading || this.state.denyLoading} loading={this.state.denyLoading} style={{ backgroundColor: 'rgb(0,0,100', color: 'white' }} onClick={this.onDeny}>Deny</Button>
 	  )}
 	</Cell>
       </Row>

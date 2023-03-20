@@ -46,15 +46,15 @@ class ContributeForm extends Component {
             onChange={event => this.setState({ value: floatsOnly(event.target.value) })}
 	    placeholder="0.08"
 	    action={{
-	      style: { backgroundColor: 'rgb(72,0,72)', color: '#fff' }, 
+	      style: { backgroundColor: 'rgb(0,0,100)', color: '#fff' }, 
 
 	      icon: 'ethereum'
 	    }}
 	    actionPosition='left'
           />
         </Form.Field>
-        <Message error color='purple' header="Error" content={this.state.errorMessage} />
-	<Message success color='teal' header="Thank You!" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
+        <Message error color='pink' header="Error" content={this.state.errorMessage} />
+	<Message success color='purple' header="Thank You!" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
 	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
       </Form>
     );

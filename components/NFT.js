@@ -36,7 +36,7 @@ class NFT extends React.Component {
       );
     } else {
       return (
-	<Card color='olive'>
+	<Card style={{ borderBottom: 'rgb(200,0,72)' }}>
 	  <Card.Content>
 	    <Card.Header>{this.props.name}</Card.Header>
 	    <Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >

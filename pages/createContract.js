@@ -349,10 +349,10 @@ class CreateContract extends Component {
    	    />
    	  </Form.Field>	    
 	  </Form.Group> 
-          <Message error color='purple' header='Error' content={this.state.errorMessage} />
+          <Message error color='pink' header='Error' content={this.state.errorMessage} />
 	  <Message
 	    success
-	    color='orange'
+	    color='purple'
 	    header='Success'
 	    content={`Contract Created at ${this.state.contractAddress}`}
 	  />
@@ -362,7 +362,7 @@ class CreateContract extends Component {
 	    content={this.state.infoMessage}
 	  />
 	  <Popup
-	    trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} color='olive' content='Create' style={{ marginBottom: '10px' }}/>}
+	    trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} content='Create' style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}/>}
 	    location='top left'
 	    content="Click here to deploy your new contract. As the owner, you will be authorized to mint, and approve others to mint, up to 100 tokens off of the contract."
 	  />

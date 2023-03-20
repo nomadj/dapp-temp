@@ -136,9 +136,9 @@ class RequestForm extends Component {
 	      </Form.Field>
 	    </Form.Group>
 	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
-	    <Message success color='teal' header="Success" content={this.state.successMessage} />
+	    <Message success color='pink' header="Success" content={this.state.successMessage} />
 	    <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
-	    <Button disabled={this.state.loading} loading={this.state.loading} content='Request' style={{ backgroundColor: 'rgb(72,0,72)', color: 'white' }} />
+	    <Button disabled={this.state.loading} loading={this.state.loading} content='Request' style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} />
 	  </Form>
 	</Card.Content>
       );
@@ -158,7 +158,6 @@ class RequestForm extends Component {
 		  icon="birthday"
 		  isShowing={this.props.isApproved}
 		  onClick={this.createMeta}
-		  style={{ backgroundColor: 'rgb(72,0,72)', color: 'white' }}
 		/>
 	      </div>
 	    }

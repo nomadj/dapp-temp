@@ -11,7 +11,7 @@ class RequestsCard extends Component {
 	  <Card.Meta>{this.props.requestsCount}</Card.Meta>
 	  <Card.Description>{
 	    <Link href={{ pathname: `/${this.props.address}/requests`, query: [this.props.address, this.props.account] }}>
-	      <a>view requests</a>
+	      <a style={{ color: 'rgb(0,0,150)' }} >view requests</a>
 	    </Link>
 	  }
 	  </Card.Description>

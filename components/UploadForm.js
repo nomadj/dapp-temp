@@ -89,15 +89,15 @@ class UploadForm extends Component {
 	  >
 	    <h2>Upload File</h2>
 	    <Form.Field style={{ marginBottom: '10px' }} >
-	      <Message error color='purple' header='Error' content={this.state.errorMessage} />
-	      <Message success color='teal' header='Success' content={this.state.successMessage} style={{ overflowWrap: 'break-word', marginBottom: '10px' }} />
+	      <Message error color='pink' header='Error' content={this.state.errorMessage} />
+	      <Message success color='purple' header='Success' content={this.state.successMessage} style={{ overflowWrap: 'break-word', marginBottom: '10px' }} />
 	      <InfoMessage
 		isShowing={!!this.state.infoMessage}
 		header='Please Wait...'
 		content={this.state.infoMessage}
 	      />
 	      <Input
-		label={<Button disabled={this.state.loading} loading={this.state.loading} color='violet' icon='upload' size='mini' />}
+		label={<Button disabled={this.state.loading} loading={this.state.loading} style={{ backgroundColor: 'rgb(0,0,100)'}} icon='upload' size='mini' />}
 		labelPosition='left'
 		value={this.state.name}
 		onChange={event => {

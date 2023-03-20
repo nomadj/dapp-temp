@@ -8,7 +8,7 @@ class IndexRow extends React.Component {
   render() {
     return (
       <Link href={{ pathname: `/${this.props.name}` }}>
-	<Card fluid style={{ overflowWrap: 'break-word', borderBottom: '2px solid rgba(50,128,175)' }}>
+	<Card fluid style={{ overflowWrap: 'break-word', borderBottom: '2px solid rgba(200,0,72)' marginBottom: '10px' }}>
 	  <Card.Content>
 	    <Image src={this.props.image} alt='Nope' floated='right' size='mini' rounded />
 	    <Card.Header>{this.props.name.replace(this.props.name.charAt(0), this.props.name.charAt(0).toUpperCase())}</Card.Header>

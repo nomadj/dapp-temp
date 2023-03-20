@@ -26,7 +26,7 @@ class Header extends React.Component {
 	<Menu style={{ marginBottom: '10px' }}>
 	  <Menu.Item>
 	    <Link href="/">
-	      <Button icon='home' style= {{ backgroundColor: 'rgba(242,233,219)', color: 'black' }} />
+	      <Button icon='home' style= {{ backgroundColor: 'rgba(0,0,100)', color: 'white' }} />
 	    </Link>
 	  </Menu.Item>
 	  <Menu.Item>
@@ -35,7 +35,7 @@ class Header extends React.Component {
 	  <Menu.Menu position='right'>
 	    <Menu.Item>
 	      <Link href="/createContract">
-	      <Button icon='add' style= {{ backgroundColor: 'rgba(242,233,219)', color: 'black' }} />		
+	      <Button icon='add' style= {{ backgroundColor: 'rgba(0,0,100)', color: 'white' }} />		
 	      </Link>
 	    </Menu.Item>
 	  </Menu.Menu>

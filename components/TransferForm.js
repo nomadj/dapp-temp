@@ -33,8 +33,8 @@ export default class TransferForm extends Component {
   render() {
     return (
       <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px'}}>
-        <Message error color='purple' header="Error" content={this.state.errorMessage} />
-	<Message success color='teal' header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
+        <Message error color='pink' header="Error" content={this.state.errorMessage} />
+	<Message success color='purple' header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
 	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />	
 	<Popup
 	  trigger={
