@@ -97,7 +97,7 @@ class UploadForm extends Component {
 		content={this.state.infoMessage}
 	      />
 	      <Input
-		label={<Button disabled={this.state.loading} loading={this.state.loading} style={{ backgroundColor: 'rgb(0,0,100)'}} icon='upload' size='mini' />}
+		label={<Button disabled={this.state.loading} loading={this.state.loading} style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} icon='upload' size='mini' />}
 		labelPosition='left'
 		value={this.state.name}
 		onChange={event => {

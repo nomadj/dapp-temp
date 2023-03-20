@@ -67,7 +67,7 @@ export default class TokenShow extends Component {
     const { Header, Content, Description } = Card;
     const attributes = this.props.attributes.map((attr, i) => {
       return (
-	<Card color='violet' key={i}>
+	<Card style={{ borderBottom: '2px solid rgb(72,0,72)' }} key={i}>
 	  <Content>
 	  <Header>{attr.trait_type}</Header>
 	    <Description>{attr.value}</Description>
@@ -83,13 +83,13 @@ export default class TokenShow extends Component {
       return (
 	<Layout>
 	  <Group itemsPerRow={3} style={{ overflowWrap: 'anywhere' }}>
-	    <Card color='olive'>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Image src={this.props.image} alt='/64kOrange.png' rounded />
 	      <Content>
 		<Description>Token # {this.props.tokenId}</Description>
 	      </Content>
 	    </Card>
-	    <Card color='olive'>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
 		<Header>Name</Header>
 		<Description>{this.props.name}</Description>
@@ -107,7 +107,7 @@ export default class TokenShow extends Component {
 		<Header>Metadata</Header>		
 	      </Content>	      
 	    </Card>
-	    <Card color='olive'>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
 		<Header>Description</Header>
 		<Description>{this.props.description}</Description>
@@ -126,13 +126,13 @@ export default class TokenShow extends Component {
       return (
 	<Layout>
 	  <Group itemsPerRow={3} style={{ overflowWrap: 'anywhere' }}>
-	    <Card color='olive'>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Embed url={this.props.image} active={true} rounded />
 	      <Content>
 		<Description>Token # {this.props.tokenId}</Description>
 	      </Content>
 	    </Card>
-	    <Card color='olive'>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
 		<Header>Name</Header>
 		<Description>{this.props.name}</Description>
@@ -150,7 +150,7 @@ export default class TokenShow extends Component {
 		<Header>Metadata</Header>		
 	      </Content>	      
 	    </Card>
-	    <Card color='olive'>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
 		<Header>Description</Header>
 		<Description>{this.props.description}</Description>

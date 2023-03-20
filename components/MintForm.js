@@ -253,7 +253,7 @@ class MintForm extends Component {
       return (
 	<Card key={index}>
 	  <Card.Content>
-	    <Button disabled={this.state.attrButtonDisabled} onClick={() => this.deleteAttr(index)} color='purple' floated='right' size='mini' icon='x' type='button' />
+	  <Button disabled={this.state.attrButtonDisabled} onClick={() => this.deleteAttr(index)} style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} floated='right' size='mini' icon='x' type='button' />
 	    <Card.Header>{attribute.trait_type}</Card.Header>
 	    <Card.Description>{attribute.value}</Card.Description>
 	  </Card.Content>
@@ -312,17 +312,17 @@ class MintForm extends Component {
 		/>		
 	      </Form.Field>	      
 	    </Form.Group>
-	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	    <Message error color='pink' header="Error" content={this.state.errorMessage} />
 	    <Message
 	      success
-	      color='orange'
+	      color='purple'
 	      header='Success'
 	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
 	    <InfoMessage isShowing={this.state.isLoading} header="Please Wait" content={this.state.infoMessage} />	  
 	    <ProgBar isShowing={this.state.isShowingProg} percent={this.state.progPct} color='orange' />
 	    <MultiCard isMp4={this.state.isMp4} isPng={this.state.isPng} url={this.state.url}/>
-	    <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' color='olive' size='large' style={{ marginBottom: '10px' }}/>
+	    <Button disabled={this.state.isLoading} type='submit' loading={this.state.isLoading} icon='ethereum' size='large' style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}/>
 	  </Form>
 	</div>
       );
@@ -396,15 +396,15 @@ class MintForm extends Component {
 		  value={this.state.value}
 		  onChange={event => this.setState({ value: event.target.value })}
 		  placeholder='xray vision'
-		  label={<Button floated='right' color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
+		  label={<Button floated='right' style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
 		  labelPosition='right'
 		/>
 	      </Form.Field>
 	    </Form.Group>
-	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	    <Message error color='pink' header="Error" content={this.state.errorMessage} />
 	    <Message
 	      success
-	      color='orange'
+	      color='purple'
 	      header='Success'
 	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
@@ -416,7 +416,7 @@ class MintForm extends Component {
 	    <ProgBar
 	      isShowing={this.state.isShowingProg}
 	      percent={this.state.progPct}
-	      color='orange'
+	      color='purple'
 	    />
 	    <MultiCard
 	      isMp4={this.state.isMp4}
@@ -428,9 +428,8 @@ class MintForm extends Component {
 	      type='submit'
 	      loading={this.state.isLoading}
 	      content='Mint'
-	      color='orange'
 	      size='large'
-	      style={{ marginBottom: '10px' }}
+	      style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}
 	    />
 	  </Form>
 	</div>
@@ -505,15 +504,15 @@ class MintForm extends Component {
 		  value={this.state.value}
 		  onChange={event => this.setState({ value: event.target.value })}
 		  placeholder='lab results'
-		  label={<Button floated='right' color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
+		  label={<Button floated='right' style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
 		  labelPosition='right'
 		/>
 	      </Form.Field>
 	    </Form.Group>
-	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	    <Message error color='pink' header="Error" content={this.state.errorMessage} />
 	    <Message
 	      success
-	      color='orange'
+	      color='purple'
 	      header='Success'
 	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
@@ -525,7 +524,7 @@ class MintForm extends Component {
 	    <ProgBar
 	      isShowing={this.state.isShowingProg}
 	      percent={this.state.progPct}
-	      color='orange'
+	      color='purple'
 	    />
 	    <MultiCard
 	      isMp4={this.state.isMp4}
@@ -537,9 +536,8 @@ class MintForm extends Component {
 	      type='submit'
 	      loading={this.state.isLoading}
 	      content='Mint'
-	      color='orange'
 	      size='large'
-	      style={{ marginBottom: '10px' }}
+	      style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}
 	    />
 	  </Form>
 	</div>	
@@ -615,15 +613,15 @@ class MintForm extends Component {
 		  value={this.state.value}
 		  onChange={event => this.setState({ value: event.target.value })}
 		  placeholder='healing'
-		  label={<Button floated='right' color='olive' disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
+		  label={<Button floated='right' style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} disabled={this.state.buttonDisabled} onClick={this.addAttribute}>Add</Button>}
 		  labelPosition='right'
 		/>
 	      </Form.Field>
 	    </Form.Group>
-	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
+	    <Message error color='pink' header="Error" content={this.state.errorMessage} />
 	    <Message
 	      success
-	      color='orange'
+	      color='purple'
 	      header='Success'
 	      content={`Minted at transaction ${this.state.txHash}`}
 	    />
@@ -635,7 +633,7 @@ class MintForm extends Component {
 	    <ProgBar
 	      isShowing={this.state.isShowingProg}
 	      percent={this.state.progPct}
-	      color='orange'
+	      color='purple'
 	    />
 	    <MultiCard
 	      isMp4={this.state.isMp4}
@@ -647,9 +645,8 @@ class MintForm extends Component {
 	      type='submit'
 	      loading={this.state.isLoading}
 	      content='Mint'
-	      color='orange'
 	      size='large'
-	      style={{ marginBottom: '10px' }}
+	      style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}
 	    />
 	  </Form>
 	</div>

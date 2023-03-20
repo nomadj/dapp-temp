@@ -16,7 +16,7 @@ class ContractShow extends Component {
 	<Grid columns='equal'>
 	  <Grid.Row>
 	    <Grid.Column style={{ marginLeft: '6px', overflowWrap: 'break-word'}}>
-	      <Card style={{ borderBottom: '2px solid rgba(200,0,72)' }}>
+	      <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 		<Image src={this.props.image} alt='nope' />
 		<Card.Content>
 		  <Card.Description>
@@ -36,7 +36,7 @@ class ContractShow extends Component {
 	      </Card>
 	    </Grid.Column>
 	    <Grid.Column>
-	      <Card style={{ borderBottom: '2px solid rgba(200,0,72)' }}>
+	      <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 		<Card.Content>
 		  <Card.Header>Tokens Minted</Card.Header>
 		  <Card.Meta>{this.props.tokenId}</Card.Meta>
@@ -72,7 +72,7 @@ class ContractShow extends Component {
 	      </Card>	      
 	    </Grid.Column>
 	    <Grid.Column>
-	      <Card style={{ borderBottom: '2px solid rgba(200,0,72)' }}>
+	      <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 		<DownloadFiles
 		  address={this.props.address}
 		  fileStore={this.props.fileStore}
