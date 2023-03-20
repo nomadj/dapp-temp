@@ -148,14 +148,9 @@ class CreateContract extends Component {
 	if (error) {
 	  console.log('Error:', error);
 	} else {
-	  try {
-	    const bal = web3.utils.fromWei(balance, 'ether');
-	    if (parseFloat(bal) < 0.05) {
-	      throw { message: 'Insufficient balance. 0.05 ETH is required to initiate this transaction.' };
-	    }
-	  } catch (error) {
-	    this.setState({ errorMessage: error.message, infoMessage: '', loading: false });
-	    return;
+	  const bal = web3.utils.fromWei(balance, 'ether');
+	  if (parseFloat(bal) < 0.05) {
+	    throw { message: 'Insufficient balance. 0.05 ETH is required to initiate this transaction.' };
 	  }
 	}
       });      
