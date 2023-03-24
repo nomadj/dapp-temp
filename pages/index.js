@@ -112,14 +112,14 @@ class Index extends React.Component {
       <Container>
 	<Head title="Fastload">
 	  <title>READY.FASTLOAD</title>
-          <link rel="icon" href="/eth-favicon.png" />
+          <link rel="icon" href="/favicon.png" />
           <meta
             name="description"
             content="The NFT smart contract network"
           />
 	</Head>     
 	<Header source={this.props.conObj} account={this.state.account}/>
-	<h1 style={{textAlign: 'center' }}>NFT Contract Index</h1>
+	<h1 style={{textAlign: 'center' }}>Fastload Your Brand Into Web3 and the Metaverse</h1>
 	<p style={{textAlign: 'center' }}>
 	  Chrome with
 	  <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
