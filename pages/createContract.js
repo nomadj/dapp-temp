@@ -60,7 +60,7 @@ class CreateContract extends Component {
     try {
       const { type } = event.target.files[0];
       //      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
-      if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {      
+      if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {
 	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
       } else {
 	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
