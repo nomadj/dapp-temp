@@ -1,6 +1,9 @@
 {
   "name": "dapp-temp",
   "private": true,
+  "engines": {
+    "node": "16.13.1" 
+  },
   "scripts": {
     "dev": "HTTPS=true next dev",
     "build": "HTTPS=true next build",
