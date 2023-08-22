@@ -123,7 +123,7 @@ class Index extends React.Component {
 	<h1 style={{textAlign: 'center' }}>Fastload into Web3 and the Metaverse</h1>
 	<p style={{textAlign: 'center' }}>
 	  Chrome with
-	  <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
+	  <Link legacyBehavior href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
 	    <a style={{ color: '#DB6E00' }}> Metamask </a>
 	  </Link>
 	  only at this time
