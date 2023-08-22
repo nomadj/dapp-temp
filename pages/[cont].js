@@ -11,10 +11,15 @@ import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFac
 import ContractShow from '../components/ContractShow'
 import RequestForm from '../components/RequestForm'
 import DynamicButton from '../components/DynamicButton'
+import NoMetamask from '../components/NoMetamask'
 
 export async function getServerSideProps(props) {
-  
-  const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
+  try {
+    var factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
+  } catch (error) {
+    const unsupported = true;
+    return;
+  }
   const address = await factory.methods.getContractAddress(props.query['cont']).call();
   const name = props.query['cont'];
   const title = name.replace(name.charAt(0), name.charAt(0).toUpperCase());
@@ -85,6 +90,11 @@ class CampaignShow extends Component {
   }
 
   async componentDidMount() {
+    if (typeof window.ethereum === 'undefined') {
+      console.log("No metamask installed")
+      this.setState({ unsupported: true, renderPage: true })
+      return;
+    }    
     const accounts = await web3.eth.getAccounts();
     const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
     this.setState({ account: accounts[0] });
@@ -155,6 +165,9 @@ class CampaignShow extends Component {
   }
 
   renderCards() {
+    if (this.state.unsupported) {
+      return;
+    }    
     const { address, manager, name } = this.props;
 
     const items = [
@@ -181,6 +194,12 @@ class CampaignShow extends Component {
   render() {
     if (this.state.renderPage === false) {
       return null;
+    } else if (typeof window.ethereum === 'undefined') {
+      return (
+	<Layout>
+	  <NoMetamask />
+	</Layout>	
+      );
     } else {
       return (
 	<Layout>

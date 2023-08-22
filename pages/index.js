@@ -117,6 +117,7 @@ class Index extends React.Component {
             name="description"
             content="The NFT smart contract network"
           />
+	  <html lang="en" />
 	</Head>     
 	<Header source={this.props.conObj} account={this.state.account}/>
 	<h1 style={{textAlign: 'center' }}>Fastload into Web3 and the Metaverse</h1>
