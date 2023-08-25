@@ -20,7 +20,6 @@ class Layout extends React.Component {
           name="description"
           content="Mint your own NFTs"
         />
-	<html lang="en" />
       </Head>
       <Header />
       {this.props.children}
