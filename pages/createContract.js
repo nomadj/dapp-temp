@@ -10,6 +10,7 @@ import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFac
 import { create } from 'ipfs-http-client';
 import ImageResize from 'image-resize';
 import { floatsOnly } from '../utils';
+import NoMetamask from '../components/NoMetamask';
 
 const options = [
   { key: 'm', text: 'Musician', value: 'musician' },
@@ -51,7 +52,8 @@ class CreateContract extends Component {
     uri: '',
     url: '',
     contractAddress: '',
-    animUrl: ''
+    animUrl: '',
+    unsupported: false
   };
 
   handleChange = (e, { value }) => this.setState({ contractType: value });
@@ -128,6 +130,11 @@ class CreateContract extends Component {
 	throw { message: 'Choose a different file. Only png and jpg format supported at this time.' };
       } else if (name === '' || symbol === '' || contractType === '') {
 	throw { message: 'Please fill out all required fields.' };
+      } else if (!window.ethereum) {
+	setTimeout(() => {
+	  this.setState({ unsupported: true });
+	}, 3000);
+	throw { message: 'Metamask not detected.'};
       }
 	this.setState({ loading: true, errorMessage: '', success: false, infoMessage: 'Adding file to IPFS' });
       // const imageResize = await new ImageResize({
@@ -272,104 +279,112 @@ class CreateContract extends Component {
   // }
 
   render() {
-    return (
-      <Layout ref={this.myRef}>
-        <h3>Create your own ERC721 contract</h3>
-        <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
-	  <Form.Group widths='equal'>
-	    <Form.Field required>
-	      <Popup
-		trigger={<label>Name</label>}
-		content='Enter a name for your contract.'
-		position='top left'
-              />
-	      <Input
-		value={this.state.name}
-		onChange={event => this.setState({ name: this.processName(event.target.value) })}
-		placeholder='BrokeApeClubHouse'
+    if (this.state.unsupported) {
+      return (
+	<Layout>
+	  <NoMetamask />
+	</Layout>
+      );
+    } else {
+      return (
+	<Layout ref={this.myRef}>
+	  <h3>Create your own ERC721 contract</h3>
+	  <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
+	    <Form.Group widths='equal'>
+	      <Form.Field required>
+		<Popup
+		  trigger={<label>Name</label>}
+		  content='Enter a name for your contract.'
+		  position='top left'
+		/>
+		<Input
+		  value={this.state.name}
+		  onChange={event => this.setState({ name: this.processName(event.target.value) })}
+		  placeholder='BrokeApeClubHouse'
+		/>
+	      </Form.Field>
+	      <Form.Field required>
+		<Popup
+		  trigger={<label>Symbol</label>}
+		  content='Symbols are all in caps and 3-4 characters long'
+		  position='top left'
+		/>
+		<Input
+		  value={this.state.symbol}
+		  onChange={event => this.setState({ symbol: this.processSymbol(event.target.value) })}
+		  placeholder='BACH'
+		/>
+	      </Form.Field>
+	      <Form.Field>
+		<Popup
+		  trigger={<label>Price (optional)</label>}
+		  content='Enter the price, in ether, for client membership. Each approved client will be minted a membership token, which authorizes them to mint 4 more tokens off of your contract, each for this price. Clients may request approval for 5 more when they reach their allotted amount. The price can be zero. The contract owner (you) will be authorized for 10 total tokens. The owner will be charged the price to mint each token, but immediately refunded after minting is complete.'
+		  position='top left'
+		/>
+		<Input
+		  label='Ether'
+		  labelPosition='right'
+		  value={this.state.price}
+		  onChange={event => this.setState({ price: floatsOnly(event.target.value) })}
+		  placeholder="0.04"
+		/>
+	      </Form.Field>
+	      <Form.Field
+		required
+		control={Select}
+		label='Type'
+		options={options}
+		placeholder='Type'
+		onChange={this.handleChange}
 	      />
-	    </Form.Field>
+	    </Form.Group>
+	    <Form.Group widths='equal'>
 	    <Form.Field required>
 	      <Popup
-		trigger={<label>Symbol</label>}
-		content='Symbols are all in caps and 3-4 characters long'
+		trigger={<label>Image</label>}
 		position='top left'
-              />
+		content="Choose an image file to represent your contract. Each of your clients will be minted a token containing this image. PNG and JPG supported at this time."
+	      />
 	      <Input
-		value={this.state.symbol}
-		onChange={event => this.setState({ symbol: this.processSymbol(event.target.value) })}
-		placeholder='BACH'
+		id="image-picker"
+		type="file"
+		onChange={() => this.fileHandler(event)}
 	      />
 	    </Form.Field>
 	    <Form.Field>
 	      <Popup
-		trigger={<label>Price (optional)</label>}
-		content='Enter the price, in ether, for client membership. Each approved client will be minted a membership token, which authorizes them to mint 4 more tokens off of your contract, each for this price. Clients may request approval for 5 more when they reach their allotted amount. The price can be zero. The contract owner (you) will be authorized for 10 total tokens. The owner will be charged the price to mint each token, but immediately refunded after minting is complete.'
+		trigger={<label>Ext File (optional)</label>}
 		position='top left'
-              />
-	      <Input
-		label='Ether'
-		labelPosition='right'
-		value={this.state.price}
-		onChange={event => this.setState({ price: floatsOnly(event.target.value) })}
-		placeholder="0.04"
+		content="Choose a file to be uploaded when the contract is created. The file location will be added to the metadata of the token prime."
 	      />
-	    </Form.Field>
-	    <Form.Field
-	      required
-	      control={Select}
-	      label='Type'
-	      options={options}
-	      placeholder='Type'
-	      onChange={this.handleChange}
+	      <Input
+		id="file-picker"
+		type="file"
+		onChange={() => this.handleExtFileChange(event)}
+	      />
+	    </Form.Field>	    
+	    </Form.Group> 
+	    <Message error color='pink' header='Error' content={this.state.errorMessage} />
+	    <Message
+	      success
+	      color='purple'
+	      header='Success'
+	      content={`Contract Created at ${this.state.contractAddress}`}
 	    />
-	  </Form.Group>
-	  <Form.Group widths='equal'>
-	  <Form.Field required>
+	    <InfoMessage
+	      isShowing={!!this.state.infoMessage}
+	      header='Please Wait...'
+	      content={this.state.infoMessage}
+	    />
 	    <Popup
-	      trigger={<label>Image</label>}
-	      position='top left'
-	      content="Choose an image file to represent your contract. Each of your clients will be minted a token containing this image. PNG and JPG supported at this time."
+	      trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} content='Create' style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}/>}
+	      location='top left'
+	      content="Click here to deploy your new contract. As the owner, you will be authorized to mint, and approve others to mint, up to 100 tokens off of the contract."
 	    />
-   	    <Input
-   	      id="image-picker"
-   	      type="file"
-   	      onChange={() => this.fileHandler(event)}
-   	    />
-   	  </Form.Field>
-	  <Form.Field>
-	    <Popup
-	      trigger={<label>Ext File (optional)</label>}
-	      position='top left'
-	      content="Choose a file to be uploaded when the contract is created. The file location will be added to the metadata of the token prime."
-	    />
-   	    <Input
-   	      id="file-picker"
-   	      type="file"
-   	      onChange={() => this.handleExtFileChange(event)}
-   	    />
-   	  </Form.Field>	    
-	  </Form.Group> 
-          <Message error color='pink' header='Error' content={this.state.errorMessage} />
-	  <Message
-	    success
-	    color='purple'
-	    header='Success'
-	    content={`Contract Created at ${this.state.contractAddress}`}
-	  />
-	  <InfoMessage
-	    isShowing={!!this.state.infoMessage}
-	    header='Please Wait...'
-	    content={this.state.infoMessage}
-	  />
-	  <Popup
-	    trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} content='Create' style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}/>}
-	    location='top left'
-	    content="Click here to deploy your new contract. As the owner, you will be authorized to mint, and approve others to mint, up to 100 tokens off of the contract."
-	  />
-        </Form>
-      </Layout>
-    );
+	  </Form>
+	</Layout>
+      );
+    }
   };
 };
 

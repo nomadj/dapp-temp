@@ -101,9 +101,15 @@ class Index extends React.Component {
     account: ''
   }
   async componentDidMount() {
-    const accounts = await web3.eth.getAccounts()
-    this.setState({ account: accounts[0] })
+    try {
+      const accounts = await web3.eth.getAccounts();
+      this.setState({ account: accounts[0] });
+    } catch (error) {
+      console.log("Metamask not installed.");
+      this.setState({ unsupported: true });
+    }
   }
+    
   render() {
     const items = this.props.conObj.map((obj, index) => {
       return <IndexRow key={index} name={obj.title} address={obj.address} account={this.state.account} image={obj.image} />
