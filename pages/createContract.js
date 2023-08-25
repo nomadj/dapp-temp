@@ -130,7 +130,7 @@ class CreateContract extends Component {
 	throw { message: 'Choose a different file. Only png and jpg format supported at this time.' };
       } else if (name === '' || symbol === '' || contractType === '') {
 	throw { message: 'Please fill out all required fields.' };
-      } else if (!window.ethereum) {
+      } else if (!window.ethereum || window.ethereum === 'undefined') {
 	setTimeout(() => {
 	  this.setState({ unsupported: true });
 	}, 3000);
