@@ -3,7 +3,11 @@ import TamboraFactory from './artifacts/contracts/TamboraFactory.sol/TamboraFact
 
 const address = process.env.FACTORY_ADDRESS; // goerli  
 // const instance =  new web3.eth.Contract(factoryAbi, address);
-const instance =  new web3.eth.Contract(TamboraFactory.abi, address);
+try {
+  var instance =  new web3.eth.Contract(TamboraFactory.abi, address);
+} catch (error) {
+  console.log("Metamask not detected");
+}
 
 // EVENT LISTENER
 // instance.events.Deployed(() => {
