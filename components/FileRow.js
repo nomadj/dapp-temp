@@ -33,9 +33,9 @@ export default class FileRow extends Component {
   
   render() {
     return (
-      <Card color='olive'>
+      <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	<Card.Content>
-	  <Button loading={this.state.loading} floated='right' color='violet' size='mini' icon='download' onClick={this.onClick} />
+	  <Button loading={this.state.loading} floated='right' style= {{ backgroundColor: 'rgba(0,0,100)', color: 'white' }} size='mini' icon='download' onClick={this.onClick} />
 	  <Card.Header>{this.props.name}</Card.Header>
 	  <InfoMessage isShowing={!!this.state.infoMessage} header='Downloading...' content={this.state.infoMessage} />	  
 	</Card.Content>

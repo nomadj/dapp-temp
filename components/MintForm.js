@@ -72,8 +72,10 @@ class MintForm extends Component {
   handleExtFileChange = (event) => {
     this.setState({ errorMessage: '', infoMessage: '', success: false });
     try {
-      const { type } = event.target.files[0];
+      const { type, name } = event.target.files[0];
+
       console.log('Type: ', type);
+      console.log('Name: ', name);
       if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {      
 	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
       } else {
