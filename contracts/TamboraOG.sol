@@ -9,8 +9,13 @@ contract Tambora is ERC721Enumerable {
 	event Response(Client indexed clientData, bool indexed res);
 	event FileAdded(string indexed name);
 
+	modifier onlyOwner() {
+		_checkOwner();
+		_;
+	}
+
 	address payable private _factoryOwner;
-	address payable public owner;
+	address payable private _owner;
 	uint256 private _tokenId;	
 	uint256 public price;
 	uint256 public mintAllowance;
@@ -20,8 +25,10 @@ contract Tambora is ERC721Enumerable {
 	mapping (address => bool) public isPending;
 	mapping (address => bool) public isApproved;
 	mapping (address => string) public approvedName;
+	mapping (uint256 => File[]) private _individualFiles;
 	mapping (uint256 => ClientToken) public memberTokens;
 	mapping (uint256 => Token) private _allTokens;
+	mapping (address => File[]) private _requestedFiles;
 	mapping (address => bool) private _mintIncreaseApproved;
 	Client[] private _mintIncreaseRequests;
 	Client[] private _pendingClients;
@@ -47,14 +54,15 @@ contract Tambora is ERC721Enumerable {
 		string contractType;
 		string tokenURI;
 		File[] fileStore;
+		File[] individualFilestore;
 	}
 	struct File {
 		string name;
 		string uri;
 	}	
 
-		constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_) ERC721(name, symbol) {
-		owner = payable(deployer);
+	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_) ERC721(name, symbol) {
+		_owner = payable(deployer);
 		_factoryOwner = payable(factoryOwner_);
 		price = price_;
 		contractType = contractType_;
@@ -67,9 +75,8 @@ contract Tambora is ERC721Enumerable {
 		_allTokens[0] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri_ });
 	}
 
-	modifier onlyOwner() {
-		_checkOwner();
-		_;
+  function owner() public view returns (address) {
+		return _owner;
 	}
 
   function _checkOwner() internal view {
@@ -105,7 +112,7 @@ contract Tambora is ERC721Enumerable {
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri });
 		_tokenId++;
-		owner.transfer(_msgValue());
+		_owner.transfer(_msgValue());
 		memberTokens[mintId_].minted += 1;
 	}
 
@@ -145,14 +152,14 @@ contract Tambora is ERC721Enumerable {
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri});
 		_tokenId++;
-		owner.transfer(_msgValue());
+		_owner.transfer(_msgValue());
 		mintAllowance -= 5;
 		delete isApproved[_msgSender()];
 		delete approvedName[_msgSender()];
 	}
 
 	function getShowData() public view returns (ShowData memory) {
-		return ShowData({ tokenId: _tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), fileStore: _fileStore });
+		return ShowData({ tokenId: _tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), fileStore: _fileStore, individualFilestore: _individualFiles[0] });
 	}
 
 	function addFileLocation(string memory name_, string memory uri_) public onlyOwner {
@@ -190,7 +197,7 @@ contract Tambora is ERC721Enumerable {
 		memberTokens[mintId_].mintAllowance += 5;
 		allottedAmount += 5;
 		mintAllowance -= 5;
-		owner.transfer(_msgValue());
+		_owner.transfer(_msgValue());
 	}
 
 	function denyMintIncrease(uint256 index_) public onlyOwner {
@@ -204,7 +211,26 @@ contract Tambora is ERC721Enumerable {
 		_factoryOwner.transfer(_msgValue());
 	}
 
+	function addIndividualFile(string memory uri_, string memory name_, uint256 mintId_) public onlyOwner {
+		_individualFiles[mintId_].push(File({name: name_, uri: uri_}));
+	}
+
+	function getIndividualFiles(uint256 id_) public view returns (File[] memory) {
+		require(balanceOf(_msgSender()) > 0, "You must be a token holder.");
+		return _individualFiles[id_];
+	}
+
 	function getTokenData(uint256 id_) public view returns (Token memory) {
 		return _allTokens[id_];
+	}
+
+	function addRequestedFiles(address requester_, uint256 mintId_, string memory uri_, string memory name_) public {
+		require(ownerOf(mintId_) == _msgSender(), "You must be a contract member.");
+		_requestedFiles[requester_].push(File({ name: name_, uri: uri_ }));
+	}
+
+	function getRequestedFiles() public view returns (File[] memory) {
+		require(_requestedFiles[_msgSender()].length > 0, "You have not been approved for the requested action.");
+		return _requestedFiles[_msgSender()];
 	}
 }
