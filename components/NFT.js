@@ -9,7 +9,7 @@ class NFT extends React.Component {
     if (this.props.type === 'png' || this.props.type === 'image/jpeg') {
       return (
 	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
-	  <Card color='olive'>
+	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	    <Image src={this.props.url} alt='/64kOrange.png' wrapped ui={false} />
 	    <Card.Content>
 	      <Card.Header>{this.props.name}</Card.Header>
@@ -22,7 +22,7 @@ class NFT extends React.Component {
     } else if (this.props.type === 'mp4') {
       return (
 	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
-	  <Card color='olive'>
+	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	    <Card.Content>
 	      <Embed url={this.props.url} active={true} />
 	    </Card.Content>
@@ -36,7 +36,7 @@ class NFT extends React.Component {
       );
     } else {
       return (
-	<Card style={{ borderBottom: 'rgb(200,0,72)' }}>
+	<Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	  <Card.Content>
 	    <Card.Header>{this.props.name}</Card.Header>
 	    <Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >

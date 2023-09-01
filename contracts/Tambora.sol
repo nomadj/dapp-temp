@@ -73,7 +73,7 @@ contract Tambora is ERC721Enumerable {
 	}
 
   function _checkOwner() internal view {
-		require(owner() == _msgSender(), "Ownable: caller is not the owner");
+		require(owner == _msgSender(), "Ownable: caller is not the owner");
 	}
 
 	function _setTokenURI(uint256 tokenId_, string memory tokenURI_) internal {
@@ -152,7 +152,7 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function getShowData() public view returns (ShowData memory) {
-		return ShowData({ tokenId: _tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), fileStore: _fileStore });
+		return ShowData({ tokenId: _tokenId, manager: owner, contractType: contractType, tokenURI: tokenURI(0), fileStore: _fileStore });
 	}
 
 	function addFileLocation(string memory name_, string memory uri_) public onlyOwner {
