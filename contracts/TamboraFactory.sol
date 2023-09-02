@@ -5,6 +5,8 @@ import "./Tambora.sol";
 
 contract TamboraFactory {
 	event Deployed(Tambora indexed contractAddr);
+	uint256 public mintFee;
+	uint256 public contractFee;
 	address payable private _owner;
 	Tambora[] private _contracts;
 	string[] public names;
@@ -13,12 +15,14 @@ contract TamboraFactory {
 
 	constructor() {
 		_owner = payable(_msgSender());
+		mintFee = 0.0005 ether;
+		contractFee = 0.05 ether;
 	}
 	
-	function deployTambora(string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_) public payable {
-		require(_msgValue() >= 0.05 ether);
+	function deployTambora(string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, uint256 mintFee_, uint256 contractFee_) public payable {
+		require(_msgValue() >= contractFee);
 		require(address(getContractAddress(name)) == address(0), "Name already exists");
-		Tambora newContract = new Tambora(_msgSender(), name, symbol, price_, contractType_, to_, uri_, _owner);
+		Tambora newContract = new Tambora(_msgSender(), name, symbol, price_, contractType_, to_, uri_, _owner, mintFee_, contractFee_);
 		_contracts.push(newContract);
 		names.push(name);
 		_contractName[name] = newContract;
@@ -33,6 +37,7 @@ contract TamboraFactory {
 		return _contractName[name_];
 	}
 	function getDeployedContracts() public view returns (Tambora[] memory) {
+
 		return _contracts;
 	}
 	function getOwnedContracts(address contractOwner) public view returns (Tambora[] memory) {
@@ -44,14 +49,15 @@ contract TamboraFactory {
 	function _msgValue() internal view returns (uint256) {
 		return msg.value;
 	}
-	function removeContract(uint256 index) public {
-		require(_msgSender() == owner());
-		names[index] = names[names.length - 1];
-		names.pop();
-		_contracts[index] = _contracts[_contracts.length - 1];
-		_contracts.pop();
-	}
 	function owner() private view returns (address) {
 		return _owner;
+	}
+	function _changeFees(uint256 mintFee_, uint256 contractFee_) internal {
+		mintFee = mintFee_;
+		contractFee = contractFee_;
+	}
+	function changeFees(uint256 mintFee_, uint256 contractFee_) public {
+		require(_msgSender() == _owner);
+		_changeFees(mintFee_, contractFee_);
 	}
 }

@@ -13,7 +13,11 @@ export async function getServerSideProps(props) {
   const contract = new web3.eth.Contract(Tambora.abi, address);
   const contractName = await contract.methods.name().call();
   const contractType = await contract.methods.contractType().call();
-  const price = await contract.methods.price().call();
+  const mintPrice = new web3.utils.BN(await contract.methods.price().call());
+  const mintFeeBN = new web3.utils.BN(await contract.methods.mintFee().call());
+  const price = mintPrice.add(mintFeeBN).toString();
+  const mintFee = mintFeeBN.toString();
+  const owner = await contract.methods.owner().call();
   const projectId = process.env.PROJECT_ID;
   const projectSecret = process.env.PROJECT_SECRET;
   
@@ -25,7 +29,9 @@ export async function getServerSideProps(props) {
       contractType,
       projectId,
       projectSecret,
-      price
+      price,
+      mintFee,
+      owner
     }
   }
 }
@@ -34,7 +40,7 @@ class Mint extends Component {
   render() {
     return (
       <Layout>
-	<MintForm contractType={this.props.contractType} address={this.props.address} mintId={this.props.mintId} contractName={this.props.contractName} projectId={this.props.projectId} projectSecret={this.props.projectSecret} price={this.props.price} />
+	<MintForm contractType={this.props.contractType} address={this.props.address} mintId={this.props.mintId} contractName={this.props.contractName} projectId={this.props.projectId} projectSecret={this.props.projectSecret} price={this.props.price} mintFee={this.props.mintFee} owner={this.props.owner} />
       </Layout>
     );
   }

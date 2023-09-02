@@ -6,7 +6,7 @@ import { Card, Image, Embed, Grid } from 'semantic-ui-react'
 class NFT extends React.Component {
   render() {
     const { name, description, image, attributes } = this.props.meta;
-    if (this.props.type === 'png' || this.props.type === 'image/jpeg') {
+    if (this.props.type === 'png' || this.props.type === 'jpeg') {
       return (
 	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
 	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>

@@ -74,8 +74,6 @@ class MintForm extends Component {
     try {
       const { type, name } = event.target.files[0];
 
-      console.log('Type: ', type);
-      console.log('Name: ', name);
       if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {      
 	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
       } else {
@@ -171,6 +169,8 @@ class MintForm extends Component {
     try {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
+      // const price = (this.props.owner != accounts[0]) ? this.props.price : this.props.mintFee;
+      console.log(price, typeof price);
       const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId).send({from: accounts[0], value: this.props.price});
       this.setState({ success: true });
       this.setState({ isLoading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });

@@ -11,6 +11,8 @@ contract Tambora is ERC721Enumerable {
 
 	address payable private _factoryOwner;
 	address payable public owner;
+	uint256 public mintFee;
+	uint256 public contractFee;
 	uint256 private _tokenId;	
 	uint256 public price;
 	uint256 public mintAllowance;
@@ -53,10 +55,12 @@ contract Tambora is ERC721Enumerable {
 		string uri;
 	}	
 
-		constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_) ERC721(name, symbol) {
+		constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_, uint256 mintFee_, uint256 contractFee_) ERC721(name, symbol) {
 		owner = payable(deployer);
 		_factoryOwner = payable(factoryOwner_);
 		price = price_;
+		mintFee = mintFee_;
+		contractFee = contractFee_;
 		contractType = contractType_;
 		allottedAmount = 10;
 		mintAllowance = 90; 
@@ -97,7 +101,9 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function mint(address to_, string memory uri, uint256 mintId_) public payable {
-		require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
+		uint256 totalPrice = price + mintFee;
+		require(_msgValue() >= totalPrice, "Mint failed: Value of message is less than price.");
+		require(_msgValue() >= mintFee);
 		require(_tokenId < 100, "Mint failed: Tokens are sold out.");
 		require(ownerOf(mintId_) == _msgSender());
 		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint allowance exceeded.");
@@ -105,7 +111,10 @@ contract Tambora is ERC721Enumerable {
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri });
 		_tokenId++;
-		owner.transfer(_msgValue());
+		uint256 msgValue = _msgValue();
+		uint256 factoryFee = msgValue - price;
+		owner.transfer(price);
+		_factoryOwner.transfer(factoryFee);
 		memberTokens[mintId_].minted += 1;
 	}
 
