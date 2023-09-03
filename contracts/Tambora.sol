@@ -1,12 +1,12 @@
-// SPDX-License-Identifier: Pytheorus
+// SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract Tambora is ERC721Enumerable {
 	using Strings for uint256;
-	event Request(Client indexed clientData);
-	event Response(Client indexed clientData, bool indexed res);
+	event Request(string indexed name, address indexed addr);
+	event Response(string indexed name, address indexed addr, bool indexed res);
 	event FileAdded(string indexed name);
 
 	address payable private _factoryOwner;
@@ -15,6 +15,7 @@ contract Tambora is ERC721Enumerable {
 	uint256 public contractFee;
 	uint256 private _tokenId;	
 	uint256 public price;
+	uint256 public totalCost;
 	uint256 public mintAllowance;
 	uint256 public allottedAmount;
 	string public contractType;
@@ -60,6 +61,7 @@ contract Tambora is ERC721Enumerable {
 		_factoryOwner = payable(factoryOwner_);
 		price = price_;
 		mintFee = mintFee_;
+		totalCost = price_ + mintFee_;
 		contractFee = contractFee_;
 		contractType = contractType_;
 		allottedAmount = 10;
@@ -101,12 +103,11 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function mint(address to_, string memory uri, uint256 mintId_) public payable {
-		uint256 totalPrice = price + mintFee;
-		require(_msgValue() >= totalPrice, "Mint failed: Value of message is less than price.");
+		require(_msgValue() >= totalCost, "Mint failed: Insufficient funds.");
 		require(_msgValue() >= mintFee);
-		require(_tokenId < 100, "Mint failed: Tokens are sold out.");
+		require(_tokenId < 100, "Mint failed: Contract has reached it's mint allowance.");
 		require(ownerOf(mintId_) == _msgSender());
-		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint allowance exceeded.");
+		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint failed: Allowance exceeded.");
 		_mint(to_, _tokenId);
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri });
@@ -126,7 +127,7 @@ contract Tambora is ERC721Enumerable {
 		Client memory client = Client({ name: name, addr: _msgSender() });
 		_pendingClients.push(client);
 		isPending[_msgSender()] = true;
-		emit Request(client);
+		emit Request(name, _msgSender());
 	}
 
 	function getPendingClients() public view returns (Client[] memory) {
@@ -140,10 +141,10 @@ contract Tambora is ERC721Enumerable {
 			isApproved[client.addr] = true;
 			approvedName[client.addr] = client.name;
 		}
-		emit Response(client, decision);
 		_pendingClients[index] = _pendingClients[_pendingClients.length - 1];
 		_pendingClients.pop();
 		delete isPending[client.addr];
+		emit Response(client.name, client.addr, decision);
 	}
 
 	function finalizeClient(string memory uri) public payable {
@@ -179,7 +180,7 @@ contract Tambora is ERC721Enumerable {
 		require(ownerOf(mintId_) == _msgSender());
 		Client memory client = Client({ name: name_, addr: _msgSender() });
 		_mintIncreaseRequests.push(client);
-		emit Request(client);
+		emit Request(name_, _msgSender());
 	}
 
 	function getMintRequests() public view onlyOwner returns (Client[] memory) {
@@ -208,7 +209,7 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function increaseContractMintAllowance() public payable onlyOwner {
-		require(_msgValue() >= 0.05 ether, "This transaction requires 0.05 ether");
+		require(_msgValue() >= contractFee, "Insufficient funds.");
 		mintAllowance += 100; 
 		_factoryOwner.transfer(_msgValue());
 	}

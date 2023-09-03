@@ -163,7 +163,7 @@ class CreateContract extends Component {
       } catch (error) {
 	throw { message: error.message };
       }
-      const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`, mintFee, contractFee).send({from: accounts[0], value: web3.utils.toWei('0.05') });
+      const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`, mintFee, contractFee).send({from: accounts[0], value: contractFee });
       this.setState({ infoMessage: '', success: true, loading: false, contractAddress: tx.events['Deployed'].returnValues.contractAddr });
       async function pusher() {
 	const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);

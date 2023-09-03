@@ -5,6 +5,8 @@ import "./Tambora.sol";
 
 contract TamboraFactory {
 	event Deployed(Tambora indexed contractAddr);
+	event FeeChange(uint256 indexed mintFee, uint256 indexed contractFee);
+	
 	uint256 public mintFee;
 	uint256 public contractFee;
 	address payable private _owner;
@@ -26,9 +28,9 @@ contract TamboraFactory {
 		_contracts.push(newContract);
 		names.push(name);
 		_contractName[name] = newContract;
-		emit Deployed(newContract);
 		_ownedContracts[_msgSender()].push(newContract);
 		_owner.transfer(_msgValue());
+		emit Deployed(newContract);
 	}
 	function getNames() public view returns (string[] memory) {
 		return names;
@@ -59,5 +61,6 @@ contract TamboraFactory {
 	function changeFees(uint256 mintFee_, uint256 contractFee_) public {
 		require(_msgSender() == _owner);
 		_changeFees(mintFee_, contractFee_);
+		emit FeeChange(mintFee_, contractFee_);
 	}
 }
