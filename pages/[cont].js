@@ -86,7 +86,8 @@ class CampaignShow extends Component {
     txHash: '',
     mintData: {},
     renderPage: false,
-    unsupported: false
+    unsupported: false,
+    mobile: false
   }
 
   async componentDidMount() {
@@ -94,7 +95,10 @@ class CampaignShow extends Component {
       console.log("No metamask installed")
       this.setState({ unsupported: true, renderPage: true })
       return;
-    }    
+    }
+    if (window.innerWidth < 800) {
+      this.setState({ mobile: true });
+    }
     const accounts = await web3.eth.getAccounts();
     const factory = await new web3.eth.Contract(TamboraFactory.abi, process.env.FACTORY_ADDRESS)
     this.setState({ account: accounts[0] });
@@ -199,6 +203,10 @@ class CampaignShow extends Component {
 	<Layout>
 	  <NoMetamask />
 	</Layout>	
+      );
+    } else if (this.state.mobile) {
+      return (
+	<h1>Mobile</h1>
       );
     } else {
       return (

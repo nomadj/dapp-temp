@@ -98,9 +98,15 @@ export async function getServerSidePaths({ names }) {
 
 class Index extends React.Component {
   state = {
-    account: ''
+    account: '',
+    mobile: false
   }
   async componentDidMount() {
+      console.log("Window width: ", window.innerWidth)
+    if (window.innerWidth < 800) {
+      this.setState({ mobile: true });
+      console.log("Window width: ", window.innerWidth)
+    }
     try {
       const accounts = await web3.eth.getAccounts();
       this.setState({ account: accounts[0] });
@@ -114,8 +120,9 @@ class Index extends React.Component {
     const items = this.props.conObj.map((obj, index) => {
       return <IndexRow key={index} name={obj.title} address={obj.address} account={this.state.account} image={obj.image} />
     });
-    return (
-      <Container>
+    if (this.state.mobile) {
+      return (
+	<Container>
 	<Head title="Fastload">
 	  <title>READY.FASTLOAD</title>
           <link rel="icon" href="/eth-favicon.png" />
@@ -133,12 +140,39 @@ class Index extends React.Component {
 	  </Link>
 	  only at this time
 	</p>	
-	<Divider />
-	<Card.Group itemsPerRow={2}>
+
+	<Card.Group itemsPerRow={1}>
 	  {items}
 	</Card.Group>
-      </Container>
-    );
+	</Container>
+      );
+    } else {
+      return (
+	<Container>
+	  <Head title="Fastload">
+	    <title>READY.FASTLOAD</title>
+	    <link rel="icon" href="/eth-favicon.png" />
+	    <meta
+	      name="description"
+	      content="The NFT smart contract network"
+	    />
+	  </Head>     
+	  <Header source={this.props.conObj} account={this.state.account}/>
+	  <h1 style={{textAlign: 'center' }}>Fastload into Web3 and the Metaverse</h1>
+	  <p style={{textAlign: 'center' }}>
+	    Chrome with
+	    <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
+	      <a style={{ color: '#DB6E00' }}> Metamask </a>
+	    </Link>
+	    only at this time
+	  </p>	
+	  <Divider />
+	  <Card.Group itemsPerRow={2}>
+	    {items}
+	  </Card.Group>
+	</Container>
+      );
+    }
   }
 }
 

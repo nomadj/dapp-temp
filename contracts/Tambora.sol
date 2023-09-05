@@ -56,7 +56,7 @@ contract Tambora is ERC721Enumerable {
 		string uri;
 	}	
 
-		constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_, uint256 mintFee_, uint256 contractFee_) ERC721(name, symbol) {
+	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_, uint256 mintFee_, uint256 contractFee_) ERC721(name, symbol) {
 		owner = payable(deployer);
 		_factoryOwner = payable(factoryOwner_);
 		price = price_;
