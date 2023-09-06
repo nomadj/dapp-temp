@@ -49,7 +49,7 @@ class Header extends React.Component {
 		<SearchBar source={this.props.source} account={this.props.account}/>
 	      </Menu.Item> ) : (
 		<Menu.Item>
-	      	  <Menu horizontal style={{ cursor: 'pointer' }}>
+	      	  <Menu style={{ cursor: 'pointer' }}>
 		    <Menu.Item name="home" active={true}>
 		      <Link href="/">
 			<p>home</p>
