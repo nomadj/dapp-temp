@@ -197,21 +197,22 @@ class CampaignShow extends Component {
 
   render() {
     if (this.state.renderPage === false) {
+      // Render nothing until data loads
       return null;
     } else if (typeof window.ethereum === 'undefined') {
+      // User is not web3 enabled
       return (
 	<Layout>
 	  <NoMetamask />
 	</Layout>	
       );
-    } else if (this.state.mobile) {
-      return (
-	<h1>Mobile</h1>
-      );
     } else {
+      // User is web3 enabled and on a desktop computer
       return (
 	<Layout>
-	  <h1>{this.props.title}</h1>
+	  <div>
+	    <h1>{this.props.title}</h1>
+	  </div>
 	  <Divider />
 	    <ContractShow
 	      name={this.props.name}

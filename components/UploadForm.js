@@ -43,7 +43,7 @@ class UploadForm extends Component {
       if (this.state.name === '') {
 	throw { message: 'Please enter a name for your file' };
       }
-      this.setState({ infoMessage: 'Interacting with the EVM' });
+      this.setState({ infoMessage: 'Interacting with Ethereum' });
       const accounts = await web3.eth.getAccounts();
       const contract = await new web3.eth.Contract(Tambora.abi, this.props.address);
       const tx = await contract.methods.addFileLocation(this.state.name, uri).send({ from: accounts[0] });

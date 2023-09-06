@@ -121,6 +121,7 @@ class RequestForm extends Component {
 
   render() {
     if (this.props.isShowing && !this.props.isApproved && !this.props.isPending && !this.props.isOwner) {
+      // New User
       return (
 	<Card.Content>
 	  <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} style={{ marginBottom: '10px' }} success={!!this.state.successMessage}>
@@ -135,10 +136,10 @@ class RequestForm extends Component {
 		/>
 	      </Form.Field>
 	    </Form.Group>
-	    <Message error color='purple' header="Error" content={this.state.errorMessage} />
-	    <Message success color='pink' header="Success" content={this.state.successMessage} />
+	    <Message error color='pink' header="Error" content={this.state.errorMessage} />
+	    <Message success color='purple' header="Success" content={this.state.successMessage} />
 	    <InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
-	    <Button disabled={this.state.loading} loading={this.state.loading} content='Request' style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} />
+	    <Button disabled={this.state.loading} loading={this.state.loading} content='Request' style={{ backgroundColor: 'rgb(0,0,100)', color: 'white', marginTop: '10px' }} />
 	  </Form>
 	</Card.Content>
       );
@@ -162,7 +163,7 @@ class RequestForm extends Component {
 	      </div>
 	    }
 	    position='top left'
-	    content='Congratulations! Click to finalize and mint your access token.'
+	    content='Click the cake to finalize and mint your access token.'
 	  />
 	</Card.Content>
       );

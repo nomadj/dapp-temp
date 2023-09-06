@@ -18,7 +18,7 @@ class RequestRow extends Component {
     denyLoading: false
   }
   onApprove = async () => {
-    this.setState({ isLoading: true, errorMessage: '', successMessage: '', error: false, success: false, infoMessage: 'Interacting with the EVM' });
+    this.setState({ isLoading: true, errorMessage: '', successMessage: '', error: false, success: false, infoMessage: 'Interacting with Ethereum' });
     try {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const accounts = await web3.eth.getAccounts();

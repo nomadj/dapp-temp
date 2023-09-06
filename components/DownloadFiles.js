@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Grid, Accordion, Icon } from 'semantic-ui-react'
+import { Card, Grid, Accordion, Icon, Dropdown } from 'semantic-ui-react'
 import web3 from '../web3'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
 import FileRow from '../components/FileRow'
@@ -30,7 +30,13 @@ class DownloadFiles extends Component {   // TODO: Implement downloader
 	    <div style={{marginTop: '10px'}}>
 	      <h2>File Downloads</h2>
 	      <Card.Group>
-		  {items}
+		<Dropdown
+		  placeholder='Select File'
+		  fluid
+		  selection
+		  options={items}
+		  style={{ marginBottom: '10px' }}
+		/>
 	      </Card.Group>
 	    </div>
 	  </Card.Content>
