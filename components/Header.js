@@ -74,22 +74,29 @@ class Header extends React.Component {
 	    </H>
 	  <Menu style={{ marginBottom: '10px' }}>
 	    <Menu.Item>
-	      <Link href="/">
-		<Button icon='home' style= {{ backgroundColor: 'rgba(0,0,100)', color: 'white' }} />
-	      </Link>
+	      <Hamburger hamburgerVisible={this.state.hamburgerVisible} toggle={this.toggleHamburger} />
 	    </Menu.Item>
-	    <Menu.Item>
-	      <SearchBar source={this.props.source} account={this.props.account}/>
-	    </Menu.Item>
-	    <Menu.Menu position='right'>
+	    {!this.state.hamburgerVisible ? (
 	      <Menu.Item>
-		<Link href="/createContract">
-		<Button icon='add' style= {{ backgroundColor: 'rgba(0,0,100)', color: 'white' }} />		
-		</Link>
-	      </Menu.Item>
-	    </Menu.Menu>
+		<SearchBar source={this.props.source} account={this.props.account}/>
+	      </Menu.Item> ) : (
+		<Menu.Item>
+	      	  <Menu style={{ cursor: 'pointer' }}>
+		    <Menu.Item name="home" active={true}>
+		      <Link href="/">
+			<p>home</p>
+		      </Link>
+		    </Menu.Item>
+		    <Menu.Item name="create" >
+		      <Link href="/createContract">
+			<p>create</p>
+		      </Link>
+		    </Menu.Item>
+		  </Menu>
+		</Menu.Item>)
+	    }
 	  </Menu>
-	</Container>
+	</Container>	
       );
     }
   }

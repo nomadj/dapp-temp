@@ -23,7 +23,7 @@ class ContractShow extends Component {
   render() {
     if (this.state.mobile) {
       return (
-	<Card.Group style={{ marginTop: '10px' }} itemsPerRow={2}> 
+	<Card.Group style={{ marginTop: '10px' }} itemsPerRow={1}> 
 		<Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 		  <Image src={this.props.image} alt='nope' />
 		  <Card.Content>
@@ -88,10 +88,7 @@ class ContractShow extends Component {
       );
     } else {
       return (
-	<Card.Group style={{ marginTop: '10px' }} > 
-	  <Grid columns='equal'>
-	    <Grid.Row>
-	      <Grid.Column style={{ marginLeft: '6px', overflowWrap: 'break-word'}}>
+	<Card.Group style={{ marginTop: '10px' }} itemsPerRow={2}> 
 		<Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 		  <Image src={this.props.image} alt='nope' />
 		  <Card.Content>
@@ -110,8 +107,7 @@ class ContractShow extends Component {
 		    />
 		  </Card.Content>
 		</Card>
-	      </Grid.Column>
-	      <Grid.Column>
+
 		<Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 		  <Card.Content>
 		    <Card.Header>Tokens Minted</Card.Header>
@@ -145,21 +141,15 @@ class ContractShow extends Component {
 		    price={this.props.price}
 		    isOwner={this.props.isOwner}
 		  />
-		</Card>	      
-	      </Grid.Column>
-	      <Grid.Column>
-		<Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 		  <DownloadFiles
 		    address={this.props.address}
 		    fileStore={this.props.fileStore}
 		    isTokenHolder={this.props.isTokenHolder}
 		    isOwner={this.props.isOwner}
 		  />
-		</Card>
-	      </Grid.Column>
-	    </Grid.Row>
-	  </Grid>
-	</Card.Group>
+		</Card>	      
+
+	</Card.Group>	
       );
     }
   }
