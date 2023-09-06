@@ -41,7 +41,7 @@ export default class TransferForm extends Component {
           <Input
 	    value={this.state.to}
 	    onChange={event => this.setState({ to: event.target.value })}
-	    placeholder="0x00000000000000000008"
+	    placeholder="0x000..."
 	    label={<Button disabled={this.state.loading} style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} loading={this.state.loading} icon='ethereum' />}
           />
         </Form.Field>

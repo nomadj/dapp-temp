@@ -76,11 +76,17 @@ export async function getServerSideProps(props) {
 }
 
 class MyContract extends React.Component {
-  state = { address: '' };
+  state = {
+    address: '',
+    rows: 2
+  };
   
   async componentDidMount() {
     let accounts = await web3.eth.getAccounts();
     this.setState({ address: accounts[0] });
+    if (window.innerWidth < 800) {
+      this.setState({ rows: 1 });
+    }
   }
   
   render() {
@@ -90,14 +96,16 @@ class MyContract extends React.Component {
     if (this.props.mintDisabled) {
       return (
 	<Layout>
+	  <div>
 	  <h2>You have reached your mint allowance.
 	    <Link href='/'>
 	      <a color='olive' style={{ marginBottom: '10px' }} size='small'> Request More</a>
 	    </Link>
 	  </h2>
-	  <h3>If this is incorrect, transfer your membership token to an unused Ethereum address.</h3>
+	    <h3>If this is incorrect, transfer your membership token to an unused Ethereum address.</h3>
+	  </div>
 	  <Divider />
-	  <Card.Group itemsPerRow={4}>
+	  <Card.Group itemsPerRowf={this.state.rows}>
 	    {items}
 	  </Card.Group>
 	</Layout>
@@ -105,7 +113,7 @@ class MyContract extends React.Component {
     } else {
       return (
 	<Layout>
-	  <Card.Group itemsPerRow={4}>
+	  <Card.Group itemsPerRow={this.state.rows}>
 	    <Card>
 	      <Card.Content>
 		<Card.Header>Minted</Card.Header>
@@ -131,7 +139,7 @@ class MyContract extends React.Component {
 	    </Link>	
 	  </Card.Group>
 	  <Divider />
-	  <Card.Group itemsPerRow={4} style={{ overflowWrap: 'anywhere' }}>
+	  <Card.Group itemsPerRow={this.state.rows} style={{ overflowWrap: 'anywhere' }}>
 	    {items}
 	  </Card.Group>
 	</Layout>

@@ -102,16 +102,14 @@ class Index extends React.Component {
     mobile: false
   }
   async componentDidMount() {
-      console.log("Window width: ", window.innerWidth)
     if (window.innerWidth < 800) {
       this.setState({ mobile: true });
-      console.log("Window width: ", window.innerWidth)
     }
     try {
       const accounts = await web3.eth.getAccounts();
       this.setState({ account: accounts[0] });
     } catch (error) {
-      console.log("Metamask not installed.");
+      console.log("Wallet not detected.");
       this.setState({ unsupported: true });
     }
   }

@@ -12,11 +12,9 @@ class NFT extends React.Component {
 	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	    <Image src={this.props.url} alt='/64kOrange.png' wrapped ui={false} />
 	    <Card.Content>
-	      <Card.Header>{this.props.name}</Card.Header>
-	      <a># {this.props.tokenId}</a>
+	      <Card.Header>#{this.props.tokenId} {this.props.name}</Card.Header>
 	      <Card.Description>{description}</Card.Description>
-	    </Card.Content>
-	  </Card>
+	    </Card.Content>												     </Card>
 	</Link>
       );
     } else if (this.props.type === 'mp4') {
@@ -28,7 +26,7 @@ class NFT extends React.Component {
 	    </Card.Content>
 	    <Card.Content>
 	      <Card.Header>{this.props.name}</Card.Header>
-	      <a># {this.props.tokenId}</a>
+	      <Card.Meta># {this.props.tokenId}</Card.Meta>
 	      <Card.Description>{description}</Card.Description>
 	    </Card.Content>
 	  </Card>
@@ -36,15 +34,15 @@ class NFT extends React.Component {
       );
     } else {
       return (
-	<Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
-	  <Card.Content>
-	    <Card.Header>{this.props.name}</Card.Header>
-	    <Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
-		<a>{this.props.tokenId}</a>
-	      </Link>
-	    <Card.Description>{description}</Card.Description>
-	  </Card.Content>
-	</Card>	
+	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
+	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
+	    <Card.Content>
+	      <Card.Header>{this.props.name}</Card.Header>
+	      <Card.Meta>{this.props.tokenId}</Card.Meta>
+	      <Card.Description>{description}</Card.Description>
+	    </Card.Content>
+	  </Card>
+	</Link>
       );
     }
   }
