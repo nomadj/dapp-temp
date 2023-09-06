@@ -53,19 +53,22 @@ class CreateContract extends Component {
     url: '',
     contractAddress: '',
     animUrl: '',
-    unsupported: false
+    unsupported: false,
+    buttonDisabled: true
   };
 
   handleChange = (e, { value }) => this.setState({ contractType: value });
   handleExtFileChange = (event) => {
     this.setState({ errorMessage: '', infoMessage: '', success: false });
     try {
-      const { type } = event.target.files[0];
+      const { type, name } = event.target.files[0];
       //      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
       if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {
-	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
+	this.setState({ auxUri: URL.createObjectURL(event.target.files[0]), buttonDisabled: false });
+      } else if (name.endsWith('.pdf') || name.endsWith('.py') || name.endsWith('.json') || name.endsWith('.js')) {
+	this.setState({ auxUri: URL.createObjectURL(event.target.files[0]), buttonDisabled: false });
       } else {
-	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
+	this.setState({ errorMessage: 'File type unsupported. Choose a different file.', buttonDisabled: true });
       }
     } catch (error) {
       console.log("No file selected");
@@ -75,11 +78,12 @@ class CreateContract extends Component {
   fileHandler = (event) => {
     event.preventDefault()
     try {
+      const { name, type } = event.target.files[0];
     this.setState({ isMp4: false, isPng: false, errorMessage: '', success: false });
-    if (event.target.files[0].type === 'image/png' || event.target.files[0].type === 'image/jpeg') {
+      if (type === 'image/png' || type === 'image/jpeg' || name.startsWith('IMG')) {
       this.setState({ url: URL.createObjectURL(event.target.files[0]) });
     } else {
-      throw { message: "Only jpg and png file types compatible at this time." };
+      throw { message: "Images file types only." };
     }
     } catch (error) {
       this.setState({ errorMessage: error.message });
@@ -122,7 +126,7 @@ class CreateContract extends Component {
     const { name, symbol, contractType} = this.state;
     if (this.state.price === '') {
       this.setState({ price: '0'});
-    } else if (this.state.animUrl !== '') {      
+    } else if (this.state.auxUri !== '') {      
       await this.ipfsAddExt(document.getElementById("file-picker").files[0]);
     }
     try {
@@ -158,7 +162,7 @@ class CreateContract extends Component {
 	const balance = await web3.eth.getBalance(accounts[0]);
 	const bal = web3.utils.fromWei(balance, 'ether');
 	if (parseFloat(bal) < web3.utils.fromWei(contractFee, 'ether')) {
-          throw { message: `Insufficient balance. ${web3.utils.fromWei(contractFee, 'ether')} ETH is required to initiate this transaction.` };
+          throw { message: `Insufficient funds. ${web3.utils.fromWei(contractFee, 'ether')} ETH required.` };
 	}
       } catch (error) {
 	throw { message: error.message };
@@ -215,7 +219,7 @@ class CreateContract extends Component {
     })
     try {
       const added = await client.add(file);
-      this.setState({ animUrl: `ipfs://${added.path}` });
+      this.setState({ auxUri: `ipfs://${added.path}` });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
     }
@@ -229,15 +233,15 @@ class CreateContract extends Component {
 	"name": this.state.name,
 	"image": `ipfs://${cid}`,
 	"description": `Token prime of ${this.state.name} contract`,
-	"animation_url": this.state.animUrl,
+	"aux_uri": this.state.auxUri,
 	"attributes": [
 	  {
-	    "trait_type": "type",
-	    "value": "membership"
+	    "trait_type": "Role",
+	    "value": "Minter"
 	  },	  
 	  {
-	    "trait_type": "role",
-	    "value": "owner"
+	    "trait_type": "Role",
+	    "value": "Contract Owner"
 	  }
 	]
       };
@@ -290,15 +294,11 @@ class CreateContract extends Component {
     } else {
       return (
 	<Layout ref={this.myRef}>
-	  <h3>Create your own ERC721 contract</h3>
+	  <h3>Create a new NFT contract</h3>
 	  <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	    <Form.Group widths='equal'>
 	      <Form.Field required>
-		<Popup
-		  trigger={<label>Name</label>}
-		  content='Enter a name for your contract.'
-		  position='top left'
-		/>
+		<label>Name</label>		
 		<Input
 		  value={this.state.name}
 		  onChange={event => this.setState({ name: this.processName(event.target.value) })}
@@ -306,11 +306,7 @@ class CreateContract extends Component {
 		/>
 	      </Form.Field>
 	      <Form.Field required>
-		<Popup
-		  trigger={<label>Symbol</label>}
-		  content='Symbols are all in caps and 3-4 characters long'
-		  position='top left'
-		/>
+		<label>Symbol</label>
 		<Input
 		  value={this.state.symbol}
 		  onChange={event => this.setState({ symbol: this.processSymbol(event.target.value) })}
@@ -318,11 +314,7 @@ class CreateContract extends Component {
 		/>
 	      </Form.Field>
 	      <Form.Field>
-		<Popup
-		  trigger={<label>Price (optional)</label>}
-		  content='Enter the price, in ether, for client membership. Each approved client will be minted a membership token, which authorizes them to mint 4 more tokens off of your contract, each for this price. Clients may request approval for 5 more when they reach their allotted amount. The price can be zero. The contract owner (you) will be authorized for 10 total tokens. The owner will be charged the price to mint each token, but immediately refunded after minting is complete.'
-		  position='top left'
-		/>
+		<label>Price (optional)</label>
 		<Input
 		  label='Ether'
 		  labelPosition='right'
@@ -341,24 +333,16 @@ class CreateContract extends Component {
 	      />
 	    </Form.Group>
 	    <Form.Group widths='equal'>
-	    <Form.Field required>
-	      <Popup
-		trigger={<label>Image</label>}
-		position='top left'
-		content="Choose an image file to represent your contract. Each of your clients will be minted a token containing this image. PNG and JPG supported at this time."
-	      />
+	      <Form.Field required>
+		<label>Image</label>
 	      <Input
 		id="image-picker"
 		type="file"
 		onChange={() => this.fileHandler(event)}
 	      />
 	    </Form.Field>
-	    <Form.Field>
-	      <Popup
-		trigger={<label>Ext File (optional)</label>}
-		position='top left'
-		content="Choose a file to be uploaded when the contract is created. The file location will be added to the metadata of the token prime."
-	      />
+	      <Form.Field>
+		<label>Aux File (optional)</label>
 	      <Input
 		id="file-picker"
 		type="file"
@@ -378,11 +362,7 @@ class CreateContract extends Component {
 	      header='Please Wait...'
 	      content={this.state.infoMessage}
 	    />
-	    <Popup
-	      trigger={<Button disabled={this.state.loading} type='submit' loading={this.state.loading} content='Create' style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}/>}
-	      location='top left'
-	      content="Click here to deploy your new contract. As the owner, you will be authorized to mint, and approve others to mint, up to 100 tokens off of the contract."
-	    />
+	    <Button disabled={this.state.loading || this.state.buttonDisabled} type='submit' loading={this.state.loading} content='Create' style={{ marginBottom: '10px', backgroundColor: 'rgb(72,0,72)', color: 'white' }}/>
 	  </Form>
 	</Layout>
       );

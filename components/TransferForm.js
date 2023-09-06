@@ -35,21 +35,16 @@ export default class TransferForm extends Component {
       <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px'}}>
         <Message error color='pink' header="Error" content={this.state.errorMessage} />
 	<Message success color='purple' header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
-	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />	
-	<Popup
-	  trigger={
-	    <Form.Field>
-              <h2>Transfer</h2>
-              <Input
-		value={this.state.to}
-		onChange={event => this.setState({ to: event.target.value })}
-		placeholder="0x00000000000000000008"
-		label={<Button disabled={this.state.loading} style={{ backgroundColor: 'rgb(72,0,72)', color: 'white' }} loading={this.state.loading} icon='ethereum' />}
-              />
-            </Form.Field>}
-	  content="Enter the recipient's public address. If you wish to preserve the remaining mintings on a member token, transfer to an Ethereum address which does not hold any tokens on this contract."
-	  position='bottom left'
-        />	  	
+	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
+	<Form.Field>
+          <h2>Transfer</h2>
+          <Input
+	    value={this.state.to}
+	    onChange={event => this.setState({ to: event.target.value })}
+	    placeholder="0x00000000000000000008"
+	    label={<Button disabled={this.state.loading} style={{ backgroundColor: 'rgb(0,0,100)', color: 'white' }} loading={this.state.loading} icon='ethereum' />}
+          />
+        </Form.Field>
       </Form>
     );
   }

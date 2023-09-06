@@ -25,6 +25,7 @@ export async function getServerSideProps(props) {
   const description = data.description;
   console.log("EXTURL: ", data)
   const animUrl = data.animation_url || "";
+  const auxUri = data.aux_uri || "";
   
   return {
     props: {
@@ -37,7 +38,8 @@ export async function getServerSideProps(props) {
       blockNumber,
       attributes,
       uri,
-      animUrl
+      animUrl,
+      auxUri
     }
   }
 }
@@ -82,7 +84,7 @@ export default class TokenShow extends Component {
     if (this.props.filetype === 'png' || this.props.filetype === 'jpeg') {  // TODO: Reduce this mess
       return (
 	<Layout>
-	  <Group itemsPerRow={3} style={{ overflowWrap: 'anywhere' }}>
+	  <Group itemsPerRow={2} style={{ overflowWrap: 'anywhere' }}>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Image src={this.props.image} alt='/64kOrange.png' rounded />
 	      <Content>
@@ -99,11 +101,11 @@ export default class TokenShow extends Component {
 		<Description>Block # {this.props.blockNumber}</Description>
 	      </Content>
 	      <Content>
-		<DynamicButton disabled={this.state.loading} loading={this.state.loading} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.animUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.animUrl !== ''} icon='download' />
+		<DynamicButton disabled={this.state.loading} loading={this.state.loading} size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.animUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.animUrl !== ''} icon='download' />
 		<Header>Aux File</Header>		
 	      </Content>
 	      <Content>
-		<DynamicButton disabled={this.state.loading} isShowing={true} color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', '') + 'URI')} icon='download' />
+		<DynamicButton disabled={this.state.loading} isShowing={true} size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', '') + 'URI')} icon='download' />
 		<Header>Metadata</Header>		
 	      </Content>	      
 	    </Card>
@@ -113,19 +115,23 @@ export default class TokenShow extends Component {
 		<Description>{this.props.description}</Description>
 	      </Content>
 	    </Card>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
+	      <Content>
+		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
+	      </Content>
+	    </Card>
 	  </Group>
 	  <InfoMessage isShowing={!!this.state.infoMessage} header='Downloading...' content={this.state.infoMessage} />
-	  <Group itemsPerRow={4}>
+	  <Group itemsPerRow={2}>
 	    {this.renderAttributes()}
 	  </Group>
-	  <TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
 	  <Divider />
 	</Layout>
       );
     } else if (this.props.filetype === 'mp4') {
       return (
 	<Layout>
-	  <Group itemsPerRow={3} style={{ overflowWrap: 'anywhere' }}>
+	  <Group itemsPerRow={2} style={{ overflowWrap: 'anywhere' }}>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Embed url={this.props.image} active={true} rounded />
 	      <Content>
@@ -142,7 +148,7 @@ export default class TokenShow extends Component {
 		<Description>Block # {this.props.blockNumber}</Description>
 	      </Content>
 	      <Content>
-		<DynamicButton color='violet' size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.animUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.animUrl !== ''} icon='download' />
+		<DynamicButton size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.animUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.animUrl !== ''} icon='download' />
 		<Header>Aux File</Header>		
 	      </Content>
 	      <Content>
@@ -156,11 +162,15 @@ export default class TokenShow extends Component {
 		<Description>{this.props.description}</Description>
 	      </Content>
 	    </Card>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
+	      <Content>
+		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
+	      </Content>
+	    </Card>
 	  </Group>
-	  <Group itemsPerRow={4}>
+	  <Group itemsPerRow={2}>
 	    {this.renderAttributes()}
 	  </Group>
-	  <TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
 	  <Divider />
 	</Layout>
       );
