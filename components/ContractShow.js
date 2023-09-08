@@ -24,9 +24,13 @@ class ContractShow extends Component {
     if (this.state.mobile) {
       return (
 	<Card.Group style={{ marginTop: '10px' }} itemsPerRow={1}> 
-		<Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
-		  <Image src={this.props.image} alt='nope' />
-		  <Card.Content>
+	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
+	    <Card.Content>
+	      <div style={{ height: 350, overflowX: 'auto', overflowY: 'auto' }}>
+		<Image src={this.props.image} alt='nope' />
+	      </div>
+	    </Card.Content>
+	    <Card.Content>
 		    <Card.Description>
 		      <TokenLink
 			isTokenHolder={this.props.isTokenHolder}
@@ -89,8 +93,12 @@ class ContractShow extends Component {
     } else {
       return (
 	<Card.Group style={{ marginTop: '10px' }} itemsPerRow={2}> 
-		<Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
-		  <Image src={this.props.image} alt='nope' />
+	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
+	    <Card.Content>
+	      <div style={{ height: 435, overflowX: 'auto', overflowY: 'auto' }}>
+		<Image src={this.props.image} alt='nope' />
+	      </div>
+	    </Card.Content>
 		  <Card.Content>
 		    <Card.Description>
 		      <TokenLink

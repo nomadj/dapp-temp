@@ -47,7 +47,6 @@ class ContributeForm extends Component {
 	    placeholder="0.08"
 	    action={{
 	      style: { backgroundColor: 'rgb(0,0,100)', color: '#fff' }, 
-
 	      icon: 'ethereum'
 	    }}
 	    actionPosition='left'

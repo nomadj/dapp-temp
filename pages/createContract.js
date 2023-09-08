@@ -53,8 +53,7 @@ class CreateContract extends Component {
     url: '',
     contractAddress: '',
     animUrl: '',
-    unsupported: false,
-    buttonDisabled: true
+    unsupported: false
   };
 
   handleChange = (e, { value }) => this.setState({ contractType: value });
@@ -64,11 +63,11 @@ class CreateContract extends Component {
       const { type, name } = event.target.files[0];
       //      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
       if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {
-	this.setState({ auxUri: URL.createObjectURL(event.target.files[0]), buttonDisabled: false });
+	this.setState({ auxUri: URL.createObjectURL(event.target.files[0]) });
       } else if (name.endsWith('.pdf') || name.endsWith('.py') || name.endsWith('.json') || name.endsWith('.js')) {
-	this.setState({ auxUri: URL.createObjectURL(event.target.files[0]), buttonDisabled: false });
+	this.setState({ auxUri: URL.createObjectURL(event.target.files[0]) });
       } else {
-	this.setState({ errorMessage: 'File type unsupported. Choose a different file.', buttonDisabled: true });
+	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
       }
     } catch (error) {
       console.log("No file selected");
@@ -234,6 +233,7 @@ class CreateContract extends Component {
 	"image": `ipfs://${cid}`,
 	"description": `Token prime of ${this.state.name} contract`,
 	"aux_uri": this.state.auxUri,
+	"animation_url": this.state.animUrl,
 	"attributes": [
 	  {
 	    "trait_type": "Role",
@@ -314,7 +314,7 @@ class CreateContract extends Component {
 		/>
 	      </Form.Field>
 	      <Form.Field>
-		<label>Price (optional)</label>
+		<label>Price (per token - optional)</label>
 		<Input
 		  label='Ether'
 		  labelPosition='right'

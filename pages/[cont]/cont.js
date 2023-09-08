@@ -99,13 +99,13 @@ class MyContract extends React.Component {
 	  <div>
 	  <h2>You have reached your mint allowance.
 	    <Link href='/'>
-	      <a color='olive' style={{ marginBottom: '10px' }} size='small'> Request More</a>
+	      <a style={{ marginBottom: '10px' }} size='small'> Request More</a>
 	    </Link>
 	  </h2>
 	    <h3>If this is incorrect, transfer your membership token to an unused Ethereum address.</h3>
 	  </div>
 	  <Divider />
-	  <Card.Group itemsPerRowf={this.state.rows}>
+	  <Card.Group itemsPerRow={this.state.rows}>
 	    {items}
 	  </Card.Group>
 	</Layout>
@@ -113,32 +113,16 @@ class MyContract extends React.Component {
     } else {
       return (
 	<Layout>
-	  <Card.Group itemsPerRow={this.state.rows}>
-	    <Card>
+	  <Card.Group itemsPerRow={1}>
+	    <Link href={{pathname: '/minty', query: [this.props.address, this.props.mintId]}}>
+	      <Card style={{ border: '1px solid rgb(170,255, 195)' }}>
 	      <Card.Content>
-		<Card.Header>Minted</Card.Header>
-		<a>{this.props.minted}</a>
+		<p style={{ width: '100%', textAlign: 'center', display: 'block', fontSize: 65, color: 'rgb(170,255,195)' }}>mint</p>
 	      </Card.Content>
 	    </Card>
-	    <Card>
-	      <Card.Content>
-		<Card.Header>Allowance</Card.Header>
-		<a>{this.props.mintAllowance}</a>
-	      </Card.Content>		  
-	    </Card>
-	    <Link href={{pathname: '/minty', query: [this.props.address, this.props.mintId]}}>
-	      <DynamicButton
-		color='olive'
-		isShowing={this.props.isTokenHolder && !this.props.mintDisabled}
-		content='Mint'
-		marginBottom='12px'
-		marginLeft='13px'
-		marginTop='12px'
-		size='tiny'
-	      />
-	    </Link>	
+	    </Link>		  
 	  </Card.Group>
-	  <Divider />
+
 	  <Card.Group itemsPerRow={this.state.rows} style={{ overflowWrap: 'anywhere' }}>
 	    {items}
 	  </Card.Group>

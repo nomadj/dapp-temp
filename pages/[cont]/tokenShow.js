@@ -86,7 +86,11 @@ export default class TokenShow extends Component {
 	<Layout>
 	  <Group itemsPerRow={2} style={{ overflowWrap: 'anywhere' }}>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
-	      <Image src={this.props.image} alt='/64kOrange.png' rounded />
+	      <Content>
+		<div style={{ maxHeight: 350, overflowY: 'auto', overflowX: 'auto' }}>
+		  <Image src={this.props.image} alt='/64kOrange.png' rounded />
+		</div>
+	      </Content>
 	      <Content>
 		<Description>Token # {this.props.tokenId}</Description>
 	      </Content>
@@ -112,12 +116,16 @@ export default class TokenShow extends Component {
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
 		<Header>Description</Header>
-		<Description>{this.props.description}</Description>
+		<div style={{ height: '150px', overflowX: 'auto' }}>
+		  <Description>{this.props.description}</Description>
+		</div>
 	      </Content>
 	    </Card>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
-		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
+		<div style={{ height: '150px', overflowY: 'auto' }}>
+		  <TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
+		</div>
 	      </Content>
 	    </Card>
 	  </Group>
@@ -133,12 +141,12 @@ export default class TokenShow extends Component {
 	<Layout>
 	  <Group itemsPerRow={2} style={{ overflowWrap: 'anywhere' }}>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
-	      <Embed url={this.props.image} active={true} rounded />
+	      <Embed url={this.props.image} active={true} />
 	      <Content>
-		<Description>Token # {this.props.tokenId}</Description>
+		<Header>Token #{this.props.tokenId}</Header>
 	      </Content>
 	    </Card>
-	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
+	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)', maxHeight: 150, overflowX: 'auto' }}>
 	      <Content>
 		<Header>Name</Header>
 		<Description>{this.props.name}</Description>
@@ -159,12 +167,16 @@ export default class TokenShow extends Component {
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
 		<Header>Description</Header>
-		<Description>{this.props.description}</Description>
+		<div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+		  <Description>{this.props.description}</Description>
+		</div>
 	      </Content>
 	    </Card>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
-		<TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
+		<div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+		  <TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
+		</div>
 	      </Content>
 	    </Card>
 	  </Group>
