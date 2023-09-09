@@ -67,7 +67,8 @@ class MintForm extends Component {
     trait_type: '',
     value: '',
     buttonDisabled: false,
-    animUrl: ''
+    animUrl: '',
+    auxUrl: ''
   }
   handleExtFileChange = (event) => {
     this.setState({ errorMessage: '', infoMessage: '', success: false });
@@ -76,6 +77,8 @@ class MintForm extends Component {
 
       if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {      
 	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
+      } else if (name.endsWith('.pdf') || name.endsWith('.py') || name.endsWith('.json') || name.endsWith('.js')) {
+	this.setState({ auxUrl: URL.createObjectURL(event.target.files[0]) });	
       } else {
 	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
       }
@@ -89,7 +92,7 @@ class MintForm extends Component {
     try {
       if (img.type !== 'image/png' && img.type !== 'video/mp4' && img.type !== 'image/jpeg') {
 	throw { message: 'Select a different file. Only png, jpg, and mp4 supported at this time.' }
-      } else if (this.state.animUrl !== '') {
+      } else if (this.state.animUrl !== '' || this.state.auxUrl !== '') {
 	this.setState({ isLoading: true, success: false, errorMessage: '', infoMessage: 'Pinning content to IPFS' });
 	await this.ipfsAddExt(document.getElementById('file-picker').files[0]);
       } else if (name === '' || description === '' || performer === '') {
@@ -117,7 +120,11 @@ class MintForm extends Component {
     try {
       const added = await client.add(file, { progress: prog  => this.setState({ progPct: ((prog / this.state.fileSize) * 100) })}, { pin: true });
       this.setState({ isShowingProg: false, infoMessage: '' });
-      this.state.contractType === 'musician' ? await this.createMeta(added.path) : await this.createCustomMeta(added.path);
+      if (this.state.auxUrl !== '' || this.state.animUrl !== '') {      
+	const auxHash = await this.ipfsAddExt(document.getElementById("file-picker").files[0]);
+	this.setState({ auxFile: `ipfs://${auxHash}` });
+      }
+      await this.createCustomMeta(added.path);
     } catch (event) {
       this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, isShowingProg: false, infoMessage: '' });
     }
@@ -158,7 +165,7 @@ class MintForm extends Component {
     try {
       //const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
       const added = await client.add(file);
-      this.setState({ animUrl: `ipfs://${added.path}` });
+      this.setState({ auxFile: `ipfs://${added.path}` });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
     }
@@ -186,7 +193,8 @@ class MintForm extends Component {
 	name: this.state.name,
 	description: this.state.description,
 	image: `ipfs://${cid}`,
-	animation_url: this.state.animUrl,
+	animation_url: this.state.animUrl !== "" ? this.state.auxFile : "",
+	aux_uri: this.state.auxUrl !== "" ? this.state.auxFile : "",
 	attributes: this.state.attributes
       }
       const data = JSON.stringify(metadata);

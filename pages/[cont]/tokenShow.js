@@ -9,7 +9,6 @@ import DynamicButton from '../../components/DynamicButton'
 import InfoMessage from '../../components/InfoMessage'
 
 export async function getServerSideProps(props) {
-  // const contractName = props.query['cont'];
   const addr = props.query['0'];
   const filetype = props.query['1'];
   const tokenId = props.query['2'];
@@ -23,7 +22,6 @@ export async function getServerSideProps(props) {
   const image = data.image.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/');
   const name = data.name;
   const description = data.description;
-  console.log("EXTURL: ", data)
   const animUrl = data.animation_url || "";
   const auxUri = data.aux_uri || "";
   const auxFile = animUrl !== "" ? animUrl : auxUri
@@ -48,7 +46,13 @@ export default class TokenShow extends Component {
 
   state = {
     loading: false,
-    infoMessage: ''
+    infoMessage: '',
+    mobile: false
+  }
+  componentDidMount() {
+    if (window.innerWidth < 800) {
+      this.setState({ mobile: true });
+    }
   }
   
   async downloadFile(url, fileName) {
@@ -64,7 +68,8 @@ export default class TokenShow extends Component {
     URL.revokeObjectURL(href);
     setTimeout(() => this.setState({ infoMessage: '' }), 5000);
     this.setState({ loading: false });
-  }   
+  }
+
   renderAttributes = () => {
     const { Header, Content, Description } = Card;
     const attributes = this.props.attributes.map((attr, i) => {
@@ -103,9 +108,14 @@ export default class TokenShow extends Component {
 		<Header>Origin</Header>
 		<Description>Block # {this.props.blockNumber}</Description>
 		<Divider />
-		<DynamicButton disabled={this.state.loading} loading={this.state.loading} size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.auxFile.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.auxFile!== ''} icon='download' />
+		{this.state.mobile ? (
+		  <Link href={this.props.auxFile.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/')}>
+		  <DynamicButton disabled={this.state.loading} loading={this.state.loading} size ='tiny' floated='right' isShowing={this.props.auxFile!== ''} icon='download' /></Link>) : (
+		    <DynamicButton disabled={this.state.loading} loading={this.state.loading} size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.auxFile.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.auxFile!== ''} icon='download' />)
+		}
 		<Header>Aux File</Header>		
 		<Divider />
+
 		<DynamicButton disabled={this.state.loading} isShowing={true} size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', '') + 'URI')} icon='download' />
 		<Header>Metadata</Header>		
 	      </Content>	      
