@@ -1,4 +1,4 @@
-import { Card, Grid, Image, Container } from 'semantic-ui-react';
+import { Card, Grid, Image, Container, Divider } from 'semantic-ui-react';
 import React, { Component } from 'react';
 import ContributeForm from './ContributeForm';
 import DownloadButton from './DownloadButton';
@@ -26,11 +26,10 @@ class ContractShow extends Component {
 	<Card.Group style={{ marginTop: '10px' }} itemsPerRow={1}> 
 	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	    <Card.Content>
-	      <div style={{ height: 350, overflowX: 'auto', overflowY: 'auto' }}>
+	      <div style={{ maxHeight: 350, overflowX: 'auto', overflowY: 'auto' }}>
 		<Image src={this.props.image} alt='nope' />
 	      </div>
-	    </Card.Content>
-	    <Card.Content>
+	      <Divider />
 		    <Card.Description>
 		      <TokenLink
 			isTokenHolder={this.props.isTokenHolder}
@@ -95,11 +94,11 @@ class ContractShow extends Component {
 	<Card.Group style={{ marginTop: '10px' }} itemsPerRow={2}> 
 	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	    <Card.Content>
-	      <div style={{ height: 435, overflowX: 'auto', overflowY: 'auto' }}>
+	      <div style={{ maxHeight: 350, overflowX: 'auto', overflowY: 'auto' }}>
 		<Image src={this.props.image} alt='nope' />
 	      </div>
-	    </Card.Content>
-		  <Card.Content>
+
+	      <Divider />
 		    <Card.Description>
 		      <TokenLink
 			isTokenHolder={this.props.isTokenHolder}
@@ -110,9 +109,11 @@ class ContractShow extends Component {
 			isOwner={this.props.isOwner}
 		      />
 		    </Card.Description>
-		    <ContributeForm
-		      address={this.props.address}
-		    />
+
+		<ContributeForm
+		  address={this.props.address}
+		/>
+
 		  </Card.Content>
 		</Card>
 

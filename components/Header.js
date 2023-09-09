@@ -36,7 +36,7 @@ class Header extends React.Component {
   render() {
     if (this.state.mobile) {
       return (
-	<Container style={{ marginTop: '10px', marginBottom: '15px'}}>
+	<div style={{ marginTop: '10px', marginBottom: '15px'}}>
 	    <H as='h1' icon textAlign='center'>
 	      <H.Content><Image src='/64kRainbowBlack.jpg' alt='Nope' rounded centered style={{ width: 1800 }} /></H.Content>
 	    </H>
@@ -64,11 +64,11 @@ class Header extends React.Component {
 		</Menu.Item>)
 	    }
 	  </Menu>
-	</Container>	
+	</div>	
       );
     } else {
       return (
-	<Container style={{ marginTop: '10px', marginBottom: '15px'}}>
+	<div style={{ marginTop: '10px', marginBottom: '15px'}}>
 	    <H as='h1' icon textAlign='center'>
 	      <H.Content><Image src='/64kRainbowBlack.jpg' alt='Nope' rounded centered style={{ width: 1800 }} /></H.Content>
 	    </H>
@@ -96,7 +96,7 @@ class Header extends React.Component {
 		</Menu.Item>)
 	    }
 	  </Menu>
-	</Container>	
+	</div>	
       );
     }
   }

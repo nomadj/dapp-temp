@@ -85,7 +85,7 @@ class MyContract extends React.Component {
     let accounts = await web3.eth.getAccounts();
     this.setState({ address: accounts[0] });
     if (window.innerWidth < 800) {
-      this.setState({ rows: 1 });
+      this.setState({ rows: 2 });
     }
   }
   
@@ -122,7 +122,6 @@ class MyContract extends React.Component {
 	    </Card>
 	    </Link>		  
 	  </Card.Group>
-
 	  <Card.Group itemsPerRow={this.state.rows} style={{ overflowWrap: 'anywhere' }}>
 	    {items}
 	  </Card.Group>

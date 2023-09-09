@@ -37,7 +37,6 @@ export default class TransferForm extends Component {
 	<Message success color='purple' header="Success" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
 	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
 	<Form.Field>
-          <h2>Transfer</h2>
           <Input
 	    value={this.state.to}
 	    onChange={event => this.setState({ to: event.target.value })}

@@ -211,7 +211,8 @@ class CampaignShow extends Component {
       return (
 	<Layout>
 	  <div>
-	    <h1>{this.props.title}</h1>
+	    <h1 style={{ marginBottom: 0 }}>{this.props.title}</h1>
+	    <p style={{ color: '#DB6E00', overflowY: 'auto', marginTop: 0 }}>{this.props.address}</p>
 	  </div>
 	  <Divider />
 	    <ContractShow

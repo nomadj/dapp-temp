@@ -38,6 +38,7 @@ class ContributeForm extends Component {
 
   render() {
     return (
+      <div style={{ maxHeight: 150, overflowY: 'auto' }}>
       <Form onSubmit={this.onSubmit} error={!!this.state.errorMessage} success={!!this.state.successMessage} style={{ marginBottom: '10px', marginTop: '10px', marginRight: '40px' }}>
         <Form.Field>
           <h2>Donate</h2>
@@ -56,6 +57,7 @@ class ContributeForm extends Component {
 	<Message success color='purple' header="Thank You!" content={this.state.successMessage} style={{ overflowWrap: 'break-word' }} />
 	<InfoMessage isShowing={!!this.state.infoMessage} header="Please Wait..." content={this.state.infoMessage} />
       </Form>
+	</div>
     );
   }
 }

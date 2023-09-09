@@ -53,6 +53,7 @@ class CreateContract extends Component {
     url: '',
     contractAddress: '',
     animUrl: '',
+    auxUrl: '',
     unsupported: false
   };
 
@@ -63,9 +64,9 @@ class CreateContract extends Component {
       const { type, name } = event.target.files[0];
       //      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
       if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {
-	this.setState({ auxUri: URL.createObjectURL(event.target.files[0]) });
+	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
       } else if (name.endsWith('.pdf') || name.endsWith('.py') || name.endsWith('.json') || name.endsWith('.js')) {
-	this.setState({ auxUri: URL.createObjectURL(event.target.files[0]) });
+	this.setState({ auxUrl: URL.createObjectURL(event.target.files[0]) });
       } else {
 	this.setState({ errorMessage: 'File type unsupported. Choose a different file.' });
       }
@@ -82,7 +83,7 @@ class CreateContract extends Component {
       if (type === 'image/png' || type === 'image/jpeg' || name.startsWith('IMG')) {
       this.setState({ url: URL.createObjectURL(event.target.files[0]) });
     } else {
-      throw { message: "Images file types only." };
+      throw { message: "Image file types only." };
     }
     } catch (error) {
       this.setState({ errorMessage: error.message });
@@ -125,11 +126,12 @@ class CreateContract extends Component {
     const { name, symbol, contractType} = this.state;
     if (this.state.price === '') {
       this.setState({ price: '0'});
-    } else if (this.state.auxUri !== '') {      
+    }
+    if (this.state.auxUrl !== '' || this.state.animUrl !== '') {      
       await this.ipfsAddExt(document.getElementById("file-picker").files[0]);
     }
     try {
-      if (img.type !== 'image/png' && img.type !== 'image/jpeg') {
+      if (img.type !== 'image/png' && img.type !== 'image/jpeg' && !img.name.startsWith('IMG')) {
 	throw { message: 'Choose a different file. Only png and jpg format supported at this time.' };
       } else if (name === '' || symbol === '' || contractType === '') {
 	throw { message: 'Please fill out all required fields.' };
@@ -232,8 +234,8 @@ class CreateContract extends Component {
 	"name": this.state.name,
 	"image": `ipfs://${cid}`,
 	"description": `Token prime of ${this.state.name} contract`,
-	"aux_uri": this.state.auxUri,
-	"animation_url": this.state.animUrl,
+	"aux_uri": this.state.auxUrl !== '' ? this.state.auxUri : '',
+	"animation_url": this.state.animUrl !== '' ? this.state.auxUri : '',
 	"attributes": [
 	  {
 	    "trait_type": "Role",

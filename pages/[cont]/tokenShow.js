@@ -26,6 +26,7 @@ export async function getServerSideProps(props) {
   console.log("EXTURL: ", data)
   const animUrl = data.animation_url || "";
   const auxUri = data.aux_uri || "";
+  const auxFile = animUrl !== "" ? animUrl : auxUri
   
   return {
     props: {
@@ -38,8 +39,7 @@ export async function getServerSideProps(props) {
       blockNumber,
       attributes,
       uri,
-      animUrl,
-      auxUri
+      auxFile
     }
   }
 }
@@ -90,25 +90,22 @@ export default class TokenShow extends Component {
 		<div style={{ maxHeight: 350, overflowY: 'auto', overflowX: 'auto' }}>
 		  <Image src={this.props.image} alt='/64kOrange.png' rounded />
 		</div>
-	      </Content>
-	      <Content>
-		<Description>Token # {this.props.tokenId}</Description>
+
+		<Divider />
+		<Header>Token #{this.props.tokenId}</Header>
 	      </Content>
 	    </Card>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
 		<Header>Name</Header>
 		<Description>{this.props.name}</Description>
-	      </Content>
-	      <Content>
+		<Divider />
 		<Header>Origin</Header>
 		<Description>Block # {this.props.blockNumber}</Description>
-	      </Content>
-	      <Content>
-		<DynamicButton disabled={this.state.loading} loading={this.state.loading} size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.animUrl.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.animUrl !== ''} icon='download' />
+		<Divider />
+		<DynamicButton disabled={this.state.loading} loading={this.state.loading} size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.auxFile.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', ''))} isShowing={this.props.auxFile!== ''} icon='download' />
 		<Header>Aux File</Header>		
-	      </Content>
-	      <Content>
+		<Divider />
 		<DynamicButton disabled={this.state.loading} isShowing={true} size ='tiny' floated='right' onClick={() => this.downloadFile(this.props.uri.replace('ipfs://', 'https://fastload.infura-ipfs.io/ipfs/'), this.props.name.replace(' ', '') + 'URI')} icon='download' />
 		<Header>Metadata</Header>		
 	      </Content>	      
@@ -116,14 +113,17 @@ export default class TokenShow extends Component {
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
 		<Header>Description</Header>
-		<div style={{ height: '150px', overflowX: 'auto' }}>
+		<Divider />
+		<div style={{ maxHeight: '150px', overflowX: 'auto' }}>
 		  <Description>{this.props.description}</Description>
 		</div>
 	      </Content>
 	    </Card>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
-		<div style={{ height: '150px', overflowY: 'auto' }}>
+		<Header>Transfer</Header>
+		<Divider />
+		<div style={{ maxHeight: '150px', overflowY: 'auto' }}>
 		  <TransferForm tokenId={this.props.tokenId} address={this.props.addr} />
 		</div>
 	      </Content>
