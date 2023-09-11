@@ -29,19 +29,22 @@ class RequestForm extends Component {
 
   createMeta = async () => {
     this.setState({ loading: true, errorMessage: '', infoMessage: '', success: false, successMessage: '' });
+    const { image, aux_uri, animation_url } = this.props.metadata;
     try {
       const metadata = {
 	"name": this.props.userName,
-	"image": this.props.metadata.image,
+	"image": image,
 	"description": `Membership token for client ${this.props.userName}`,
+	"animation_url": animation_url,
+	"aux_uri": aux_uri
 	"attributes": [
 	  {
-	    "trait_type": "type",
-	    "value": "membership"
+	    "trait_type": "Role",
+	    "value": "Minter"
 	  },	  
 	  {
-	    "trait_type": "role",
-	    "value": "client"
+	    "trait_type": "Role",
+	    "value": "Member"
 	  }
 	]
       };
