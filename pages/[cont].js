@@ -20,15 +20,15 @@ export async function getServerSideProps(props) {
     const unsupported = true;
     return;
   }
-  const address = await factory.methods.getContractAddress(props.query['cont']).call();
+  // const address = await factory.methods.getContractAddress(props.query['cont']).call();
+  const address = props.query['0'];
   const name = props.query['cont'];
   const title = name.replace(name.charAt(0), name.charAt(0).toUpperCase());
   const contract = new web3.eth.Contract(Tambora.abi, address);
-  const owner = await contract.methods.owner().call();
   const showData = await contract.methods.getShowData().call();
   const fileStore = showData.fileStore;
   const tokenId = showData.tokenId;
-  const manager = showData.manager;
+  const owner = showData.manager;
   const contractType = showData.contractType;
   const baseURL = 'https://fastload.infura-ipfs.io/ipfs/'
   const tokenURI = showData.tokenURI;
@@ -43,14 +43,17 @@ export async function getServerSideProps(props) {
   const image = metadata.image.replace('ipfs://', baseURL);
   const projectId = process.env.PROJECT_ID;
   const projectSecret = process.env.PROJECT_SECRET;
-  const tokenData = await contract.methods.getTokenData(0).call();
+  // ****ON NEW DEPLOY**** //
+  // const tokenData = showData.tokenData;
+  const tokenData = await contract.methods.getTokenData(0).call(); // Deprecated
   const date = new Date(tokenData.timeStamp * 1000);
-  const price = await contract.methods.price().call();
+  // ****ON NEW DEPLOY**** //
+  // const price = showData.price;
+  const price = await contract.methods.price().call(); // Deprecated
 
   return {
     props: {
       address,
-      manager,
       name,
       image,
       tokenId,
@@ -104,27 +107,17 @@ class CampaignShow extends Component {
     this.setState({ account: accounts[0] });
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
     try {
-      // Testing //
-      //////
-      // await contract.methods.approveMintIncrease(0).send({ from: accounts[0] });
-      // await contract.methods.increaseContractMintAllowance().send({ from: accounts[0], value: web3.utils.toWei('0.05') });
-      // await contract.methods.requestMintIncrease(1, "Bob").send({ from: accounts[0] });
-      // await contract.methods.finalizeMintIncrease(1).send({ from: accounts[0] });
-      // const mintRequests = await contract.methods.getMintRequests().call({ from: accounts[0] });
-      // try {
-      // 	for (let i = 0; i < mintRequests.length; i++) {
-      // 	  console.log("Mint Request Name: ", mintRequests[i].name);
-      // 	}
-      // } catch {
-      // 	console.log("No Requests");
-      // }
-      // const contractAllowance = await contract.methods.mintAllowance().call();
-      // console.log("Contract Allowance: ", contractAllowance);      
-      //////
-      const balanceOf = await contract.methods.balanceOf(accounts[0]).call();
-      const isPending = await contract.methods.isPending(accounts[0]).call();
-      const isApproved = await contract.methods.isApproved(accounts[0]).call();
-      const name = await contract.methods.approvedName(accounts[0]).call();
+
+      // ****ON NEXT DEPLOY**** //
+      // const userData = await contract.methods.getUserData(accounts[0]).call();
+      // const balanceOf = userData.balance;
+      // const isPending = userData.pending;
+      // const isApproved = userData.approved;
+      // const name = userData.name;
+      const balanceOf = await contract.methods.balanceOf(accounts[0]).call(); // deprecated
+      const isPending = await contract.methods.isPending(accounts[0]).call(); // deprecated
+      const isApproved = await contract.methods.isApproved(accounts[0]).call(); // deprecated
+      const name = await contract.methods.approvedName(accounts[0]).call(); // deprecated
       var tokenIds = [];
       for (let i = 0; i < balanceOf; i++) {
 	const token = await contract.methods.tokenOfOwnerByIndex(accounts[0], i).call();
@@ -152,8 +145,7 @@ class CampaignShow extends Component {
 	this.setState({ isGuest: true });
       }
 
-      const tokenBalance = await contract.methods.balanceOf(accounts[0]).call();
-      if (tokenBalance > 0) {
+      if (balanceOf > 0) {
 	this.setState({ isTokenHolder: true, address: this.props.address });
       }
       try {
@@ -168,30 +160,30 @@ class CampaignShow extends Component {
     }
   }
 
-  renderCards() {
-    if (this.state.unsupported) {
-      return;
-    }    
-    const { address, manager, name } = this.props;
+  // renderCards() {
+  //   if (this.state.unsupported) {
+  //     return;
+  //   }    
+  //   const { address, owner, name } = this.props;
 
-    const items = [
-      {
-        header: manager,
-        meta: 'Contract Creator',
-        description: 'Requests to mint tokens and download materials must be approved by the controller of this account',
-        style: { overflowWrap: 'break-word' },
-	color: 'olive'
-      },
-      {
-        header: name,
-        meta: 'Name of Contract',
-        description: 'Contract names are not always unique, be sure contract address is correct',
-	color: 'olive'
-      }
-    ];
+  //   const items = [
+  //     {
+  //       header: owner,
+  //       meta: 'Contract Creator',
+  //       description: 'Requests to mint tokens and download materials must be approved by the controller of this account',
+  //       style: { overflowWrap: 'break-word' },
+  // 	color: 'olive'
+  //     },
+  //     {
+  //       header: name,
+  //       meta: 'Name of Contract',
+  //       description: 'Contract names are not always unique, be sure contract address is correct',
+  // 	color: 'olive'
+  //     }
+  //   ];
 
-    return <Card.Group items={items} />;
-  }
+  //   return <Card.Group items={items} />;
+  // }
 
   //  {this.renderCards()}
 

@@ -20,7 +20,8 @@ import { Hamburger } from '../components/Hamburger';
 class Header extends React.Component {
   state = {
     mobile: false,
-    hamburgerVisible: false
+    hamburgerVisible: false,
+    searchVisible: true
   }
   
   componentDidMount() {
@@ -74,7 +75,7 @@ class Header extends React.Component {
 	    </H>
 	  <Menu style={{ marginBottom: '10px' }}>
 	    <Menu.Item>
-	      <Hamburger hamburgerVisible={this.state.hamburgerVisible} toggle={this.toggleHamburger} />
+	      <Hamburger searchVisible={this.state.searchVisible} hamburgerVisible={this.state.hamburgerVisible} toggle={this.toggleHamburger} />
 	    </Menu.Item>
 	    {!this.state.hamburgerVisible ? (
 	      <Menu.Item>
@@ -82,16 +83,16 @@ class Header extends React.Component {
 	      </Menu.Item> ) : (
 		<Menu.Item>
 	      	  <Menu style={{ cursor: 'pointer' }}>
-		    <Menu.Item name="home" active={true}>
-		      <Link href="/">
+		    <Link href="/">
+		      <Menu.Item name="home" active={false}>
 			<p>home</p>
-		      </Link>
-		    </Menu.Item>
-		    <Menu.Item name="create" >
-		      <Link href="/createContract">
+		      </Menu.Item>
+		    </Link>
+		    <Link href="/createContract">
+		      <Menu.Item name="create" >
 			<p>create</p>
-		      </Link>
-		    </Menu.Item>
+		      </Menu.Item>
+		    </Link>
 		  </Menu>
 		</Menu.Item>)
 	    }
