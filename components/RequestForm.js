@@ -36,7 +36,7 @@ class RequestForm extends Component {
 	"image": image,
 	"description": `Membership token for client ${this.props.userName}`,
 	"animation_url": animation_url,
-	"aux_uri": aux_uri
+	"aux_uri": aux_uri,
 	"attributes": [
 	  {
 	    "trait_type": "Role",
