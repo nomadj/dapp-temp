@@ -36,6 +36,10 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 .env.js
+.env
+
+# artifacts
+/artifacts
 
 # vercel
 .vercel
