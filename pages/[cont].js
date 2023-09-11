@@ -20,8 +20,8 @@ export async function getServerSideProps(props) {
     const unsupported = true;
     return;
   }
-  // const address = await factory.methods.getContractAddress(props.query['cont']).call();
-  const address = props.query['0'];
+  const address = await factory.methods.getContractAddress(props.query['cont']).call();
+  // const address = props.query['0'];
   const name = props.query['cont'];
   const title = name.replace(name.charAt(0), name.charAt(0).toUpperCase());
   const contract = new web3.eth.Contract(Tambora.abi, address);
