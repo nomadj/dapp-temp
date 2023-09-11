@@ -44,12 +44,12 @@ export async function getServerSideProps(props) {
   const projectId = process.env.PROJECT_ID;
   const projectSecret = process.env.PROJECT_SECRET;
   // ****ON NEW DEPLOY**** //
-  // const tokenData = showData.tokenData;
-  const tokenData = await contract.methods.getTokenData(0).call(); // Deprecated
+  const tokenData = showData.tokenData;
+  // const tokenData = await contract.methods.getTokenData(0).call(); // Deprecated
   const date = new Date(tokenData.timeStamp * 1000);
   // ****ON NEW DEPLOY**** //
-  // const price = showData.price;
-  const price = await contract.methods.price().call(); // Deprecated
+  const price = showData.price;
+  // const price = await contract.methods.price().call(); // Deprecated
 
   return {
     props: {
@@ -109,15 +109,15 @@ class CampaignShow extends Component {
     try {
 
       // ****ON NEXT DEPLOY**** //
-      // const userData = await contract.methods.getUserData(accounts[0]).call();
-      // const balanceOf = userData.balance;
-      // const isPending = userData.pending;
-      // const isApproved = userData.approved;
-      // const name = userData.name;
-      const balanceOf = await contract.methods.balanceOf(accounts[0]).call(); // deprecated
-      const isPending = await contract.methods.isPending(accounts[0]).call(); // deprecated
-      const isApproved = await contract.methods.isApproved(accounts[0]).call(); // deprecated
-      const name = await contract.methods.approvedName(accounts[0]).call(); // deprecated
+      const userData = await contract.methods.getUserData(accounts[0]).call();
+      const balanceOf = userData.balance;
+      const isPending = userData.pending;
+      const isApproved = userData.approved;
+      const name = userData.name;
+      // const balanceOf = await contract.methods.balanceOf(accounts[0]).call(); // deprecated
+      // const isPending = await contract.methods.isPending(accounts[0]).call(); // deprecated
+      // const isApproved = await contract.methods.isApproved(accounts[0]).call(); // deprecated
+      // const name = await contract.methods.approvedName(accounts[0]).call(); // deprecated
       var tokenIds = [];
       for (let i = 0; i < balanceOf; i++) {
 	const token = await contract.methods.tokenOfOwnerByIndex(accounts[0], i).call();

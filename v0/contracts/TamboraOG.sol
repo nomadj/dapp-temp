@@ -1,31 +1,34 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: Pytheorus
 pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 
 contract Tambora is ERC721Enumerable {
 	using Strings for uint256;
-	event Request(string indexed name, address indexed addr);
-	event Response(string indexed name, address indexed addr, bool indexed res);
+	event Request(Client indexed clientData);
+	event Response(Client indexed clientData, bool indexed res);
 	event FileAdded(string indexed name);
 
+	modifier onlyOwner() {
+		_checkOwner();
+		_;
+	}
+
 	address payable private _factoryOwner;
-	address payable public owner;
-	uint256 public mintFee;
-	uint256 public contractFee;
+	address payable private _owner;
 	uint256 private _tokenId;	
 	uint256 public price;
-	uint256 public totalCost;
 	uint256 public mintAllowance;
 	uint256 public allottedAmount;
 	string public contractType;
-	string public version;
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => bool) public isPending;
 	mapping (address => bool) public isApproved;
 	mapping (address => string) public approvedName;
+	mapping (uint256 => File[]) private _individualFiles;
 	mapping (uint256 => ClientToken) public memberTokens;
 	mapping (uint256 => Token) private _allTokens;
+	mapping (address => File[]) private _requestedFiles;
 	mapping (address => bool) private _mintIncreaseApproved;
 	Client[] private _mintIncreaseRequests;
 	Client[] private _pendingClients;
@@ -51,27 +54,17 @@ contract Tambora is ERC721Enumerable {
 		string contractType;
 		string tokenURI;
 		File[] fileStore;
-		Token tokenData;
-		uint256 price;
+		File[] individualFilestore;
 	}
 	struct File {
 		string name;
 		string uri;
-	}
-	struct User {
-		uint256 balance;
-		bool pending;
-		bool approved;
-		string name;
-	}
+	}	
 
-		constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_, uint256 mintFee_, uint256 contractFee_) ERC721(name, symbol) {
-		owner = payable(deployer);
+	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_) ERC721(name, symbol) {
+		_owner = payable(deployer);
 		_factoryOwner = payable(factoryOwner_);
 		price = price_;
-		mintFee = mintFee_;
-		totalCost = price_ + mintFee_;
-		contractFee = contractFee_;
 		contractType = contractType_;
 		allottedAmount = 10;
 		mintAllowance = 90; 
@@ -80,16 +73,14 @@ contract Tambora is ERC721Enumerable {
 		_setTokenURI(0, uri_);
 		_tokenId = 1;
 		_allTokens[0] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri_ });
-		version = '1.0';
 	}
 
-	modifier onlyOwner() {
-		_checkOwner();
-		_;
+  function owner() public view returns (address) {
+		return _owner;
 	}
 
   function _checkOwner() internal view {
-		require(owner == _msgSender(), "Ownable: caller is not the owner");
+		require(owner() == _msgSender(), "Ownable: caller is not the owner");
 	}
 
 	function _setTokenURI(uint256 tokenId_, string memory tokenURI_) internal {
@@ -113,19 +104,15 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function mint(address to_, string memory uri, uint256 mintId_) public payable {
-		require(_msgValue() >= totalCost, "Mint failed: Insufficient funds.");
-		require(_msgValue() >= mintFee);
-		require(_tokenId < 100, "Mint failed: Contract has reached it's mint allowance.");
+		require(_msgValue() >= price, "Mint failed: Value of message is less than price.");
+		require(_tokenId < 100, "Mint failed: Tokens are sold out.");
 		require(ownerOf(mintId_) == _msgSender());
-		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint failed: Allowance exceeded.");
-		_safeMint(to_, _tokenId);
+		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint allowance exceeded.");
+		_mint(to_, _tokenId);
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri });
 		_tokenId++;
-		uint256 msgValue = _msgValue();
-		uint256 factoryFee = msgValue - price;
-		owner.transfer(price);
-		_factoryOwner.transfer(factoryFee);
+		_owner.transfer(_msgValue());
 		memberTokens[mintId_].minted += 1;
 	}
 
@@ -137,7 +124,7 @@ contract Tambora is ERC721Enumerable {
 		Client memory client = Client({ name: name, addr: _msgSender() });
 		_pendingClients.push(client);
 		isPending[_msgSender()] = true;
-		emit Request(name, _msgSender());
+		emit Request(client);
 	}
 
 	function getPendingClients() public view returns (Client[] memory) {
@@ -151,10 +138,10 @@ contract Tambora is ERC721Enumerable {
 			isApproved[client.addr] = true;
 			approvedName[client.addr] = client.name;
 		}
+		emit Response(client, decision);
 		_pendingClients[index] = _pendingClients[_pendingClients.length - 1];
 		_pendingClients.pop();
 		delete isPending[client.addr];
-		emit Response(client.name, client.addr, decision);
 	}
 
 	function finalizeClient(string memory uri) public payable {
@@ -165,15 +152,14 @@ contract Tambora is ERC721Enumerable {
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri});
 		_tokenId++;
-		owner.transfer(_msgValue());
+		_owner.transfer(_msgValue());
 		mintAllowance -= 5;
 		delete isApproved[_msgSender()];
 		delete approvedName[_msgSender()];
 	}
 
 	function getShowData() public view returns (ShowData memory) {
-		Token memory token = getTokenData(0);
-		return ShowData({ tokenId: _tokenId, manager: owner, contractType: contractType, tokenURI: tokenURI(0), fileStore: _fileStore, tokenData: token, price: price });
+		return ShowData({ tokenId: _tokenId, manager: owner(), contractType: contractType, tokenURI: tokenURI(0), fileStore: _fileStore, individualFilestore: _individualFiles[0] });
 	}
 
 	function addFileLocation(string memory name_, string memory uri_) public onlyOwner {
@@ -191,7 +177,7 @@ contract Tambora is ERC721Enumerable {
 		require(ownerOf(mintId_) == _msgSender());
 		Client memory client = Client({ name: name_, addr: _msgSender() });
 		_mintIncreaseRequests.push(client);
-		emit Request(name_, _msgSender());
+		emit Request(client);
 	}
 
 	function getMintRequests() public view onlyOwner returns (Client[] memory) {
@@ -211,7 +197,7 @@ contract Tambora is ERC721Enumerable {
 		memberTokens[mintId_].mintAllowance += 5;
 		allottedAmount += 5;
 		mintAllowance -= 5;
-		owner.transfer(_msgValue());
+		_owner.transfer(_msgValue());
 	}
 
 	function denyMintIncrease(uint256 index_) public onlyOwner {
@@ -220,17 +206,31 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function increaseContractMintAllowance() public payable onlyOwner {
-		require(_msgValue() >= contractFee, "Insufficient funds.");
+		require(_msgValue() >= 0.05 ether, "This transaction requires 0.05 ether");
 		mintAllowance += 100; 
 		_factoryOwner.transfer(_msgValue());
+	}
+
+	function addIndividualFile(string memory uri_, string memory name_, uint256 mintId_) public onlyOwner {
+		_individualFiles[mintId_].push(File({name: name_, uri: uri_}));
+	}
+
+	function getIndividualFiles(uint256 id_) public view returns (File[] memory) {
+		require(balanceOf(_msgSender()) > 0, "You must be a token holder.");
+		return _individualFiles[id_];
 	}
 
 	function getTokenData(uint256 id_) public view returns (Token memory) {
 		return _allTokens[id_];
 	}
 
-	function getUserData(address addr_) public view returns (User memory) {
-		User memory user = User({ balance: balanceOf(addr_), pending: isPending[addr_], approved: isApproved[addr_], name: approvedName[addr_]});
-		return user;
+	function addRequestedFiles(address requester_, uint256 mintId_, string memory uri_, string memory name_) public {
+		require(ownerOf(mintId_) == _msgSender(), "You must be a contract member.");
+		_requestedFiles[requester_].push(File({ name: name_, uri: uri_ }));
+	}
+
+	function getRequestedFiles() public view returns (File[] memory) {
+		require(_requestedFiles[_msgSender()].length > 0, "You have not been approved for the requested action.");
+		return _requestedFiles[_msgSender()];
 	}
 }

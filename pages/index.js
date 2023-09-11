@@ -136,7 +136,7 @@ class Index extends React.Component {
 	  <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
 	    <a style={{ color: '#DB6E00' }}> Metamask </a>
 	  </Link>
-	  only at this time
+	  or Brave Wallet recommended.
 	</p>	
 
 	<Card.Group itemsPerRow={1}>
@@ -162,7 +162,7 @@ class Index extends React.Component {
 	    <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
 	      <a style={{ color: '#DB6E00' }}> Metamask </a>
 	    </Link>
-	    only at this time
+	    or Brave Wallet recommended. 
 	  </p>	
 	  <Divider />
 	  <Card.Group itemsPerRow={2}>

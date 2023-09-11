@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: GPL-3.0
+// SPDX-License-Identifier: Pytheorus
 pragma solidity ^0.8.7;
 
 import "./Tambora.sol";
@@ -12,7 +12,6 @@ contract TamboraFactory {
 	address payable private _owner;
 	Tambora[] private _contracts;
 	string[] public names;
-	string public version;
 	mapping (address => Tambora[]) private _ownedContracts;
 	mapping (string => Tambora) private _contractName;
 
@@ -20,7 +19,6 @@ contract TamboraFactory {
 		_owner = payable(_msgSender());
 		mintFee = 0.0005 ether;
 		contractFee = 0.05 ether;
-		version = "1.0";
 	}
 	
 	function deployTambora(string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, uint256 mintFee_, uint256 contractFee_) public payable {
@@ -34,8 +32,6 @@ contract TamboraFactory {
 		_owner.transfer(_msgValue());
 		emit Deployed(newContract);
 	}
-	
-	
 	function getNames() public view returns (string[] memory) {
 		return names;
 	}

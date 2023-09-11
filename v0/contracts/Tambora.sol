@@ -19,7 +19,6 @@ contract Tambora is ERC721Enumerable {
 	uint256 public mintAllowance;
 	uint256 public allottedAmount;
 	string public contractType;
-	string public version;
 	mapping (uint256 => string) private _tokenURIs;
 	mapping (address => bool) public isPending;
 	mapping (address => bool) public isApproved;
@@ -51,21 +50,13 @@ contract Tambora is ERC721Enumerable {
 		string contractType;
 		string tokenURI;
 		File[] fileStore;
-		Token tokenData;
-		uint256 price;
 	}
 	struct File {
 		string name;
 		string uri;
-	}
-	struct User {
-		uint256 balance;
-		bool pending;
-		bool approved;
-		string name;
-	}
+	}	
 
-		constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_, uint256 mintFee_, uint256 contractFee_) ERC721(name, symbol) {
+	constructor(address deployer, string memory name, string memory symbol, uint256 price_, string memory contractType_, address to_, string memory uri_, address factoryOwner_, uint256 mintFee_, uint256 contractFee_) ERC721(name, symbol) {
 		owner = payable(deployer);
 		_factoryOwner = payable(factoryOwner_);
 		price = price_;
@@ -80,7 +71,6 @@ contract Tambora is ERC721Enumerable {
 		_setTokenURI(0, uri_);
 		_tokenId = 1;
 		_allTokens[0] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri_ });
-		version = '1.0';
 	}
 
 	modifier onlyOwner() {
@@ -118,7 +108,7 @@ contract Tambora is ERC721Enumerable {
 		require(_tokenId < 100, "Mint failed: Contract has reached it's mint allowance.");
 		require(ownerOf(mintId_) == _msgSender());
 		require(memberTokens[mintId_].minted < memberTokens[mintId_].mintAllowance, "Mint failed: Allowance exceeded.");
-		_safeMint(to_, _tokenId);
+		_mint(to_, _tokenId);
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri });
 		_tokenId++;
@@ -172,8 +162,7 @@ contract Tambora is ERC721Enumerable {
 	}
 
 	function getShowData() public view returns (ShowData memory) {
-		Token memory token = getTokenData(0);
-		return ShowData({ tokenId: _tokenId, manager: owner, contractType: contractType, tokenURI: tokenURI(0), fileStore: _fileStore, tokenData: token, price: price });
+		return ShowData({ tokenId: _tokenId, manager: owner, contractType: contractType, tokenURI: tokenURI(0), fileStore: _fileStore });
 	}
 
 	function addFileLocation(string memory name_, string memory uri_) public onlyOwner {
@@ -227,10 +216,5 @@ contract Tambora is ERC721Enumerable {
 
 	function getTokenData(uint256 id_) public view returns (Token memory) {
 		return _allTokens[id_];
-	}
-
-	function getUserData(address addr_) public view returns (User memory) {
-		User memory user = User({ balance: balanceOf(addr_), pending: isPending[addr_], approved: isApproved[addr_], name: approvedName[addr_]});
-		return user;
 	}
 }
