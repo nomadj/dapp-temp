@@ -180,7 +180,7 @@ class MintForm extends Component {
       const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId).send({from: accounts[0], value: this.props.price});
       this.setState({ success: true });
       this.setState({ isLoading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
-      setTimeout(() => Router.push({ pathname: `/${this.props.contractName}` }), 3000);
+      setTimeout(() => Router.push({ pathname: `/${this.props.contractName}`, query: [this.props.address] }), 3000);
     } catch (error){
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' })
