@@ -21,7 +21,7 @@ function QRCodeScanner() {
     if (!cameraOpen) {
       // Request camera permission
       navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({ video: { facingMode: 'environment' } })
         .then(() => {
           setHasPermission(true);
           setCameraOpen(true);
@@ -48,7 +48,6 @@ function QRCodeScanner() {
   return (
     <div>
       <Icon name='camera' onClick={toggleCamera} />
-      {!hasPermission && <p>No camera access permission.</p>}
       {cameraOpen && hasPermission && (
         <QrReader
           delay={300}
