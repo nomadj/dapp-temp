@@ -207,7 +207,7 @@ class CampaignShow extends Component {
 	  <div>
 	    <h1 style={{ marginBottom: 0 }}>{this.props.title}</h1>
 	    <p style={{ color: '#000080', opacity: 0.6, overflowY: 'auto', marginTop: 0 }}>{this.props.address}</p>
-	    <QRCodeScanner />
+	    <QRScanner />
 	  </div>
 	  <Divider />
 	    <ContractShow
