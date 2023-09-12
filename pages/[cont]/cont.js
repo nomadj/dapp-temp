@@ -78,13 +78,13 @@ export async function getServerSideProps(props) {
 class MyContract extends React.Component {
   state = {
     address: '',
-    rows: 2
+    rows: 3
   };
   
   async componentDidMount() {
     let accounts = await web3.eth.getAccounts();
     this.setState({ address: accounts[0] });
-    if (window.innerWidth < 800) {
+    if (window.innerWidth < 600) {
       this.setState({ rows: 2 });
     }
   }
@@ -113,7 +113,7 @@ class MyContract extends React.Component {
     } else {
       return (
 	<Layout>
-	  <Card.Group itemsPerRow={1}>
+	  <Card.Group itemsPerRow={this.state.rows}>
 	    <Link href={{pathname: '/minty', query: [this.props.address, this.props.mintId]}}>
 	      <Card style={{ border: '1px solid rgb(170,255, 195)' }}>
 	      <Card.Content>

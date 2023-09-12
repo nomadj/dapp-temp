@@ -7,6 +7,8 @@ import web3 from '../../web3'
 import Link from 'next/link'
 import DynamicButton from '../../components/DynamicButton'
 import InfoMessage from '../../components/InfoMessage'
+import QRGenerator from '../../components/QRGenerator'
+
 
 export async function getServerSideProps(props) {
   const addr = props.query['0'];
@@ -53,6 +55,7 @@ export default class TokenShow extends Component {
     if (window.innerWidth < 800) {
       this.setState({ mobile: true });
     }
+    
   }
   
   async downloadFile(url, fileName) {
@@ -94,15 +97,14 @@ export default class TokenShow extends Component {
 	      <Content>
 		<div style={{ maxHeight: 150, overflowY: 'auto', overflowX: 'auto' }}>
 		  <Image src={this.props.image} alt='/64kOrange.png' rounded />
-		</div>
-
+		</div>		
 		<Divider />
-		<Header>Token #{this.props.tokenId}</Header>
+		<QRGenerator data={[this.props.addr, this.props.tokenId]}/>
 	      </Content>
 	    </Card>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
-		<Header>Name</Header>
+		<Header>Token #{this.props.tokenId}</Header>
 		<Description>{this.props.name}</Description>
 		<Divider />
 		<Header>Origin</Header>
@@ -153,12 +155,12 @@ export default class TokenShow extends Component {
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Embed url={this.props.image} active={true} />
 	      <Content>
-		<Header>Token #{this.props.tokenId}</Header>
+		<QRGenerator data={[this.props.addr, this.props.tokenId]}/>
 	      </Content>
 	    </Card>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)', maxHeight: 150, overflowX: 'auto' }}>
 	      <Content>
-		<Header>Name</Header>
+		<Header>Token #{this.props.tokenId}</Header>
 		<Description>{this.props.name}</Description>
 	      </Content>
 	      <Content>
