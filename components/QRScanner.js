@@ -1,73 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import QrReader from 'react-qr-scanner';
-import { Icon } from 'semantic-ui-react';
+import React, { Component } from 'react'
+import QrReader from 'react-qr-scanner'
+import { Icon } from 'semantic-ui-react'
 
-function QRCodeScanner() {
-  const [cameraOpen, setCameraOpen] = useState(false);
-  const [qrData, setQRData] = useState('');
-  const [hasPermission, setHasPermission] = useState(null);
-
-  const handleScan = (data) => {
-    if (data) {
-      setQRData(data);
+class QRScanner extends Component {
+  constructor(props){
+    super(props)
+    this.state = {
+      delay: 100,
+      result: 'No result',
     }
-  };
 
-  const handleError = (error) => {
-    console.error(error);
-  };
-
-  const toggleCamera = () => {
-    if (!cameraOpen) {
-      // Request camera permission
-      navigator.mediaDevices
-        .getUserMedia({ video: { facingMode: 'environment' } })
-        .then(() => {
-          setHasPermission(true);
-          setCameraOpen(true);
-        })
-        .catch((error) => {
-          console.error('Error accessing camera:', error);
-          setHasPermission(false);
-        });
-    } else {
-      setCameraOpen(false);
-      setQRData('');
+    this.handleScan = this.handleScan.bind(this)
+  }
+  handleScan(data){
+    this.setState({
+      result: data,
+    })
+  }
+  handleError(err){
+    console.error(err)
+  }
+  render(){
+    const previewStyle = {
+      height: 240,
+      width: 320,
     }
-  };
 
-  useEffect(() => {
-    // Check if camera permission is granted initially
-    navigator.permissions
-      .query({ name: 'camera' })
-      .then((permissionStatus) => {
-        setHasPermission(permissionStatus.state === 'granted');
-      });
-  }, []);
-
-  return (
-    <div>
-      <Icon name='camera' onClick={toggleCamera} />
-      {cameraOpen && hasPermission && (
+    return(
+      <div>
         <QrReader
-          delay={300}
-          onError={handleError}
-          onScan={handleScan}
-          style={{ width: '100%' }}
-        />
-      )}
-      {qrData && (
-        <div>
-          <h2>QR Code Data:</h2>
-          <p>{qrData}</p>
-        </div>
-      )}
-    </div>
-  );
+          delay={this.state.delay}
+          style={previewStyle}
+          onError={this.handleError}
+          onScan={this.handleScan}
+          />
+        <p>{this.state.result}</p>
+      </div>
+    )
+  }
 }
 
-export default QRCodeScanner;
-
-
-
-
+export default QRScanner;

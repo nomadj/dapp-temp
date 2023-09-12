@@ -12,7 +12,7 @@ import ContractShow from '../components/ContractShow'
 import RequestForm from '../components/RequestForm'
 import DynamicButton from '../components/DynamicButton'
 import NoMetamask from '../components/NoMetamask'
-import QRCodeScanner from '../components/QRScanner'
+import QRScanner from '../components/QRScanner'
 
 export async function getServerSideProps(props) {
   try {
