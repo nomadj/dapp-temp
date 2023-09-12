@@ -8,6 +8,7 @@ class QRScanner extends Component {
     this.state = {
       delay: 100,
       result: 'No result',
+      showing: false
     }
 
     this.handleScan = this.handleScan.bind(this)
@@ -25,16 +26,21 @@ class QRScanner extends Component {
       height: 240,
       width: 320,
     }
-
     return(
       <div>
+      <Icon name='camera' onClick={() => {
+	      this.setState({ showing: !this.state.showing })
+	    }} />
+      {this.state.showing ? (
         <QrReader
           delay={this.state.delay}
           style={previewStyle}
           onError={this.handleError}
           onScan={this.handleScan}
-          />
-        <p>{this.state.result}</p>
+	  facingMode='rear'
+        />) : (
+	  null)}
+        <p>{this.state.result}</p> 
       </div>
     )
   }
