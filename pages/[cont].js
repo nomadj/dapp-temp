@@ -12,6 +12,7 @@ import ContractShow from '../components/ContractShow'
 import RequestForm from '../components/RequestForm'
 import DynamicButton from '../components/DynamicButton'
 import NoMetamask from '../components/NoMetamask'
+import Quagga from 'quagga';
 
 export async function getServerSideProps(props) {
   try {
@@ -90,7 +91,8 @@ class CampaignShow extends Component {
     mintData: {},
     renderPage: false,
     unsupported: false,
-    mobile: false
+    mobile: false,
+    cameraShow: false
   }
 
   async componentDidMount() {
@@ -160,6 +162,56 @@ class CampaignShow extends Component {
     }
   }
 
+startQRCodeScanner(openCamera) {
+  if (openCamera) {
+    // Request permission to access the user's camera
+    navigator.mediaDevices
+      .getUserMedia({ video: true })
+      .then((stream) => {
+        const videoElement = document.createElement('video');
+        document.body.appendChild(videoElement);
+        videoElement.srcObject = stream;
+        videoElement.play();
+
+        Quagga.init(
+          {
+            inputStream: {
+              name: 'Live',
+              type: 'LiveStream',
+              target: videoElement, // Use the video element for the camera preview
+              constraints: {
+                width: 640,
+                height: 480,
+                facingMode: 'environment', // Use the back camera (for mobile devices)
+              },
+            },
+            decoder: {
+              readers: ['qrcode'], // Enable QR code scanning
+            },
+          },
+          function (err) {
+            if (err) {
+              console.error('Quagga init error:', err);
+              return;
+            }
+            Quagga.start();
+          }
+        );
+
+        Quagga.onDetected(function (result) {
+          const code = result.codeResult.code;
+          console.log('QR Code Data:', code);
+          Quagga.stop(); // Stop scanning after successful capture
+          stream.getTracks().forEach((track) => track.stop()); // Stop camera stream
+          document.body.removeChild(videoElement); // Remove video element
+        });
+      })
+      .catch((error) => {
+        console.error('Error accessing the camera:', error);
+      });
+  }
+}
+
   // renderCards() {
   //   if (this.state.unsupported) {
   //     return;
@@ -205,6 +257,7 @@ class CampaignShow extends Component {
 	  <div>
 	    <h1 style={{ marginBottom: 0 }}>{this.props.title}</h1>
 	    <p style={{ color: '#000080', opacity: 0.6, overflowY: 'auto', marginTop: 0 }}>{this.props.address}</p>
+	    <Icon name='camera' onClick={this.startQRCodeScanner} />
 	  </div>
 	  <Divider />
 	    <ContractShow

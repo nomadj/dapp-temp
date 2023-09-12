@@ -10,6 +10,7 @@ import React from 'react';
 import Header from '../components/Header';
 import TamboraFactory from '../artifacts/contracts/TamboraFactory.sol/TamboraFactory.json'
 import Tambora from '../artifacts/contracts/Tambora.sol/Tambora.json'
+import Script from 'next/script';
 
 export async function getServerSideProps() {
   const address = process.env.FACTORY_ADDRESS; // goerli
@@ -154,7 +155,8 @@ class Index extends React.Component {
 	      name="description"
 	      content="The NFT smart contract network"
 	    />
-	  </Head>     
+	  </Head>
+	  <Script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js" />
 	  <Header source={this.props.conObj} account={this.state.account}/>
 	  <h1 style={{textAlign: 'center' }}>Fastload into Web3 and the Metaverse</h1>
 	  <p style={{textAlign: 'center' }}>
