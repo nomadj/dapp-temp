@@ -11,7 +11,7 @@ class NFT extends React.Component {
 	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
 	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	    <Card.Content>
-	      <div style={{ maxHeight: 350, overflowX: 'auto', overflowY: 'auto' }}>
+	      <div style={{ maxHeight: 150, overflowX: 'auto', overflowY: 'auto' }}>
 		<Image src={this.props.url} alt='/64kOrange.png' />
 	      </div>
 	    </Card.Content>
@@ -28,7 +28,7 @@ class NFT extends React.Component {
 	<Link href={{pathname: `/${this.props.name}/tokenShow`, query: [this.props.address, this.props.type, this.props.tokenId]}} >
 	  <Card style={{ borderBottom: '2px solid rgba(72,0,72)' }}>
 	    <Card.Content>
-	      <div style={{ maxHeight: 350, overflowX: 'auto', overflowY: 'auto' }}>
+	      <div style={{ maxHeight: 150, overflowX: 'auto', overflowY: 'auto' }}>
 		<Embed url={this.props.url} active={true} />
 	      </div>
 	    </Card.Content>

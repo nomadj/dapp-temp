@@ -12,7 +12,7 @@ class IndexRow extends React.Component {
 	  <Card.Content>
 	    <Image src={this.props.image} alt='Nope' floated='right' size='mini' rounded style={{ width: 'auto', height: 40, overflowY: 'auto' }}/>
 	    <Card.Header>{this.props.name.replace(this.props.name.charAt(0), this.props.name.charAt(0).toUpperCase())}</Card.Header>
-	    <Card.Meta style={{ fontSize: 12}}>
+	    <Card.Meta style={{ fontSize: 12, color: '#000080', opacity: 0.6 }}>
 	      {this.props.address}
 	    </Card.Meta>
 	  </Card.Content>

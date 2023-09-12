@@ -92,7 +92,7 @@ export default class TokenShow extends Component {
 	  <Group itemsPerRow={2} style={{ overflowWrap: 'anywhere' }}>
 	    <Card style={{ borderBottom: '2px solid rgb(72,0,72)' }}>
 	      <Content>
-		<div style={{ maxHeight: 350, overflowY: 'auto', overflowX: 'auto' }}>
+		<div style={{ maxHeight: 150, overflowY: 'auto', overflowX: 'auto' }}>
 		  <Image src={this.props.image} alt='/64kOrange.png' rounded />
 		</div>
 
