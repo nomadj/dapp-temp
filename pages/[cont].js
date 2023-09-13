@@ -12,7 +12,6 @@ import ContractShow from '../components/ContractShow'
 import RequestForm from '../components/RequestForm'
 import DynamicButton from '../components/DynamicButton'
 import NoMetamask from '../components/NoMetamask'
-import QRScanner from '../components/QRScanner'
 
 export async function getServerSideProps(props) {
   try {
@@ -91,8 +90,7 @@ class CampaignShow extends Component {
     mintData: {},
     renderPage: false,
     unsupported: false,
-    mobile: false,
-    cameraShow: false
+    mobile: false
   }
 
   async componentDidMount() {
@@ -207,7 +205,6 @@ class CampaignShow extends Component {
 	  <div>
 	    <h1 style={{ marginBottom: 0 }}>{this.props.title}</h1>
 	    <p style={{ color: '#000080', opacity: 0.6, overflowY: 'auto', marginTop: 0 }}>{this.props.address}</p>
-	    <QRScanner />
 	  </div>
 	  <Divider />
 	    <ContractShow
