@@ -76,7 +76,7 @@ contract Tambora is ERC721Enumerable {
 		allottedAmount = 10;
 		mintAllowance = 90; 
 		memberTokens[0] = ClientToken({ minted: 1, mintAllowance: 10, mintId: 0 });
-		_safeMint(to_, 0);
+		_mint(to_, 0);
 		_setTokenURI(0, uri_);
 		_tokenId = 1;
 		_allTokens[0] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri_ });
@@ -161,7 +161,7 @@ contract Tambora is ERC721Enumerable {
 		require(isApproved[_msgSender()], "Client has not been approved.");
 		require(mintAllowance >= 5);
 		memberTokens[_tokenId] = ClientToken({ minted: 1, mintAllowance: 5, mintId: _tokenId });
-		_safeMint(_msgSender(), _tokenId);
+		_mint(_msgSender(), _tokenId);
 		_setTokenURI(_tokenId, uri);
 		_allTokens[_tokenId] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri});
 		_tokenId++;
@@ -202,15 +202,16 @@ contract Tambora is ERC721Enumerable {
 		require(allottedAmount < mintAllowance, "This contract has reached it's mint allowance.");
 		_mintIncreaseApproved[_mintIncreaseRequests[index_].addr] = true;
 		_mintIncreaseRequests[index_] = _mintIncreaseRequests[_mintIncreaseRequests.length - 1];
-		_mintIncreaseRequests.pop();
-		allottedAmount += 5;
-		mintAllowance -= 5;
+		_mintIncreaseRequests.pop();				
 	}
 
 	function finalizeMintIncrease(uint256 mintId_) public payable {
 		require(_mintIncreaseApproved[_msgSender()] == true, "You are not approved.");
-		require(ownerOf(mintId_) == _msgSender());
+		require(_msgValue() >= price);
 		memberTokens[mintId_].mintAllowance += 5;
+		allottedAmount += 5;
+		mintAllowance -= 5;
+		owner.transfer(_msgValue());
 	}
 
 	function denyMintIncrease(uint256 index_) public onlyOwner {
