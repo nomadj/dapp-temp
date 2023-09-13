@@ -12,7 +12,8 @@ try {
     setTimeout(handleEthereum, 3000);  
   }
 } catch (error) {
-  const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_GOERLI);
+  // const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_GOERLI);
+  const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_MUMBAI);
   web3 = new Web3(provider);
 }
 
@@ -24,7 +25,8 @@ function handleEthereum() {
   // window.ethereum.enable();
     window.ethereum.request({ method: 'eth_requestAccounts' });
   } else {
-    const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_GOERLI);
+    // const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_GOERLI);
+    const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_MUMBAI);
     web3 = new Web3(provider);
   }
 }
