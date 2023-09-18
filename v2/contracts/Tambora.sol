@@ -9,7 +9,7 @@ contract Tambora is ERC721Enumerable {
 	event Response(string indexed name, address indexed addr, bool indexed res);
 	event FileAdded(string indexed name);
 
-	address payable public _factoryOwner;
+	address payable private _factoryOwner;
 	address payable public owner;
 	uint256 public mintFee;
 	uint256 public contractFee;
@@ -20,12 +20,11 @@ contract Tambora is ERC721Enumerable {
 	uint256 public allottedAmount;
 	string public contractType;
 	string public version;
-	bool public accepting;
 	mapping (uint256 => string) private _tokenURIs;
-	mapping (address => bool) private isPending;
-	mapping (address => bool) private isApproved;
-	mapping (address => string) private approvedName;
-	mapping (uint256 => ClientToken) private memberTokens;
+	mapping (address => bool) public isPending;
+	mapping (address => bool) public isApproved;
+	mapping (address => string) public approvedName;
+	mapping (uint256 => ClientToken) public memberTokens;
 	mapping (uint256 => Token) private _allTokens;
 	mapping (address => bool) private _mintIncreaseApproved;
 	Client[] private _mintIncreaseRequests;
@@ -82,7 +81,6 @@ contract Tambora is ERC721Enumerable {
 		_tokenId = 1;
 		_allTokens[0] = Token({ blockNumber: block.number, timeStamp: block.timestamp, uri: uri_ });
 		version = '1.0';
-		accepting = true;
 	}
 
 	modifier onlyOwner() {
@@ -134,13 +132,8 @@ contract Tambora is ERC721Enumerable {
 	function _msgValue() internal view returns (uint256) {
 		return msg.value;
 	}
-
-	function toggleAccepting() public onlyOwner {
-		accepting = !accepting;
-	}
 	
 	function requestApproval(string memory name) public {
-		require(accepting, "This contract is not accepting new members at this time.");
 		Client memory client = Client({ name: name, addr: _msgSender() });
 		_pendingClients.push(client);
 		isPending[_msgSender()] = true;
@@ -191,8 +184,6 @@ contract Tambora is ERC721Enumerable {
 
 	function getFileStore() public view returns (File[] memory) {
 		require(balanceOf(_msgSender()) > 0);
-		ClientToken memory token = memberTokens[tokenOfOwnerByIndex(_msgSender(), 0)];
-		require(token.mintAllowance > 0);
 		return _fileStore;
 	}
 

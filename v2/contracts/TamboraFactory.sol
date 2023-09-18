@@ -18,8 +18,8 @@ contract TamboraFactory {
 
 	constructor() {
 		_owner = payable(_msgSender());
-		mintFee = 0;
-		contractFee = 0;
+		mintFee = 0.0005 ether;
+		contractFee = 0.05 ether;
 		version = "1.0";
 	}
 	
