@@ -22,10 +22,10 @@ contract Tambora is ERC721Enumerable {
 	string public version;
 	bool public accepting;
 	mapping (uint256 => string) private _tokenURIs;
-	mapping (address => bool) public isPending;
-	mapping (address => bool) public isApproved;
-	mapping (address => string) public approvedName;
-	mapping (uint256 => ClientToken) public memberTokens;
+	mapping (address => bool) private isPending;
+	mapping (address => bool) private isApproved;
+	mapping (address => string) private approvedName;
+	mapping (uint256 => ClientToken) private memberTokens;
 	mapping (uint256 => Token) private _allTokens;
 	mapping (address => bool) private _mintIncreaseApproved;
 	Client[] private _mintIncreaseRequests;
