@@ -26,7 +26,7 @@ function handleEthereum() {
     window.ethereum.request({ method: 'eth_requestAccounts' });
   } else {
     // const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_GOERLI);
-    const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_MUMBAI);
+    const provider = new Web3.providers.HttpProvider(process.env.INFURA_NODE_POLYGON);
     web3 = new Web3(provider);
   }
 }
