@@ -298,9 +298,8 @@ class CreateContract extends Component {
       return (
 	<Layout ref={this.myRef}>
 	  <h3>Create a new NFT contract</h3>
-	  <p>
-	    Each new contract allows the owner to mint 10 custom NFTs, including the token prime, which is minted upon contract creation. The token prime determines contract ownership, so do not give it away! This is a unique safeguard in the event your private key is stolen. If that happens, quickly transfer to an unused Ethereum address to prevent bad actors from minting tokens on your contract. Contract creators can approve others to mint from their contract. Each approved member will be able to mint 5 tokens, after which they can request more. Each contract can mint up to 100 tokens, after which another 100 mintings may be transacted. 100% of the price set for each token goes to you, the creator. All tokens will automatically appear on the popular marketplaces, such as Opensea and Rarible. The cost is only 40 MATIC. What a deal!
-	  </p>	  
+	  <p>Each new contract allows the owner to mint 10 custom NFTs, including the token prime, which is minted upon contract creation. The holder of the token prime determines contract ownership, so don't give it away! This is a unique safeguard in the event your private key is stolen.<br /><br />Contract creators can approve others to mint from their contract. Each approved member can mint 5 tokens before requesting more. Each contract can mint up to 100 tokens, then another 100 mintings may be transacted. 100% of the price set for each token goes to you, the creator. All tokens will automatically appear on the popular marketplaces, such as Opensea and Rarible. The cost is only 40 MATIC. What a deal!
+	  </p>
 	  <Form onSubmit={ event => {this.onSubmit(document.getElementById("image-picker").files[0])}} error={!!this.state.errorMessage} success={this.state.success}>
 	    <Form.Group widths='equal'>
 	      <Form.Field required>
