@@ -163,7 +163,10 @@ class Index extends React.Component {
 	      <a style={{ color: '#DB6E00' }}> Metamask </a>
 	    </Link>
 	    or Brave Wallet recommended. 
-	  </p>	
+	  </p>
+	  <p style={{textAlign: 'center' }}>
+	    <img src="/polygon.jpg" alt="Description" />
+	  </p>
 	  <Divider />
 	  <Card.Group itemsPerRow={2}>
 	    {items}

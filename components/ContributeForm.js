@@ -45,7 +45,7 @@ class ContributeForm extends Component {
           <Input
             value={this.state.value}
             onChange={event => this.setState({ value: floatsOnly(event.target.value) })}
-	    placeholder="0.08"
+	    placeholder="0.08 MATIC"
 	    action={{
 	      style: { backgroundColor: 'rgb(0,0,100)', color: '#fff' }, 
 	      icon: 'ethereum'

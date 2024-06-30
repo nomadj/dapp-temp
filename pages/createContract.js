@@ -162,7 +162,7 @@ class CreateContract extends Component {
 	const balance = await web3.eth.getBalance(accounts[0]);
 	const bal = web3.utils.fromWei(balance, 'ether');
 	if (parseFloat(bal) < web3.utils.fromWei(contractFee, 'ether')) {
-          throw { message: `Insufficient funds. ${web3.utils.fromWei(contractFee, 'ether')} ETH required.` };
+          throw { message: `Insufficient funds. ${web3.utils.fromWei(contractFee, 'ether')} MATIC required.` };
 	}
       } catch (error) {
 	throw { message: error.message };
@@ -317,7 +317,7 @@ class CreateContract extends Component {
 	      <Form.Field>
 		<label>Price (per token - optional)</label>
 		<Input
-		  label='Ether'
+		  label='MATIC'
 		  labelPosition='right'
 		  value={this.state.price}
 		  onChange={event => this.setState({ price: floatsOnly(event.target.value) })}
