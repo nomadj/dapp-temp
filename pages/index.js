@@ -138,7 +138,9 @@ class Index extends React.Component {
 	  </Link>
 	  or Brave Wallet recommended.
 	</p>	
-
+	<p style={{textAlign: 'center' }}>
+	  <Image src="/polygon.jpg" alt="Description" width="100px" height="35px" />
+	</p>
 	<Card.Group itemsPerRow={1}>
 	  {items}
 	</Card.Group>
