@@ -62,6 +62,9 @@ class CreateContract extends Component {
     this.setState({ errorMessage: '', infoMessage: '', success: false });
     try {
       const { type, name } = event.target.files[0];
+      const file = event.target.files[0];
+      console.log(type);
+
       //      if (type.slice(type[0], type.indexOf('/')) === 'application' || type.slice(type[0], type.indexOf('/')) === 'text') {
       if (name.endsWith('.glb') || name.endsWith('.gltf') || name.endsWith('.webm') || name.endsWith('.mp4') || name.endsWith('m4v') || name.endsWith('.ogv') || name.endsWith('.ogg') || name.endsWith('.mp3') || name.endsWith('.wav') || name.endsWith('.oga')) {
 	this.setState({ animUrl: URL.createObjectURL(event.target.files[0]) });
@@ -142,11 +145,7 @@ class CreateContract extends Component {
 	throw { message: 'Metamask not detected.'};
       }
 	this.setState({ loading: true, errorMessage: '', success: false, infoMessage: 'Adding file to IPFS' });
-      // const imageResize = await new ImageResize({
-      // 	format: 'png',
-      // 	height: '160'
-      // });
-      // const newImage = await imageResize.play(img.target.files[0]);
+
       await this.ipfsAdd(img);
       this.setState({ infoMessage: 'Creating new contract' });
       const factory = await new web3.eth.Contract(TamboraFactory.abi, this.props.factoryAddress);
@@ -207,7 +206,7 @@ class CreateContract extends Component {
   }
 
   ipfsAddExt = async (file) => {
-    this.setState({ infoMessage: 'Adding aux file to IPFS.' });
+    this.setState({ infoMessage: 'Adding aux file to IPFS.', loading: true });
     const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
     const client = create({
