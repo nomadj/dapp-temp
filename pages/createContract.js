@@ -12,12 +12,14 @@ import ImageResize from 'image-resize';
 import { floatsOnly } from '../utils';
 import NoMetamask from '../components/NoMetamask';
 
-const options = [
-  { key: 'm', text: 'Musician', value: 'musician' },
-  { key: 'c', text: 'Custom', value: 'custom' },
-  { key: 'd', text: 'Data Storage', value: 'data' },
-  { key: 'g', text: 'Gaming', value: 'gaming' }
-];
+// const options = [
+//   { key: 'm', text: 'Musician', value: 'musician' },
+//   { key: 'c', text: 'Custom', value: 'custom' },
+//   { key: 'd', text: 'Data Storage', value: 'data' },
+//   { key: 'g', text: 'Gaming', value: 'gaming' }
+// ];
+
+const options = [{ key: 'c', text: 'Custom', value: 'custom' }];
 
 export async function getServerSideProps() {
   const factoryAddress = process.env.FACTORY_ADDRESS;

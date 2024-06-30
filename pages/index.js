@@ -136,7 +136,7 @@ class Index extends React.Component {
 	  <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
 	    <a style={{ color: '#DB6E00' }}> Metamask </a>
 	  </Link>
-	  or Brave Wallet recommended.
+	  or Brave Wallet recommended. Tap on the hamburger icon to create your own NFT smart contract, or search for an existing one below.
 	</p>	
 	<p style={{textAlign: 'center' }}>
 	  <Image src="/polygon.jpg" alt="Description" width="100px" height="35px" />
@@ -164,7 +164,7 @@ class Index extends React.Component {
 	    <Link href='https://chrome.google.com/webstore/detail/metamask/nkbihfbeogaeaoehlefnkodbefgpgknn?hl=en'>
 	      <a style={{ color: '#DB6E00' }}> Metamask </a>
 	    </Link>
-	    or Brave Wallet recommended. 
+	    or Brave Wallet recommended. Click on the hamburger icon to create your own NFT smart contract, or search for an existing one below.
 	  </p>
 	  <p style={{textAlign: 'center' }}>
 	    <Image src="/polygon.jpg" alt="Description" width="100px" height="35px" />
