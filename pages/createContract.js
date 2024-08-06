@@ -25,11 +25,14 @@ export async function getServerSideProps() {
   const factoryAddress = process.env.FACTORY_ADDRESS;
   const projectSecret = process.env.PROJECT_SECRET;
   const projectId = process.env.PROJECT_ID;
+  const pinataJWT = process.env.PINATA_JWT;
+  
   return {
     props: {
       factoryAddress,
       projectSecret,
-      projectId
+      projectId,
+      pinataJWT
     }
   }
 }
@@ -169,7 +172,16 @@ class CreateContract extends Component {
       } catch (error) {
 	throw { message: error.message };
       }
-      const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`, mintFee, contractFee).send({from: accounts[0], value: contractFee });
+      const method = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`, mintFee, contractFee);
+      const gas = await method.estimateGas({ from: accounts[0], value: contractFee });
+      const gasPrice = await web3.eth.getGasPrice();
+      const tx = await method.send({
+	from: accounts[0],
+	value: contractFee,
+	gas: gas,
+	gasPrice: gasPrice
+      });      
+      // const tx = await factory.methods.deployTambora(this.state.name, this.state.symbol, web3.utils.toWei(this.state.price, 'ether'), this.state.contractType, accounts[0], `ipfs://${this.state.uri}`, mintFee, contractFee).send({from: accounts[0], value: contractFee });
       this.setState({ infoMessage: '', success: true, loading: false, contractAddress: tx.events['Deployed'].returnValues.contractAddr });
       async function pusher() {
 	const receipt = await web3.eth.getTransactionReceipt(tx.transactionHash);
@@ -187,46 +199,90 @@ class CreateContract extends Component {
     //   this.setState({ errorMessage: err.message, loading: false, infoMessage: '' });
     //   }
   };
+  ///////////////////////////////////////////
+  ///////////OLD INFURA FUNCTION/////////////
+  ///////////////////////////////////////////
+  // ipfsAdd = async (file) => {
+  //   const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
+  //   const client = create({
+  //     host: 'ipfs.infura.io',
+  //     port: 5001,
+  //     protocol: 'https',
+  //     headers: {
+  // 	authorization: auth
+  //     }
+  //   })
+  //   try {
+  //     const added = await client.add(file);
+  //     await this.createMeta(added.path);
+  //   } catch (error) {
+  //     this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+  //   }
+  // }
   ipfsAdd = async (file) => {
-    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
-
-    const client = create({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-      headers: {
-	authorization: auth
-      }
-    })
     try {
-      const added = await client.add(file);
-      await this.createMeta(added.path);
-    } catch (error) {
-      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
-    }
-  }
+      const data = new FormData();
+      data.append("file", file);
 
-  ipfsAddExt = async (file) => {
-    this.setState({ infoMessage: 'Adding aux file to IPFS.', loading: true });
-    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
-
-    const client = create({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-      headers: {
-	authorization: auth
-      }
-    })
-    try {
-      const added = await client.add(file);
-      this.setState({ auxUri: `ipfs://${added.path}` });
+      const request = await fetch(
+	"https://api.pinata.cloud/pinning/pinFileToIPFS",
+	{
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.props.pinataJWT}`,
+        },
+          body: data,
+	}
+      );
+      const response = await request.json();
+      await this.createMeta(response.IpfsHash)
     } catch (error) {
-      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+      this.setState({ errorMessage: error.message, isLoading: false, infoMesage: ''});
     }
   }  
 
+  // ipfsAddExt = async (file) => {
+  //   this.setState({ infoMessage: 'Adding aux file to IPFS.', loading: true });
+  //   const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
+
+  //   const client = create({
+  //     host: 'ipfs.infura.io',
+  //     port: 5001,
+  //     protocol: 'https',
+  //     headers: {
+  // 	authorization: auth
+  //     }
+  //   })
+  //   try {
+  //     const added = await client.add(file);
+  //     this.setState({ auxUri: `ipfs://${added.path}` });
+  //   } catch (error) {
+  //     this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+  //   }
+  // }
+
+  ipfsAddExt = async (file) => {
+    this.setState({ infoMessage: 'Adding aux file to IPFS.' });
+    try {
+      const data = new FormData();
+      data.append("file", file);
+      const request = await fetch(
+	"https://api.pinata.cloud/pinning/pinFileToIPFS",
+	{
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.props.pinataJWT}`,
+        },
+          body: data,
+	}
+      );
+      const response = await request.json();
+      this.setState({ auxUri: `ipfs://${response.IpfsHash}` });
+    } catch (error) {
+      this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+    }
+  }      
 
   createMeta = async (cid) => {
     this.setState({ infoMessage: 'Creating metadata' });
@@ -254,26 +310,55 @@ class CreateContract extends Component {
       this.setState({ errorMessage: error, isLoading: false, infoMessage: '' });
     }
   }
+  
+  /////////////////////////////////////////////////
+  ///////////////OLD INFURA FUNCTION///////////////
+  /////////////////////////////////////////////////
+  // ipfsAddJSON = async (file) => {
+  //   this.setState({ infoMessage: 'Adding metadata to IPFS' });
+  //   const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
-  ipfsAddJSON = async (file) => {
+  //   const client = create({
+  //     host: 'ipfs.infura.io',
+  //     port: 5001,
+  //     protocol: 'https',
+  //     headers: {
+  // 	authorization: auth
+  //     }
+  //   })
+  //   try {
+  //     const added = await client.add(file);
+  //     this.setState({ uri: added.path });
+  //   } catch (error) {
+  //     this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+  //   }
+  // }
+
+  ipfsAddJSON = async (json) => {
     this.setState({ infoMessage: 'Adding metadata to IPFS' });
-    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
-
-    const client = create({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-      headers: {
-	authorization: auth
-      }
-    })
     try {
-      const added = await client.add(file);
-      this.setState({ uri: added.path });
+      const blob = new Blob([json], { type: "application/json" });
+      const file = new File([blob], "token.json");
+      const data = new FormData();
+      data.append("file", file);
+
+      const request = await fetch(
+	"https://api.pinata.cloud/pinning/pinFileToIPFS",
+	{
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.props.pinataJWT}`,
+        },
+          body: data,
+	}
+      );
+      const response = await request.json();
+      console.log(response.IpfsHash);
+      this.setState({ uri: response.IpfsHash });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
     }
-  }
+  }  
 
   // mintNFT = async (cid) => {
   //   try {
