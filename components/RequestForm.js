@@ -55,24 +55,61 @@ class RequestForm extends Component {
     }
   }
 
-  ipfsAddJSON = async (file) => {
-    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
+  // ipfsAddJSON = async (file) => {
+  //   const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
-    const client = create({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-      headers: {
-	authorization: auth
-      }
-    })
+  //   const client = create({
+  //     host: 'ipfs.infura.io',
+  //     port: 5001,
+  //     protocol: 'https',
+  //     headers: {
+  // 	authorization: auth
+  //     }
+  //   })
+  //   try {
+  //     // const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+  //     const added = await client.add(file);
+  //     const accounts = await web3.eth.getAccounts();
+  //     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
+  //     this.setState({ isInteracting: true, infoMessage: 'Interacting with the Ethereum Blockchain' });
+  //     const tx = await contract.methods.finalizeClient(`ipfs://${added.path}`).send({ from: accounts[0], value: this.props.price });
+  //     this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
+  //     setTimeout(() => {
+  // 	Router.reload(window.location.pathname)
+  //     }, 1000);
+  //   } catch (error) {
+  //     this.setState({ errorMessage: error.message, loading: false, infoMessage: '', isInteracting: false });
+  //   }
+  // }
+
+  ipfsAddJSON = async (json) => {
     try {
+      const blob = new Blob([json], { type: "application/json" });
+      const file = new File([blob], "token.json");
+      const data = new FormData();
+      data.append("file", file);
+
+      const request = await fetch(
+	"https://api.pinata.cloud/pinning/pinFileToIPFS",
+	{
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.props.pinataJWT}`,
+        },
+          body: data,
+	}
+      );
+      const response = await request.json();      
       // const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
-      const added = await client.add(file);
+      // const added = await client.add(file);
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       this.setState({ isInteracting: true, infoMessage: 'Interacting with the Ethereum Blockchain' });
-      const tx = await contract.methods.finalizeClient(`ipfs://${added.path}`).send({ from: accounts[0], value: this.props.price });
+      const method = await contract.methods.finalizeClient(`ipfs://${response.IpfsHash}`);
+      const gas = await method.estimateGas({ from: accounts[0], value: this.props.price });
+      const gasPrice = await web3.eth.getGasPrice();
+      const tx = method.send({ from: accounts[0], value: this.props.price, gas: gas, gasPrice: gasPrice });
+      // const tx = await contract.methods.finalizeClient(`ipfs://${response.IpfsHash}`).send({ from: accounts[0], value: this.props.price });
       this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       setTimeout(() => {
 	Router.reload(window.location.pathname)
@@ -80,14 +117,18 @@ class RequestForm extends Component {
     } catch (error) {
       this.setState({ errorMessage: error.message, loading: false, infoMessage: '', isInteracting: false });
     }
-  }
+  }    
 
   mintNFT = async (cid) => {
     this.setState({ isInteracting: true, infoMessage: 'Interacting with Ethereum Blockchain' });
     try {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-      const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0], value: this.props.price});
+      const method = await contract.methods.mint(accounts[0], `ipfs://${cid}`);
+      const gas = await method.estimateGas({ from: accounts[0], value: this.props.price });
+      const gasPrice = await web3.eth.getGasPrice();      
+      // const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0], value: this.props.price});
+      const tx = method.send({ from: accounts[0], value: this.props.price, gas: gas, gasPrice: gasPrice });
       this.setState({ success: true });
       // const pusher = async () => {
       // 	console.log('Minted successfully at: ', tx.transactionHash)
@@ -105,12 +146,16 @@ class RequestForm extends Component {
     event.preventDefault();
 
     const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-    this.setState({ loading: true, errorMessage: '', successMessage: '', infoMessage: 'Interacting with the EVM' });
+    this.setState({ loading: true, errorMessage: '', successMessage: '', infoMessage: 'Interacting on Polygon' });
 
     try {
       this.thrower();
       const accounts = await web3.eth.getAccounts();
-      await contract.methods.requestApproval(this.state.name).send({ from: accounts[0] });
+      const method = await contract.methods.requestApproval(this.state.name);
+      const gas = await method.estimateGas({ from: accounts[0] });
+      const gasPrice = await web3.eth.getGasPrice();
+      await method.send({ from: accounts[0], gas: gas, gasPrice: gasPrice });
+      // await contract.methods.requestApproval(this.state.name).send({ from: accounts[0] });
       this.setState({ successMessage: 'Your request has been submitted for approval', isApproved: false, isPending: true, infoMessage: '' });
       // Router.replaceRoute(`/campaigns/${this.props.address}`) //refresh page
       setTimeout(() => {

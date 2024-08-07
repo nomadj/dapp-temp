@@ -18,13 +18,14 @@ class RequestRow extends Component {
     denyLoading: false
   }
   onApprove = async () => {
-    this.setState({ isLoading: true, errorMessage: '', successMessage: '', error: false, success: false, infoMessage: 'Interacting with Ethereum' });
+    this.setState({ isLoading: true, errorMessage: '', successMessage: '', error: false, success: false, infoMessage: 'Interacting with Polygon' });
     try {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const accounts = await web3.eth.getAccounts();
-      await contract.methods.approveOrDenyClient(this.props.id, true).send({
-	from: accounts[0]
-      });
+      const method = await contract.methods.approveOrDenyClient(this.props.id, true);
+      const gas = await method.estimateGas({ from: accounts[0] });
+      const gasPrice = await web3.eth.getGasPrice();
+      await method.send({ from: accounts[0], gas: gas, gasPrice: gasPrice });
       this.setState({ isLoading: false, success: true, successMessage: `You have approved ${this.props.name}`, infoMessage: '' });
       setTimeout(() => {
 	Router.reload(window.location.pathname);
@@ -39,9 +40,13 @@ class RequestRow extends Component {
     try {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const accounts = await web3.eth.getAccounts();
-      await contract.methods.approveOrDenyClient(this.props.id, false).send({
-	from: accounts[0]
-      });
+      const method = await contract.methods.approveOrDenyClient(this.props.id, false);
+      const gas = await method.estimateGas({ from: accounts[0] });
+      const gasPrice = await web3.eth.getGasPrice();
+      await method.send({ from: accounts[0], gas: gas, gasPrice: gasPrice });            
+      // await contract.methods.approveOrDenyClient(this.props.id, false).send({
+      // 	from: accounts[0]
+      // });
       this.setState({ success: true, denyLoading: false, successMessage: `You have denied ${this.props.name}`, infoMessage: '' });
       setTimeout(() => {
 	Router.reload(window.location.pathname);

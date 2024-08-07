@@ -26,7 +26,6 @@ export default class TransferForm extends Component {
       const gasPrice = await web3.eth.getGasPrice();
       // const tx = await contract.methods.safeTransferFrom(accounts[0], this.state.to, this.props.tokenId).send({ from: accounts[0] });
       const tx = await method.send({ from: accounts[0], gas: gas, gasPrice: gasPrice });
-      this.setState({ successMessage: `You have transferred token ${this.props.tokenId} to ${this.state.to} at transaction ${tx.transactionHash}`, infoMessage: '' });      
       this.setState({ successMessage: `You have transferred token ${this.props.tokenId} to ${this.state.to} at transaction ${tx.transactionHash}`, infoMessage: '' });
       // setTimeout(() => Router.reload(window.location.pathname), 1000);
     } catch (err) {

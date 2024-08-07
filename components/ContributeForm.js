@@ -23,12 +23,21 @@ class ContributeForm extends Component {
     try {
       const accounts = await web3.eth.getAccounts();
       const owner = await contract.methods.owner().call();
-      const tx = await web3.eth.sendTransaction({
+      const preTx = {
         from: accounts[0],
 	to: owner,
         value: web3.utils.toWei(this.state.value, 'ether')
-      });
-      this.setState({ successMessage: `Your donation of ${this.state.value} eth has been made at transaction hash ${tx.transactionHash}`, infoMessage: '' });
+      };
+      const gas = await web3.eth.estimateGas(preTx);
+      const gasPrice = await web3.eth.getGasPrice();
+      const tx = await web3.eth.sendTransaction({
+        from: accounts[0],
+	to: owner,
+        value: web3.utils.toWei(this.state.value, 'ether'),
+	gas: gas,
+	gasPrice: gasPrice
+      });      
+      this.setState({ successMessage: `Your donation of ${this.state.value} MATIC has been made at transaction hash ${tx.transactionHash}`, infoMessage: '' });
       // setTimeout(() => Router.reload(window.location.pathname), 1000);
     } catch (err) {
       this.setState({ errorMessage: err.message, successMessage: '', infoMessage: '' });

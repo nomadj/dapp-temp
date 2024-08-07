@@ -23,6 +23,7 @@ export async function getServerSideProps(props) {
   const address = await factory.methods.getContractAddress(props.query['cont']).call();
   // const address = props.query['0'];
   const name = props.query['cont'];
+  const pinataJWT = process.env.PINATA_JWT;
   const title = name.replace(name.charAt(0), name.charAt(0).toUpperCase());
   const contract = new web3.eth.Contract(Tambora.abi, address);
   const showData = await contract.methods.getShowData().call();
@@ -63,7 +64,8 @@ export async function getServerSideProps(props) {
       title,
       projectId,
       projectSecret,
-      price
+      price,
+      pinataJWT
     }
   };
 }
@@ -226,6 +228,7 @@ class CampaignShow extends Component {
 	      projectId={this.props.projectId}
 	      projectSecret={this.props.projectSecret}
 	      price={this.props.price}
+	      pinataJWT={this.props.pinataJWT}
 	    />
 	</Layout>
       );
