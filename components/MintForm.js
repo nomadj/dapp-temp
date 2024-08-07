@@ -105,79 +105,169 @@ class MintForm extends Component {
     }
   }
   
+  // ipfsAdd = async (file) => {
+  //   this.setState({ isShowingProg: true, infoMessage: 'Adding file to IPFS' });
+  //   const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
+
+  //   const client = create({
+  //     host: 'ipfs.infura.io',
+  //     port: 5001,
+  //     protocol: 'https',
+  //     headers: {
+  // 	authorization: auth
+  //     }
+  //   })
+  //   try {
+  //     const added = await client.add(file, { progress: prog  => this.setState({ progPct: ((prog / this.state.fileSize) * 100) })}, { pin: true });
+  //     this.setState({ isShowingProg: false, infoMessage: '' });
+  //     if (this.state.auxUrl !== '' || this.state.animUrl !== '') {      
+  // 	const auxHash = await this.ipfsAddExt(document.getElementById("file-picker").files[0]);
+  // 	this.setState({ auxFile: `ipfs://${auxHash}` });
+  //     }
+  //     await this.createCustomMeta(added.path);
+  //   } catch (event) {
+  //     this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, isShowingProg: false, infoMessage: '' });
+  //   }
+  // }
+
   ipfsAdd = async (file) => {
     this.setState({ isShowingProg: true, infoMessage: 'Adding file to IPFS' });
-    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
-
-    const client = create({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-      headers: {
-	authorization: auth
-      }
-    })
     try {
-      const added = await client.add(file, { progress: prog  => this.setState({ progPct: ((prog / this.state.fileSize) * 100) })}, { pin: true });
+      const data = new FormData();
+      data.append("file", file);
+
+      const request = await fetch(
+	"https://api.pinata.cloud/pinning/pinFileToIPFS",
+	{
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.props.pinataJWT}`,
+        },
+          body: data,
+	}
+      );
+      const response = await request.json();      
       this.setState({ isShowingProg: false, infoMessage: '' });
       if (this.state.auxUrl !== '' || this.state.animUrl !== '') {      
 	const auxHash = await this.ipfsAddExt(document.getElementById("file-picker").files[0]);
 	this.setState({ auxFile: `ipfs://${auxHash}` });
       }
-      await this.createCustomMeta(added.path);
+      await this.createCustomMeta(response.IpfsHash);
     } catch (event) {
       this.setState({ errorMessage: 'Unable to process file. Only png, mp4, and JSON available at this time.', isLoading: false, isShowingProg: false, infoMessage: '' });
     }
-  }
+  }    
 
-  ipfsAddJSON = async (file) => {
-    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
+  // ipfsAddJSON = async (file) => {
+  //   const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
-    const client = create({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-      headers: {
-	authorization: auth
-      }
-    })
+  //   const client = create({
+  //     host: 'ipfs.infura.io',
+  //     port: 5001,
+  //     protocol: 'https',
+  //     headers: {
+  // 	authorization: auth
+  //     }
+  //   })
+  //   try {
+  //     // const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+  //     const added = await client.add(file);
+  //     await this.mintNFT(added.path);
+  //   } catch (error) {
+  //     this.setState({ errorMessage: error.message, isLoading: false });
+  //   }
+  // }
+
+  ipfsAddJSON = async (json) => {
     try {
-      // const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
-      const added = await client.add(file);
-      await this.mintNFT(added.path);
+      const blob = new Blob([json], { type: "application/json" });
+      const file = new File([blob], "token.json");
+      const data = new FormData();
+      data.append("file", file);
+
+      const request = await fetch(
+	"https://api.pinata.cloud/pinning/pinFileToIPFS",
+	{
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.props.pinataJWT}`,
+        },
+          body: data,
+	}
+      );
+      const response = await request.json();      
+      await this.mintNFT(response.IpfsHash);
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false });
     }
-  }
+  }    
+
+  // ipfsAddExt = async (file) => {
+  //   this.setState({ infoMessage: 'Adding aux file to IPFS.' });
+  //   const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
+
+  //   const client = create({
+  //     host: 'ipfs.infura.io',
+  //     port: 5001,
+  //     protocol: 'https',
+  //     headers: {
+  // 	authorization: auth
+  //     }
+  //   })
+  //   try {
+  //     //const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
+  //     const added = await client.add(file);
+  //     this.setState({ auxFile: `ipfs://${added.path}` });
+  //   } catch (error) {
+  //     this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
+  //   }
+  // }
 
   ipfsAddExt = async (file) => {
     this.setState({ infoMessage: 'Adding aux file to IPFS.' });
-    const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
+    // const auth = 'Basic ' + Buffer.from(this.props.projectId + ':' + this.props.projectSecret).toString('base64');
 
-    const client = create({
-      host: 'ipfs.infura.io',
-      port: 5001,
-      protocol: 'https',
-      headers: {
-	authorization: auth
-      }
-    })
+    // const client = create({
+    //   host: 'ipfs.infura.io',
+    //   port: 5001,
+    //   protocol: 'https',
+    //   headers: {
+    // 	authorization: auth
+    //   }
+    // })
     try {
+      const data = new FormData();
+      data.append("file", file);
+
+      const request = await fetch(
+	"https://api.pinata.cloud/pinning/pinFileToIPFS",
+	{
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${this.props.pinataJWT}`,
+        },
+          body: data,
+	}
+      );
+      const response = await request.json();      
       //const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
-      const added = await client.add(file);
-      this.setState({ auxFile: `ipfs://${added.path}` });
+      // const added = await client.add(file);
+      this.setState({ auxFile: `ipfs://${response.IpfsHash}` });
     } catch (error) {
       this.setState({ errorMessage: error.message, isLoading: false, infoMessage: '' });
     }
-  }    
-
+  }      
   mintNFT = async (cid) => {
     this.setState({ isInteracting: true, infoMessage: 'Minting...' });
     try {
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       // const price = (this.props.owner != accounts[0]) ? this.props.price : this.props.mintFee;
-      const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId).send({from: accounts[0], value: this.props.price});
+      const method = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId);
+      const gas = await method.estimateGas({ from: accounts[0], value: this.props.price });
+      const gasPrice = await web3.eth.getGasPrice();
+      const tx = await method.send({from: accounts[0], value: this.props.price, gas: gas, gasPrice: gasPrice });      
+      // const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`, this.props.mintId).send({from: accounts[0], value: this.props.price});
       this.setState({ success: true });
       this.setState({ isLoading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       setTimeout(() => Router.push({ pathname: `/${this.props.contractName}` }), 3000);

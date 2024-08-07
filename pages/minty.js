@@ -10,6 +10,7 @@ import web3 from '../web3'
 export async function getServerSideProps(props) {
   const address = props.query['0'];
   const mintId = props.query['1'];
+  const pinataJWT = process.env.PINATA_JWT;
   const contract = new web3.eth.Contract(Tambora.abi, address);
   const contractName = await contract.methods.name().call();
   const contractType = await contract.methods.contractType().call();
@@ -31,7 +32,8 @@ export async function getServerSideProps(props) {
       projectSecret,
       price,
       mintFee,
-      owner
+      owner,
+      pinataJWT
     }
   }
 }
@@ -40,7 +42,7 @@ class Mint extends Component {
   render() {
     return (
       <Layout>
-	<MintForm contractType={this.props.contractType} address={this.props.address} mintId={this.props.mintId} contractName={this.props.contractName} projectId={this.props.projectId} projectSecret={this.props.projectSecret} price={this.props.price} mintFee={this.props.mintFee} owner={this.props.owner} />
+	<MintForm contractType={this.props.contractType} address={this.props.address} mintId={this.props.mintId} contractName={this.props.contractName} projectId={this.props.projectId} projectSecret={this.props.projectSecret} price={this.props.price} mintFee={this.props.mintFee} owner={this.props.owner} pinataJWT={this.props.pinataJWT} />
       </Layout>
     );
   }
