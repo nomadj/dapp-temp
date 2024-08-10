@@ -100,6 +100,7 @@ class RequestForm extends Component {
 	}
       );
       const response = await request.json();
+      console.log("RESPONSE: ", response);
       // const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
       // const added = await client.add(file);
       const accounts = await web3.eth.getAccounts();
