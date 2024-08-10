@@ -96,6 +96,7 @@ class CampaignShow extends Component {
   }
 
   async componentDidMount() {
+    console.log("PINATA_JWT: ", this.props.pinataJWT);
     if (typeof window.ethereum === 'undefined') {
       console.log("No metamask installed")
       this.setState({ unsupported: true, renderPage: true })
