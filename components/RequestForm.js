@@ -126,7 +126,7 @@ class RequestForm extends Component {
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
       const method = await contract.methods.mint(accounts[0], `ipfs://${cid}`);
       const gas = await method.estimateGas({ from: accounts[0], value: this.props.price });
-      const gasPrice = await web3.eth.getGasPrice();      
+      const gasPrice = await web3.eth.getGasPrice();
       // const tx = await contract.methods.mint(accounts[0], `ipfs://${cid}`).send({from: accounts[0], value: this.props.price});
       const tx = method.send({ from: accounts[0], value: this.props.price, gas: gas, gasPrice: gasPrice });
       this.setState({ success: true });
