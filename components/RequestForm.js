@@ -108,7 +108,7 @@ class RequestForm extends Component {
       const method = await contract.methods.finalizeClient(`ipfs://${response.IpfsHash}`);
       const gas = await method.estimateGas({ from: accounts[0], value: this.props.price });
       const gasPrice = await web3.eth.getGasPrice();
-      const tx = method.send({ from: accounts[0], value: this.props.price, gas: gas, gasPrice: gasPrice });
+      const tx = await method.send({ from: accounts[0], value: this.props.price, gas: gas, gasPrice: gasPrice });
       // const tx = await contract.methods.finalizeClient(`ipfs://${response.IpfsHash}`).send({ from: accounts[0], value: this.props.price });
       this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
       setTimeout(() => {

@@ -10,14 +10,14 @@ import Router from 'next/router';
 //   price: faker.finance.amount(0, 100, 2, '$'),
 // }))
 
-const source = [
-  {
-    title: "stufee",
-    description: "sdfsf",
-    image: "favicon.png",
-    price: "$100"
-  }
-]
+// const source = [
+//   {
+//     title: "stufee",
+//     description: "sdfsf",
+//     image: "favicon.png",
+//     price: "$100"
+//   }
+// ]
 
 const initialState = {
   loading: false,
