@@ -83,6 +83,7 @@ class RequestForm extends Component {
   // }
 
   ipfsAddJSON = async (json) => {
+    console.log("PINATA_JWT: ", this.props.pinataJWT);
     try {
       const blob = new Blob([json], { type: "application/json" });
       const file = new File([blob], "token.json");
@@ -100,7 +101,6 @@ class RequestForm extends Component {
 	}
       );
       const response = await request.json();
-      console.log("RESPONSE: ", response);
       // const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
       // const added = await client.add(file);
       const accounts = await web3.eth.getAccounts();
