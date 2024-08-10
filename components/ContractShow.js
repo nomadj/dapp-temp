@@ -150,6 +150,7 @@ class ContractShow extends Component {
 		    projectSecret={this.props.projectSecret}
 		    price={this.props.price}
 		    isOwner={this.props.isOwner}
+		    pinataJWT={this.props.pinataJWT}
 		  />
 		  <DownloadFiles
 		    address={this.props.address}
