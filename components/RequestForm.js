@@ -83,7 +83,6 @@ class RequestForm extends Component {
   // }
 
   ipfsAddJSON = async (json) => {
-    console.log("PINATA_JWT: ", this.props.pinataJWT);
     try {
       const blob = new Blob([json], { type: "application/json" });
       const file = new File([blob], "token.json");
