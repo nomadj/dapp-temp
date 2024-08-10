@@ -99,18 +99,18 @@ class RequestForm extends Component {
           body: data,
 	}
       );
-      const response = await request.json();      
+      const response = await request.json();
       // const added = await client.add(file, { progress: prog  => console.log(`Received: ${prog}`)});
       // const added = await client.add(file);
       const accounts = await web3.eth.getAccounts();
       const contract = new web3.eth.Contract(Tambora.abi, this.props.address);
-      this.setState({ isInteracting: true, infoMessage: 'Interacting with the Ethereum Blockchain' });
+      this.setState({ isInteracting: true, infoMessage: 'Interacting with the Polygon Network' });
       const method = await contract.methods.finalizeClient(`ipfs://${response.IpfsHash}`);
       const gas = await method.estimateGas({ from: accounts[0], value: this.props.price });
       const gasPrice = await web3.eth.getGasPrice();
       const tx = await method.send({ from: accounts[0], value: this.props.price, gas: gas, gasPrice: gasPrice });
       // const tx = await contract.methods.finalizeClient(`ipfs://${response.IpfsHash}`).send({ from: accounts[0], value: this.props.price });
-      this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
+      this.setState({ loading: false, successMessage: `Transaction completed at ${tx.transactionHash}`, isInteracting: false, infoMessage: '' });
       setTimeout(() => {
 	Router.reload(window.location.pathname)
       }, 1000);
@@ -135,7 +135,7 @@ class RequestForm extends Component {
       // 	Router.push({pathname: '/', query: [tx.transactionHash]});
       // }
       // setTimeout(pusher, 3000);
-      this.setState({ loading: false, success: true, isInteracting: false, infoMessage: '', txHash: tx.transactionHash });
+      this.setState({ loading: false, success: true, isInteracting: false, infoMessage: '' });
       return tx.transactionHash;
     } catch (error){
       this.setState({ errorMessage: error.message, loading: false, infoMessage: '' })
